@@ -1,0 +1,322 @@
+<?php
+$this->headLink()
+    ->appendStylesheet('/vendor/css/bootstrap-3.4.1.min.css')
+    ->appendStylesheet('/vendor/css/autocomplete-2.1.0.css')
+    ->appendStylesheet('/css/main.css');
+$this->headScript()
+    ->appendFile('//code.jquery.com/jquery-1.10.2.js')
+    ->appendFile('//code.jquery.com/ui/1.11.4/jquery-ui.js')
+    ->appendFile('/vendor/js/bootstrap-3.4.1.min.js')
+    ->appendFile('/vendor/js/autocomplete-2.1.0.js');
+?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Panta Rhei - Administration</title>
+    <?=$this->headMeta()?>
+    <?=$this->headLink()?>
+    <?=$this->headScript()?>
+  </head>
+  <body>
+    <header>
+      <div class="navbar banner">
+        <h1 class="navbar-brand">Administration</h1>
+        <div class="crumbs navbar-text">
+          <a href="<?=$this->url('home') ?>">Home</a>
+          <?php if (isset($this->layout()->breadcrumbs) && !empty($this->layout()->breadcrumbs)): ?>
+            &gt; <?=$this->layout()->breadcrumbs ?>
+          <?php endif; ?>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#instructionsLookup" data-toggle="modal" style="color:yellow">Instructions</a></li>
+          <li><a href="<?=$this->url('login')?>?logout=y">Logout</a></li>
+        </ul>
+      </div>
+
+      <!-- Fixed navbar -->
+      <?php if (!$this->layout()->hideNavigation): ?>
+        <div class="navbar navbar-default" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                <?php
+                    $modules = $this->isUser()->hasPermission();
+                    if (in_array("Work", $modules)) {
+                ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle " data-toggle="dropdown">Work<b class="caret"></b></a>
+                    <ul class="dropdown-menu" style="margin: 0 -3px;">
+                    <li><a href="<?php echo $this->url('new_work') ?>">New</a></li>
+                    <li><a href="<?php echo $this->url('search_work') ?>">Search</a></li>
+                    <li><a href="<?php echo $this->url('manage_work') ?>">Manage</a></li>
+                    <li><a href="<?php echo $this->url('manage_work') ?><?= '?action=review' ?>">Review</a></li>
+                    <li><a href="<?php echo $this->url('manage_work') ?><?= '?action=classify' ?>">Classify</a></li>
+                    </ul>
+                </li>
+                <?php } ?>
+                    <!--<li class="divider-vertical"></li>-->
+                <?php if (in_array("Work Type", $modules)) { ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Work Type<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    <li><a href="<?php echo $this->url('new_worktype') ?><?='?action=new'?>">New</a></li>
+                    <li><a href="<?php echo $this->url('manage_worktype') ?>">Manage</a></li>
+                    <li><a href="<?php echo $this->url('attributes_worktype') ?>">Attributes</a></li>
+                    </ul>
+                </li>
+                <?php } ?>
+                <?php if (in_array("Classification", $modules)) { ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Classification<b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                    <li><a href="<?php echo $this->url('new_classification') ?><?='?action=new'?>">New</a></li>
+                    <li><a href="<?php echo $this->url('manage_classification') ?>">Manage</a></li>
+                    <li><a href="<?php echo $this->url('merge_classification') ?><?= '?action=merge_classification' ?>">Merge</a></li>
+                    <li><a href="<?php echo $this->url('exportlist_classification') ?><?='?action=export_classification'?>">Export List</a></li>
+                  </ul>
+                </li>
+                <?php } ?>
+                <?php if (in_array("Agent", $modules)) { ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Agent<b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                    <li><a href="<?php echo $this->url('new_agent') ?><?='?action=new'?>">New</a></li>
+                    <li><a href="<?php echo $this->url('find_agent') ?>">Find</a></li>
+                    <li><a href="<?php echo $this->url('manage_agent') ?>">Manage</a></li>
+                    <li><a href="<?php echo $this->url('merge_agent') ?><?='?action=merge'?>">Merge</a></li>
+                  </ul>
+                </li>
+                <?php } ?>
+                <?php if (in_array("Agent Type", $modules)) { ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Agent Type<b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                    <li><a href="<?php echo $this->url('new_agenttype') ?><?='?action=new'?>">New</a></li>
+                    <li><a href="<?php echo $this->url('manage_agenttype') ?>">Manage</a></li>
+                  </ul>
+                </li>
+                <?php } ?>
+                <?php if (in_array("Publisher", $modules)) { ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Publisher<b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                    <li><a href="<?php echo $this->url('new_publisher') ?><?='?action=new'?>">New</a></li>
+                    <li><a href="<?php echo $this->url('find_publisher') ?>">Find</a></li>
+                    <li><a href="<?php echo $this->url('manage_publisher') ?>">Manage</a></li>
+                    <li><a href="<?php echo $this->url('merge_publisher') ?>">Merge</a></li>
+                  </ul>
+                </li>
+                <?php } ?>
+                <?php if (in_array("Language", $modules)) { ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Language<b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                    <li><a href="<?php echo $this->url('new_language') ?><?='?action=new'?>">New</a></li>
+                    <li><a href="<?php echo $this->url('manage_language') ?>">Manage</a></li>
+                  </ul>
+                </li>
+                <?php } ?>
+                <?php if (in_array("Users", $modules)) { ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Users<b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                    <li><a href="<?php echo $this->url('new_user') ?><?='?action=new'?>">New</a></li>
+                    <li><a href="<?php echo $this->url('manage_users') ?>">Manage</a></li>
+                    <li><a href="<?php echo $this->url('access_users') ?>">Access</a></li>
+                  </ul>
+                </li>
+                <?php } ?>
+                <?php if (in_array("Preferences", $modules)) { ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Preferences<b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                    <li><a href="<?php echo $this->url('changepassword_preferences') ?><?='?action=change_pwd'?>">Change Password</a></li>
+                  </ul>
+                </li>
+                <?php } ?>
+              </ul>
+
+            </div><!--/.nav-collapse -->
+          </div>
+        </div>
+      <?php endif; ?>
+    </header>
+
+    <div class="app-content">
+      <div class="container">
+        <?=$this->content; ?>
+        <?php
+          $url_components = parse_url($this->serverUrl());
+          $url_host = $url_components['scheme'] . '://' . $url_components['host'];
+
+          $str = $this->layout()->page;
+          $page = "";
+
+          $returnValue = preg_replace('/index.php/', '', $_SERVER['PHP_SELF']);
+
+          if($returnValue == $_SERVER['REQUEST_URI'])
+          {
+            $page = "public";
+            $str = $page . "/";
+          }
+          else
+          {
+            $str = str_replace($returnValue, '', parse_url($this->url())['path']);
+            if(isset($_SERVER['QUERY_STRING']))
+            {
+              if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
+              {
+                $str .= "?action=" . $matches['action_name'];
+              }
+            }
+          }
+
+          $ins = $this->isUser()->isInsSet($str);
+
+          if(isset($ins['instructions']))
+          {
+            $this->layout()->instructions = $ins['instructions'];
+          ?>
+            <script>
+              $(document).ready(function () {
+                var pgid = <?php echo json_encode($ins['id']);?>;
+                var pgnm = <?php echo json_encode($ins['page_name']);?>;
+                $('#page_id').val(pgid);
+                $('#page_name').val(pgnm);
+                return false;
+              });
+            </script>
+          <?php
+          }
+          else
+          {
+            $this->layout()->instructions = '';
+          ?>
+            <script>
+              $(document).ready(function () {
+                var pgnm = <?php echo json_encode($str);?>;
+                $('#page_name').val(pgnm);
+                return false;
+              });
+            </script>
+          <?php
+          }
+          $usr = $this->isUser()->getUserType();
+
+          if($usr['level'] == "Administrator")
+          {
+          ?>
+            <b>
+              <?php
+                if($page == "public")
+                {
+                  echo "Welcome, " . $usr['name'] . "<br/>";
+                  $cnt = $this->isUser()->getRvwCount();
+                  echo "You have " . $cnt[0]['review_count'] . " works awaiting review.<br />";
+                }
+              ?>
+            </b>
+          <?php
+          }
+          if($usr['level'] == "Super User" || $usr['level'] == "User")
+          {
+            ?>
+              <b>
+                <?php
+                  if($page == "public")
+                  {
+                    echo "Welcome, " . $usr['name'];
+                  }
+                ?>
+              </b>
+            <?php
+          }
+        ?>
+      </div>
+    </div>
+    <script>
+      $(document).ready(function () {
+        var lvl = <?php echo json_encode($usr['level']);?>;
+        if(lvl === "Super User" || lvl === "User")
+        {
+          //$('#ins_submit').prop("disabled", "disabled");
+          $('#ins_submit').hide();
+          return false;
+        }
+        if(lvl === "Administrator")
+        {
+          //$('#ins_submit').prop("disabled", false);
+          $('#ins_submit').show();
+          return false;
+        }
+      });
+    </script>
+    <div class="modal fade ig" id="instructionsLookup" role="dialog">
+      <div class="modal-dialog ig">
+        <div class="modal-content ig">
+          <div class="modal-header ig">
+            <button type="button" class="close ig" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title ig" id="instrModalLabel">Instructions</h4>
+          </div>
+          <div class="modal-body ig">
+            <div class="form-group ig">
+              <input type="hidden" name="page_id" id="page_id" value="">
+              <input type="hidden" name="page_name" id="page_name" value="">
+              <textarea class="form-control rounded-0" id="instructions" rows="5"><?php echo $this->layout()->instructions; ?></textarea>
+              <!--<textarea name="instructions" id="instructions"><?php //echo $this->layout()->instructions; ?></textarea><br>    -->
+            </div>
+          </div>
+          <div class="modal-footer ignore ig">
+            <!--<input type="submit" name="ins_submit" id="ins_submit" value="Save">-->
+            <input type="submit" class="btn btn-primary ins_submit ig" name="ins_submit" id="ins_submit" value="Save"></button>
+            <button type="button" class="btn btn-default instr_lookup_close ig" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const URL = "<?=rtrim($this->url('home'), '/') ?>";
+      $(document).ready(function () {
+        //var ur = <?php echo json_encode($url_host); ?>;
+        var ur = "";
+        $('#ins_submit').on('click', function(){
+          //console.log('ins save clicked');
+          var ins_text = $('#instructions').val();
+          var pg_id = $('#page_id').val();
+          var pg_nm = $('#page_name').val();
+          //alert(ins_text);
+          $.ajax({
+            method: 'post',
+            //url: 'http://localhost<?=$this->url('get_work_details')?>',
+            url: ur + '<?=$this->url('get_work_details')?>',
+            data: {
+              ins_text: ins_text,
+              pg_id: pg_id,
+              pg_nm: pg_nm
+            },
+            dataType: "json",
+            cache: false,
+            success: function(data)
+            {
+            },
+            error: function (data) {
+            //$("#Classification", context).html('<p>No Options</p>');
+            }
+          });
+          return false;
+        });
+      });
+    </script>
+  </body>
+</html>

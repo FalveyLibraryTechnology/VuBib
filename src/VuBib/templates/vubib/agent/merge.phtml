@@ -1,0 +1,187 @@
+<?php $this->headTitle('Merge Agent'); ?>
+<?php
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agent') . '" style="float:left;color:white;"> Agent > </a>' . ' Merge';
+ ?>
+<?php
+if ($request->getqueryParams('action') !== null) {
+    $params = $request->getqueryParams();
+    $action = $params['action'];
+}
+$url_components = parse_url($this->serverUrl());
+$url_host = $url_components['scheme'] . '://' . $url_components['host'];
+?>
+<script>
+    //var ur = <?php echo json_encode($url_host); ?>;
+    var ur = "";
+    function addMergeButton(context) {
+        if (($('#mrg_src_id', context).val().length != 0) && ($('#mrg_dest_id', context).val().length != 0)) {
+            $('#submit_clear', context).before('<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Merge</button>');
+            return false;
+        }
+    }
+    $(document).ready(function () {
+        $("#find_dest_agent").prop("disabled", "disabled");
+        $("#dest_ag_find_bt").prop("disabled", "disabled");
+        //source find
+        $("#src_ag_find_bt").on('click', function () {
+            var find_srcag = $('#find_src_agent').val();
+            $.ajax({
+                method: 'post',
+                //url: 'http://localhost<?= $this->url("get_work_details") ?>',
+                url: ur + '<?=$this->url('get_work_details')?>',
+                data: {
+                    ag_name: find_srcag
+                },
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if ((data.ag_row.length) > 0) {
+                        $('#find_src_agent').val('');
+                        $('#src_find_outer_div').after('<div class="form-group" id="src_select_div">');
+                        var src_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="src_result_table">'
+                                '<tr><th>Select</th><th>First Name</th><th>Last Name</th><th>Works</th></tr>';
+                        $.each(data.ag_row, function (key, val) {
+                            src_result_table += '<tr><td><div class="radio"><label>'
+                                    '<input type="radio" id="src_select" name="src_select" value="' + val.id + '"></label>' + '</div></td>'
+                                    '<td>' + val.fname + '</td><td>' + val.lname + '</td><td>' + val.works + '</td></tr>';
+                        });
+                        src_result_table += '</table>';
+                        $('#src_select_div').append(src_result_table);
+                        $('#src_result_table').append('<button class="btn btn-default" name="btn_select_src" id="btn_select_src">Select</button>');
+                    } else {
+                        $('#find_src_agent').val('');
+                    }
+                },
+                error: function (data) {}
+            });
+            return false;
+        });
+        //source select
+        $(document).on('click', '#btn_select_src', function () {
+            var src = $('input[name="src_select"]:checked').val();
+            if (src !== null) {
+                var fn = $('input[name="src_select"]:checked').closest("tr").find('td:eq(1)').text() + ' '
+                        $('input[name="src_select"]:checked').closest("tr").find('td:eq(2)').text();
+                //alert("selected src is " + src);
+                //alert("name is " + fn);
+                $('#src_find_outer_div').html('');
+                $('#src_select_div').html('');
+                $('#src_label').after('<br />' + fn);
+                $('#mrg_src_id').val(src);
+                //alert("hidden src " + $('#mrg_src_id').val());
+                $("#find_dest_agent").prop("disabled", false);
+                $("#dest_ag_find_bt").prop("disabled", false);
+                //addMergeButton(document);
+            }
+            return false;
+        });
+        //destination find
+        $("#dest_ag_find_bt").on('click', function () {
+            var find_dstag = $('#find_dest_agent').val();
+            $.ajax({
+                method: 'post',
+                //url: 'http://localhost<?= $this->url("get_work_details") ?>',
+                url: ur + '<?=$this->url('get_work_details')?>',
+                data: {
+                    ag_name: find_dstag
+                },
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    if ((data.ag_row.length) > 0) {
+                        $('#find_dest_agent').val('');
+                        $('#dest_find_outer_div').after('<div class="form-group" id="dest_select_div">');
+                        var dest_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="dest_result_table">'
+                                '<tr><th>Select</th><th>First Name</th><th>Last Name</th><th>Works</th></tr>';
+                        $.each(data.ag_row, function (key, val) {
+                            if (("" + val.id) !== ($('#mrg_src_id').val())) {
+                                dest_result_table += '<tr><td><div class="radio"><label>'
+                                        '<input type="radio" id="dest_select" name="dest_select" value="' + val.id + '"></label>' + '</div></td>'
+                                        '<td>' + val.fname + '</td><td>' + val.lname + '</td><td>' + val.works + '</td></tr>';
+                            }
+                        });
+                        dest_result_table += '</table>';
+                        $('#dest_select_div').append(dest_result_table);
+                        $('#dest_result_table').append('<button class="btn btn-default" name="btn_select_dest" id="btn_select_dest">Select</button>');
+                    } else {
+                        $('#find_dest_agent').val('');
+                    }
+                },
+                error: function (data) {}
+            });
+            return false;
+        });
+        //destination select
+        $(document).on('click', '#btn_select_dest', function () {
+            var dest = $('input[name="dest_select"]:checked').val();
+            if (dest !== null) {
+                var fn = $('input[name="dest_select"]:checked').closest("tr").find('td:eq(1)').text() + ' '
+                        $('input[name="dest_select"]:checked').closest("tr").find('td:eq(2)').text();
+                $('#dest_find_outer_div').html('');
+                $('#dest_select_div').html('');
+                $('#dest_label').after('<br />' + fn);
+                //alert("hidden dest before " + $('#mrg_dest_id').val().length);
+                $('#mrg_dest_id').val(dest);
+                //alert("hidden dest now " + $('#mrg_dest_id').val().length);
+                addMergeButton(document);
+            }
+            return false;
+        });
+        //check if src and dest are same
+        $(document).on('click', '#submit_save', function () {
+            if ($('#mrg_src_id').val() === $('#mrg_dest_id').val()) {
+                $('.mergeAgentError').show();
+                return false;
+            }
+        });
+        $('#submit_clear').on('click', function () {
+            location.reload(true);
+        });
+    });
+</script>
+<div class="col-lg-12">
+    <form class="form-horizontal" name="merge_ag_form" id="merge_ag_form" method="post" action="<?= $this->url('manage_agent') ?>">
+        <input type="hidden" name="action" value="<?= $action ?>">
+        <input type="hidden" name="mrg_src_id" id="mrg_src_id" value="">
+        <input type="hidden" name="mrg_dest_id" id="mrg_dest_id" value="">
+        <div class="form-group">
+            <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
+                <tbody>
+                    <tr valign="Top">            
+                        <td style="border-spacing: 10px;" id="src_find_col">                
+                            <b id="src_label">Source Agent</b><br>
+                            <div class="form-group" id="src_find_outer_div">
+                                <label class="col-xs-4 control-label">Find: </label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control" name="find_src_agent" id="find_src_agent" placeholder="enter last name"/>
+                                </div>    
+                                <div class="col-xs-7">
+                                    <button type="submit" class="btn btn-default" name="src_ag_find_bt" id="src_ag_find_bt" value="Save">Find</button>
+                                </div>
+                            </div>
+                        </td>    
+                        <td style="border-spacing: 10px;">
+                            <b id="dest_label">Destination Agent</b><br>
+                            <div class="form-group" id="dest_find_outer_div">
+                                <label class="col-xs-4 control-label">Find: </label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control" name="find_dest_agent" id="find_dest_agent" placeholder="enter last name"/>
+                                </div>
+                                <div class="col-xs-7">
+                                    <button type="submit" class="btn btn-default" name="dest_ag_find_bt" id="dest_ag_find_bt" value="Save">Find</button>
+                                </div>
+                            </div>
+                        </td>            
+                    </tr>
+                </tbody>
+            </table>        
+        </div>    
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-10">
+                <!--<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Merge</button>-->
+                <button type="reset" class="btn btn-default" name="submit_clear" id="submit_clear" value="Cancel">Clear</button>
+                <p class="mergeAgentError" style="display:none;color:red;margin-bottom:20px;">Cannot merge -- source and destination are the same.</p>
+            </div>
+        </div>
+    </form>
+</div>

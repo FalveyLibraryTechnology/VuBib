@@ -1,0 +1,195 @@
+<?php $this->headTitle('Merge Classification'); ?>
+<?php
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '" style="float:left;color:white;"> Classification > </a>'
+                                    . ' Merge';
+ ?>
+<?php
+if ($request->getqueryParams('action') !== null) {
+    $params = $request->getqueryParams();
+    $action = $params['action'];
+}
+$url_components = parse_url($this->serverUrl());
+$url_host = $url_components['scheme'] . '://' . $url_components['host'];
+$this->headScript()->appendFile($this->url('home') . 'js/work.js');
+?>
+<style>
+table[name="source_fl_table"], table[name="dest_fl_table"] {
+    font-size:10pt;
+    border-collapse: separate;
+    border-spacing: 10px;
+    display: block;
+}
+tr[name="source_fl_row"], td[name="source_fl_col"], tr[name="dest_fl_row"], td[name="dest_fl_col"] {
+    vertical-align: top;
+}
+td[name="source_fl_col"], td[name="dest_fl_col"] {
+    border-spacing: 10px;
+    display: inline-block;
+}
+</style>
+<script>
+//var ur = <?php echo json_encode($url_host); ?>;
+var ur = "";
+var workURL = '<?=$this->url('get_work_details')?>';
+_select = '';
+$(document).ready(function () {
+    //source classification
+    $(".select_source_fl").on('change', function () {
+        mergeClassification(this, document, workURL, 'source');
+    });
+    //destination classification
+    $(".select_dest_fl").on('change', function () {
+        mergeClassification(this, document, workURL, 'dest');
+    });
+    //click save
+    $("#submit_save").click(function () {
+        var src_id = $('.select_source_fl').eq(($('.select_source_fl').length) - 1).val();
+        var dst_id = $('.select_dest_fl').eq(($('.select_dest_fl').length) - 1).val();
+
+        if (src_id === '')
+        {
+            var $src_select = $('.select_source_fl').eq(($('.select_source_fl').length) - 2);
+            src_id = $src_select.val();
+        }
+
+        if (dst_id === '')
+        {
+            var $dst_select = $('.select_dest_fl').eq(($('.select_dest_fl').length) - 2);
+            dst_id = $dst_select.val();
+        }
+
+        if (src_id === "" || dst_id === "")
+        {
+            $('.mergeError4').show();
+            return false;
+        }
+
+        if (src_id === dst_id)
+        {
+            $('.mergeError1').show();
+            return false;
+        }
+
+        $.ajax({
+            method: 'post',
+            url: ur + workURL,
+            data: {
+                fl_id: src_id
+            },
+            dataType: "json",
+            cache: false,
+            success: function (data)
+            {
+                var valid_pass = true;
+                $.each(data.fl_row, function (key, val) {
+                    if (("" + val) === dst_id)
+                    {
+                        $('.mergeError3').show();
+                        valid_pass = false;
+                    }
+                });
+                $.ajax({
+                    method: 'post',
+                    url: ur + workURL,
+                    data: {
+                        fl_id: dst_id
+                    },
+                    dataType: "json",
+                    cache: false,
+                    success: function (data)
+                    {
+                        //valid_pass = true;
+                        $.each(data.fl_row, function (key, val) {
+                            if (("" + val) === src_id)
+                            {
+                                $('.mergeError2').show();
+                                valid_pass = false;
+                            }
+                        });
+                        if (valid_pass)
+                        {
+                            $("#merge_fl_form").submit();
+                        }
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+            }
+        });
+        return false;
+    });
+    //click clear
+    $("#submit_clear").on('click', function () {
+        $('.source_fl_col').eq(0).nextAll('.source_fl_col').remove();
+        $('.select_source_fl').eq(0).val('');
+        $('.dest_fl_col').eq(0).nextAll('.dest_fl_col').remove();
+        $('.select_dest_fl').eq(0).val('');
+        $('.mergeError1').hide();
+        $('.mergeError2').hide();
+        $('.mergeError3').hide();
+        $('.mergeError4').hide();
+        return false;
+    });
+});
+</script>
+<div class="col-lg-12">
+    <form class="form-horizontal merge_fl_form" method="post" action="<?= $this->url('manage_classification') ?>" name="merge_fl_form" id="merge_fl_form">
+        <input type="hidden" name="action" value="<?= $action ?>">
+        <!--<input type="hidden" class="src_parent_id" name="src_parent_id" id="src_parent_id" value="">
+        <input type="hidden" class="dst_parent_id" name="dst_parent_id" id="dst_parent_id" value="from ajax call">-->
+        <div class="form-group">
+            <table name="source_fl_table" id="source_fl_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
+                <tbody>
+                    <tr name="source_fl_row">
+                <b>Source Classification</b><br>
+                <td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">                
+                    <select class="form-control select_source_fl" name="select_source_fl[]">
+                        <option value=""></option>
+                        <?php
+                        $table = new \VuBib\Db\Table\Folder($this->adapter);
+                        $fl_siblings = $table->getFoldersWithNullParent();
+                        foreach ($fl_siblings as $row) :
+                            ?>
+                            <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>                            
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                </tr>
+                </tbody>
+            </table>        
+        </div>    
+        <div class="form-group">
+            <table name="dest_fl_table" id="dest_fl_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
+                <tbody>
+                    <tr name="dest_fl_row">
+                <b>Destination Classification</b><br>
+                <td class="dest_fl_col" name="dest_fl_col" id="dest_fl_col" style="border-spacing: 10px;">
+                    <select class="form-control select_dest_fl" name="select_dest_fl[]">
+                        <option value=""></option>
+                        <?php
+                        $table = new \VuBib\Db\Table\Folder($this->adapter);
+                        $fl_siblings = $table->getFoldersWithNullParent();
+                        foreach ($fl_siblings as $row) :
+                            ?>
+                            <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>                            
+                        <?php endforeach; ?>
+                    </select>
+                </td>            
+                </tr>
+                </tbody>
+            </table>        
+        </div>    
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-10">
+                <button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Merge</button>
+                <button type="reset" class="btn btn-default" name="submit_clear" id="submit_clear" value="Cancel">Clear</button>
+                <p class="mergeError1" style="display:none;color:red;margin-bottom:20px;">Cannot merge -- source and destination are the same.</p>
+                <p class="mergeError2" style="display:none;color:red;margin-bottom:20px;">Cannot merge a classification into its own child.</p>
+                <p class="mergeError3" style="display:none;color:red;margin-bottom:20px;">Cannot merge a classification into its own parent.</p>
+                <p class="mergeError4" style="display:none;color:red;margin-bottom:20px;">Cannot merge -- source and destination cannot be empty.</p>
+            </div>
+        </div>
+    </form>
+</div>

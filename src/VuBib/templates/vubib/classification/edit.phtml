@@ -1,0 +1,79 @@
+<?php $this->headTitle('Edit Classification'); ?>
+<?php
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '" style="float:left;color:white;"> Classification > </a>'
+                                    . ' Edit';
+ ?>
+
+<?php
+$id;
+if ($request->getqueryParams('id') !== null) {
+    $params = $request->getqueryParams();
+    $action = $params['action'];
+    $id = $params['id'];
+    //fetch record based on id
+    $table = new \VuBib\Db\Table\Folder($adapter);
+    $row = $table->findRecordById($id);
+    $sort_order = $row['sort_order'];
+    $text_en = $row['text_en'];
+    $text_fr = $row['text_fr'];
+    $text_de = $row['text_de'];
+    $text_nl = $row['text_nl'];
+    $text_es = $row['text_es'];
+    $text_it = $row['text_it'];
+}
+?>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+<div class="col-md-4">
+    <form class="form-horizontal" method="post" action="<?= $this->url('manage_classification') ?>">
+        <input type="hidden" name="action" value="<?= trim($action) ?>">
+        <input type="hidden" name="id" value="<?= trim($id) ?>">
+        <div class="form-group">
+            <label class="col-xs-4 control-label">Sort Order: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="edit_sortorder" id="editsortorder" value="<?= $escaper->escapeHtml(trim($sort_order)) ?>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-4 control-label">English Title: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?= $escaper->escapeHtml(trim($text_en)) ?>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-4 control-label">French Title: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?= $escaper->escapeHtml(trim($text_fr)) ?>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-4 control-label">German Title: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?= $escaper->escapeHtml(trim($text_de)) ?>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-4 control-label">Dutch Title: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?= $escaper->escapeHtml(trim($text_nl)) ?>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-4 control-label">Spanish Title: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?= $escaper->escapeHtml(trim($text_es)) ?>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-4 control-label">Italian Title: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?= $escaper->escapeHtml(trim($text_it)) ?>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-10">
+                <button type="submit" class="btn btn-default" name="submit" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submit" value="Cancel">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

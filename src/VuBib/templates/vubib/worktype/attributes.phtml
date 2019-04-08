@@ -1,0 +1,79 @@
+<?php $this->headTitle('Attributes Work Type'); ?>
+<?php
+      $this->layout()->breadcrumbs .= ' Attributes';
+ ?>
+<script type='text/javascript'>
+$(document).ready(function () {
+    //Check if records are selected for delete
+    $("#delWorkTypeAttr").on('click', function () {
+        if ($("#workTypeAttrListTable input:checkbox:checked").length > 0) {
+            // any one is checked
+            return true;
+        } else {
+            // none is checked
+            alert("No attribute(s) selected, Please select attribute(s) to delete.");
+            return false;
+        }
+    });
+});
+</script>
+<div class="col-md-9">
+    <a href="<?=$this->url('new_attribute')?><?='?action=new'?>"><b style="text-decoration: underline;">Add Attribute</b></a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="<?=$this->url('search_attribute_option')?>"><b style="text-decoration: underline;">Search Options</b></a>
+    <form action="<?=$this->url('delete_attribute')?><?='?action=delete'?>" method="post">
+    <table class="table table-striped table-condensed" id="workTypeAttrListTable" style="font-size:10pt;">
+        <thead>
+        <tr>
+          <th>&nbsp;&nbsp;</th>
+          <th>Attribute</th>
+          <th>Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $escaper = new Zend\Escaper\Escaper('utf-8');
+        foreach($this->rows as $row) :
+            $output = (array)$row;
+            $params = implode(', ', $output);
+        ?>
+        <tr>
+            <td>
+                <input type="checkbox" id="selWorkTypeAttr" name="selectWorkTypeAttr[]" value=<?=$row['id']?>>
+            </td>
+            <td>
+                <a href="<?=$this->url('edit_attribute')?><?='?id=' . $row['id'] . '&action=edit'?>">
+                <?php echo $escaper->escapeHtml($row['field']); ?></a>        
+            </td>
+            <td>
+                <?php
+                if ($row['type'] == 'Select') {
+                ?>
+                    <a href="<?=$this->url('manage_attribute_options')?><?='?id=' . $row['id']?>">Manage Options</a>
+                    |
+                    <a href="<?=$this->url('merge_duplicate_option')?><?= '?id=' . $row['id'] . '&action=merge' ?>">Merge Duplicate Values</a>
+                    |
+                    <a href="<?=$this->url('manage_subattributes')?><?='?wkat_id=' . $row['id']?>">Sub Attributes</a>
+                <?php
+                }
+                ?>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <input type="submit" name="delWorkTypeAttr" id="delWorkTypeAttr" value="Delete">
+    </form>
+    <?php if($this->countp > 1) { ?>
+        <form method="get" action="page">
+            <?=$this->paginationControl($this->rows,
+                'Sliding',
+                'vubib::controls',
+                [
+                    'route' => 'attributes_worktype',
+                    'extraParams' => $searchParams,
+                ]
+            );?>
+        </form>
+    <?php } ?>
+</div>

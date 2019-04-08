@@ -1,0 +1,40 @@
+<?php $this->headTitle('Delete Work'); ?>
+<?php
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>'
+                                    . ' Delete';
+ ?>
+<div class="col-xs-4">
+       <form method="post" action="<?=$this->url('manage_work')?>">
+        <p>Are you sure you want to delete this?</p>        
+        <?php
+            if ($request->getqueryParams('action') !== null)
+            {
+                $params = $request->getqueryParams();
+                $action = $params['action'];
+            }
+
+            if ($request->getMethod() == 'POST') {
+                $post = $request->getParsedBody();
+            }
+
+            $wk = [];
+            if(count($post['selectWork']) > 0) {
+                foreach($post['selectWork'] as $work):
+                    $wk['id'] = $work;
+                    //fetch name based on id
+                    $table = new \VuBib\Db\Table\Work($adapter);
+                    $row = $table->findRecordById($wk['id']);
+                    $title = $row['title'];
+                    echo "<p>$title</p>"; ?>
+                    <ul>    
+                    <input type="hidden" name="work_id[]" value="<?=$wk['id']?>">                        
+                    <input type="hidden" name="action" value="<?=$action?>">
+                    </ul>                        
+                    <?php
+                endforeach;
+            }
+            ?>
+        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Cancel">
+       </form>
+</div>

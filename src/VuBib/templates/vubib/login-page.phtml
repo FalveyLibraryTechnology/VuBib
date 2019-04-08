@@ -1,0 +1,32 @@
+<?php $this->headTitle('Login'); ?>
+<?php $this->layout()->hideNavigation = true; ?>
+<?php
+    $redirect_url = "";
+    if ($request->getqueryParams() != null)
+    {
+        $params = $this->request->getqueryParams();
+        $redirect_url = $params['redirect_to'];
+    }
+
+ ?>
+
+<form class="form-horizontal" method="post" action="<?=$this->url('login')?><?='?action=login' . '&redirect_to=' . $redirect_url?>">
+    <input type="hidden" name="action" value="login">
+    <div class="form-group">
+        <label class="col-xs-3 control-label">User Name: </label>
+        <div class="col-xs-7">
+            <input type="text" class="form-control" name="user_name" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">Password: </label>
+        <div class="col-xs-7">
+            <input type="password" class="form-control" name="user_pwd" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-10">
+            <button type="submit" class="btn btn-primary" name="submitt" value="Save">Login</button>
+        </div>
+    </div>
+</form>

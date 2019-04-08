@@ -1,0 +1,119 @@
+<?php
+$id;
+if ($request->getqueryParams('id') !== null) {
+    $params = $request->getqueryParams();
+    $action = $params['action'];
+    $id = $params['id'];
+    $wkat_id = $params['wkat_id'];
+
+    //fetch name based on id
+    $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+    $row = $table->findRecordById($id);
+    $title = $row['title'];
+    $val = $row['value'];
+
+    //fetch subattributes of attribute
+    $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+    $subattr = $table->findRecordsByWorkAttrId($wkat_id);
+}
+?>
+<script>
+$(document).ready(function(){
+    $('#subattrForm')
+        // Add button click handler
+        .on('click', '.addButton', function() {
+            console.log('add here');
+            var $template = $('#optionTemplate'),
+                $clone    = $template
+                                .clone()
+                                .removeClass('hide')
+                                .removeAttr('id')
+                                .insertBefore($template);
+        })
+        // Remove button click handler
+        .on('click', '.removeButton', function() {
+            console.log('rmv here');
+            var $row    = $(this).parents('.form-group');
+            
+            // Remove element containing the option
+            $row.remove();
+        });
+});
+</script>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+<!--<p><b style="font-size: 10pt; padding: 20px;">Option: <?php echo $escaper->escapeHtml($title)?></b></p>-->
+<form class="form-horizontal" id="subattrForm" method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
+    <input type="hidden" name="action" value="<?=$action?>">
+    <input type="hidden" name="id" value="<?=$id?>">
+    <input type="hidden" name="wkat_id" value="<?=$wkat_id?>">
+    <div class="form-group">
+            <label class="col-sm-3 control-label">Option: <?=$escaper->escapeHtml($title)?></label>
+    </div>
+    <?php if (count($subattr) > 0){ ?>
+    <input type="hidden" name="subattr_id" value="<?=$subattr['id']?>">
+    <?php
+    //fetch subattribute values for option
+    $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+    $opt_subattr_rows = $table->findRecordByOption($row['id'], $subattr['id']);
+
+    if (count($opt_subattr_rows) > 0){
+        foreach($opt_subattr_rows as $key => $val):
+            if ($key == 0) {
+    ?>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><?=$subattr['subattribute']?>:</label>
+                    <div class="col-sm-5">
+                        <input type="hidden" name="subattr_val_ids[]" value="<?=$val["id"]?>">
+                        <input type="text" class="form-control" name="newsubattr[]" size="100" value="<?=$val["subattr_value"]?>" />
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" class="btn btn-default addButton"><i class="fa fa-plus">+</i></button>
+                    </div>
+                </div>  
+    <?php
+            } else {
+    ?>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-5">
+                        <input type="hidden" name="subattr_val_ids[]" value="<?=$val["id"]?>">
+                        <input class="form-control" type="text" name="newsubattr[]" size="100" value="<?=$val["subattr_value"]?>" />
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus">-</i></button>
+                    </div>
+                </div>
+    <?php
+            }
+        endforeach;
+    } else {
+     ?>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><?=$subattr['subattribute']?>:</label>
+        <div class="col-sm-5">
+            <input type="text" class="form-control" name="newsubattr[]" size="100"/>
+        </div>
+        <div class="col-sm-4">
+            <button type="button" class="btn btn-default addButton"><i class="fa fa-plus">+</i></button>
+        </div>
+    </div>
+    <?php
+    }
+    } ?>
+
+    <!-- The option field template containing an option field and a Remove button -->
+    <div class="form-group hide" id="optionTemplate">
+        <div class="col-sm-offset-3 col-sm-5">
+            <input class="form-control" type="text" name="newsubattr[]" size="100"/>
+        </div>
+        <div class="col-sm-4">
+            <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus">-</i></button>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-sm-5 col-sm-offset-3">
+            <button type="submit" class="btn btn-primary" name="submitt" value="Save">Save</button>
+            <!--<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>-->
+        </div>
+    </div>
+</form>

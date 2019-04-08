@@ -1,0 +1,79 @@
+<?php $this->headTitle('Manage Classification'); ?>
+<?php
+      $this->layout()->breadcrumbs .= ' Classification';
+ ?>
+ <?php
+if ($request->getqueryParams('id') !== null) {
+    $params = $request->getqueryParams();
+    $parent_id = $params['id'] ?? -1;
+}
+ ?>
+<div class="col-md-9">
+    <p style="font-weight:bold;" id="view_hierarchy">Viewing: 
+        <?php
+        //$this->layout()->instructions = "";
+        if (count($this->trail) > 0) {
+            for ($i = 0; $i <= count($this->trail) - 2; $i++) {
+                //To get top four (Parents null) branch ids
+                if (preg_match('/(?<name>[\s\S]+)\*(?<digit>\d+)/', $this->trail[$i], $matches)) {
+                    $fl_name = $matches['name'];
+                    $fl_id = $matches['digit'];
+                    ?>
+                    <a href="<?= $this->url('manage_classification') ?><?= '?id=' . $fl_id . '&fl=' . $fl_name . '&action=get_children' ?>">
+                    <?php echo $fl_name; ?>
+                    </a>
+                        <?php
+                        echo ' > ';
+                }
+                if (preg_match('/Top/', $this->trail[$i], $matches)) {
+                ?>
+                    <a href="<?= $this->url('manage_classification') ?><?= '?action=get_siblings' ?>">
+                    <?php echo "Top"; ?>
+                    </a>
+                        <?php
+                        echo ' > ';
+                }
+            }
+            echo $this->trail[$i];
+        } else {
+            echo "Top > ";
+        }
+        ?>
+        </a>
+    </p>
+    <a href="<?php echo $this->url('new_classification') ?><?='?action=new' . '&parent_id=' . $parent_id . '&from=manage'?>">
+    <b class="addEle" style="float:left; padding-left: 15px; text-decoration: underline;">Add Branch</b></a><br/>
+    <table class="table table-striped table-condensed" style="font-size:10pt;">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+<?php foreach ($this->rows as $row) : ?>
+                <tr>
+                    <td><a href="<?= $this->url('manage_classification') ?><?= '?id=' . $row['id'] . '&fl=' . $escaper->escapeHtml($row['text_fr']) . '&action=get_children' ?>" class="folder_name">
+                <?php echo $escaper->escapeHtml($row['text_fr']); ?></a></td>
+                    <td>                   
+                        <a href="<?= $this->url('edit_classification') ?><?= '?id=' . $row['id'] . '&action=edit' ?>">Edit</a>        
+                        |
+                        <a href="<?= $this->url('move_classification') ?><?= '?id=' . $row['id'] . '&action=move' ?>">Move</a>
+                    </td>
+                </tr>
+<?php endforeach; ?>
+        </tbody>
+    </table>
+            <?php if ($this->countp > 1) { ?>
+        <form method="get" action="page">
+        <?=
+        $this->paginationControl($this->rows, 'Sliding', 'vubib::controls', [
+            'route' => 'manage_classification',
+            'extraParams' => $searchParams,
+            ]
+        );
+        ?>
+        </form>
+        <?php } ?>
+</div>

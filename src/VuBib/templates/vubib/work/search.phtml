@@ -1,0 +1,21 @@
+<?php $this->headTitle('Search Work'); ?>
+<?php
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>'
+                                    . ' Find';
+ ?>
+<div class="col-md-4">
+    <form class="form-horizontal" method="get" action="<?=$this->url('manage_work')?>">
+        <div class="form-group">
+            <label class="col-xs-4 control-label">Work Lookup: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="find_worktitle" id="findworktitle" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-10">
+            <button type="submit" class="btn btn-default" name="submit_save" value="Search">Search</button>
+            <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

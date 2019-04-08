@@ -1,0 +1,51 @@
+<?php $this->headTitle('Merge Duplicate Values'); ?>
+<?php
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
+                                    . ' Attribute Duplicate Values';
+ ?>
+<?php
+$id;
+if ($request->getqueryParams('id') !== null)
+{
+    $params = $request->getqueryParams();
+    $action = $params['action'];
+    $wkat_id = $params['id'];
+}
+?>
+<div class="col-xs-4">
+    <form method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
+       
+    <?php
+    $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+    $paginator = $table->getDuplicateOptions($wkat_id);
+    $cnt = $paginator->getTotalItemCount();
+    if($cnt > 0) {
+    ?>
+        <p>Duplicates to merge:</p> 
+        <?php
+        $escaper = new Zend\Escaper\Escaper('utf-8');
+        foreach($paginator as $row) :
+        ?>
+            <ul>
+                <li>
+                    <?php echo $escaper->escapeHtml($row['title']); ?>
+                    <input type="hidden" name="option_id[]" value="<?=$row['id']?>">
+                    <input type="hidden" name="option_title[]" value="<?=$escaper->escapeHtml($row['title'])?>">
+                </li>                        
+            </ul>
+        <?php endforeach; ?>
+        <ul>
+            <input type="hidden" name="workattribute_id" value="<?=$wkat_id?>">
+            <input type="hidden" name="action" value="<?=$action?>">
+        </ul>
+        <input type="submit" name="submitt" value="Merge">                            
+    <?php
+    } else {
+    ?>
+        <p>No duplicates to merge</p>
+    <?php
+    }
+    ?>
+        <input type="submit" name="submitt" value="Cancel">
+    </form>
+</div>

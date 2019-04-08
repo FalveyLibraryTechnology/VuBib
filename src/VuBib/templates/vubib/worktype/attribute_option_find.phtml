@@ -1,0 +1,55 @@
+<?php $this->headTitle('Find Attribute Options'); ?>
+<?php
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
+                                    . ' Attribute Options Search';
+?>
+<?php
+//fetch worktypes
+$table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
+$wktyp_attr_paginator = $table->displayAttributes();
+$itemsCount = $wktyp_attr_paginator->getTotalItemCount();
+$wktyp_attr_paginator->setItemCountPerPage($itemsCount);
+if($itemsCount > 0) {
+?>
+<div class="col-md-4">
+    <form class="form-horizontal" method="get" action="<?= $this->url('manage_attribute_options') ?><?='?action=search_option'?>">
+        <input type="hidden" name="action" value="search_option">
+        <div class="form-group">
+                <label class="col-xs-4 control-label">Attribute: </label>
+                <div class="col-xs-7">
+                    <select class="form-control" name="worktype_attr" id="worktype_attr" required="true">
+                        <option value="">Choose Attribute</option>
+                        <?php
+                        foreach ($wktyp_attr_paginator as $row) :
+                            if(strtolower($row['type']) === 'select') {
+                        ?>
+                            <option value="<?= $row['id'] ?>"><?php echo $row['field']; ?></option>
+                        <?php
+                            }
+                        endforeach;
+                        ?>
+                    </select>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-4 control-label">Option: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="option" id="option" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-10">
+                <button type="submit" class="btn btn-default" name="submit" value="Search">Search</button>
+            </div>
+        </div>
+    </form>   
+</div>
+<?php
+} else {
+?>
+        <p> No Attributes of type select to search options for. Please Add an attribute of type select. 
+        <a href="<?=$this->url('new_attribute')?><?='?action=new'?>"><b style="text-decoration: underline;">Add Attribute</b></a>
+        </p>
+<?php
+}
+?>

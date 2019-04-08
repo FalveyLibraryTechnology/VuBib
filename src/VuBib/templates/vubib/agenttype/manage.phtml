@@ -1,0 +1,56 @@
+<?php $this->headTitle('Manage Agent Type'); ?>
+<?php
+      $this->layout()->breadcrumbs .= ' Agenttype';
+ ?>
+ <script>
+$(document).ready(function () {
+    //Check if records are selected for delete
+    $("#delAgType").on('click', function () {
+        console.log("clicked");
+        if ($("#agTypeListTable input:checkbox:checked").length > 0) {
+            // any one is checked
+            return true;
+        } else {
+            // none is checked
+            alert("No agent type(s) selected, Please select agent type(s) to delete.");
+            return false;
+        }
+    });
+});
+</script>
+<a href="<?php echo $this->url('new_agenttype') ?><?='?action=new'?>">
+<b class="addEle" style="float:left; padding-left: 15px; text-decoration: underline;">Add AgentType</b></a><br/>
+<div class="col-lg-4">
+    <form action="<?= $this->url('delete_agenttype') ?><?= '?action=delete' ?>" method="post">
+    <table class="table table-striped table-condensed" id="agTypeListTable" style="font-size:10pt;">
+        <thead>
+            <tr>
+                <th>&nbsp;&nbsp;</th>
+                <th>Agent Type(English)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+            <?php foreach ($this->rows as $row) : ?>
+                <tr>
+                    <td>
+                    <input type="checkbox" id="selAgentType" name="selectAgentType[]" value=<?=$row['id']?>>
+                    </td>
+                    <td>
+                    <a href="<?= $this->url('edit_agenttype') ?><?= '?id=' . $row['id'] . '&action=edit' ?>">
+                    <?php echo $escaper->escapeHtml($row['type']); ?></a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <input type="submit" name="delAgType" id="delAgType" value="Delete">
+    </form>
+    <form method="get" action="page">
+        <?php
+        echo $this->paginationControl($this->rows, 'Sliding', 'vubib::controls', ['route' => 'manage_agenttype']);
+        ?>
+
+    </form>          
+</div>
+

@@ -1,0 +1,43 @@
+<?php $this->headTitle('Delete Publisher'); ?>
+<?php
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '" style="float:left;color:white;"> Publisher > </a>'
+                                    . ' Delete';
+ ?>
+
+<div class="col-xs-4">
+    <form method="post" action="<?= $this->url('manage_publisher') ?>">
+        <p>Are you sure you want to delete this?</p>
+         <?php
+                if ($request->getqueryParams('action') !== null)
+                {
+                    $params = $request->getqueryParams();
+                    $action = $params['action'];
+                }
+
+                if ($request->getMethod() == 'POST') {
+                    $post = $request->getParsedBody();
+                }
+
+                $pub = [];
+                if(count($post['selectPub']) > 0) {
+                    foreach($post['selectPub'] as $publisher):
+                        $pub['id'] = $publisher;
+                        //fetch name based on id
+                        $table = new \VuBib\Db\Table\Publisher($adapter);
+                        $row = $table->findRecordById($pub['id']);
+                        $name = $row['name'];
+                        echo "<li>$name</li>";
+            ?>
+                        <ul>
+                        <input type="hidden" name="pub_id[]" value="<?=$pub['id']?>">                        
+                        <input type="hidden" name="action" value="<?=$action?>">
+                        </ul>                        
+                        <?php
+                    endforeach;
+                }
+           ?>
+        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Cancel">
+    </form>
+</div>
+
