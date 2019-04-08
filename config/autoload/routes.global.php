@@ -5,7 +5,7 @@ return [
     'dependencies' => [
         'invokables' => [
             Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouter::class,
-            VuBib\Action\PingAction::class => VuBib\Action\PingAction::class,
+            VuBib\PingAction::class => VuBib\PingAction::class,
         ],
         'factories' => [
             VuBib\Action\HomePageAction::class => VuBib\Action\HomePageFactory::class,
@@ -106,12 +106,15 @@ return [
         ],
 
         [
+            'name' => 'api.ping',
+            'path' => '/api/ping',
+            'middleware' => VuBib\PingHandler::class,
+        ],
+
+        [
             'name' => 'default',
             'path' => '/default_latest',
-            'middleware' => [
-                //BodyParamsMiddleware::class,
-                VuBib\Action\DefaultPageAction::class,
-            ],
+            'middleware' => VuBib\Action\DefaultPageAction::class,
             'allowed_methods' => ['GET','POST'],
         ],
 

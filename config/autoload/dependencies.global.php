@@ -26,11 +26,9 @@ return [
             //new
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
 
-        //new-adapter
+            //new-adapter
             Zend\Db\Adapter\Adapter::class => Zend\Db\Adapter\AdapterServiceFactory::class,
             Zend\Session\Container::class => VuBib\Factory\ZendSessionFactory::class,
-
         ],
-
     ],
 ];
