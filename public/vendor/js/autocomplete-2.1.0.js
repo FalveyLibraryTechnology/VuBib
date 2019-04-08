@@ -36,24 +36,28 @@ function Autocomplete(_settings) {
   }
 
   function _align(input) {
-    const box = input.getBoundingClientRect();
-    list.style.minWidth = (box.right - box.left) + "px";
-    list.style.top = box.bottom + document.documentElement.scrollTop + "px";
+    list.style.minWidth = input.offsetWidth + "px";
+    list.style.top = input.offsetTop + input.offsetHeight + "px";
+    const inputLeft = input.offsetLeft;
+    const inputRight = input.offsetLeft + input.offsetWidth;
     let anchorRight = settings.rtl;
     if (anchorRight) {
-      if (box.right - list.offsetWidth <= 0) {
+      if (inputRight - list.offsetWidth <= 0) {
         anchorRight = false;
       }
-    } else if (box.left + list.offsetWidth >= document.documentElement.offsetWidth) {
+    } else if (
+      inputLeft + list.offsetWidth >=
+      document.documentElement.offsetWidth
+    ) {
       anchorRight = true;
     }
     if (anchorRight) {
-      const posFromRight = document.documentElement.offsetWidth - box.right;
+      const posFromRight = document.documentElement.offsetWidth - inputRight;
       list.style.left = "auto";
       list.style.right = posFromRight + "px";
     } else {
       list.style.right = "auto";
-      list.style.left = box.left + "px";
+      list.style.left = input.offsetLeft + "px";
     }
   }
 
