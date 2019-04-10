@@ -61,7 +61,7 @@ class DeleteAgentTypeFactory
         $adapter = $container->get(Adapter::class);
         //return new DeleteAgentTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::agenttype::delete_agenttype', $router, $template, $adapter
+            'vubib::agenttype/delete', $router, $template, $adapter
         );
     }
 }

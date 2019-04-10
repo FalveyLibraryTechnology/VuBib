@@ -61,8 +61,7 @@ class NewLanguageFactory
         $adapter = $container->get(Adapter::class);
         //return new NewLanguageAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::language::new_language', $router,
-            $template, $adapter
+            'vubib::language/new', $router, $template, $adapter
         );
     }
 }

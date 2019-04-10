@@ -61,7 +61,7 @@ class FindAgentFactory
         $adapter = $container->get(Adapter::class);
         //return new FindAgentAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::agent::find_agent', $router, $template, $adapter
+            'vubib::agent/find', $router, $template, $adapter
         );
     }
 }

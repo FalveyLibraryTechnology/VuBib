@@ -61,7 +61,7 @@ class DeleteUserFactory
         $adapter = $container->get(Adapter::class);
         //return new EditWorkTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::users::delete_user', $router,
+            'vubib::users/delete', $router,
             $template, $adapter
         );
     }

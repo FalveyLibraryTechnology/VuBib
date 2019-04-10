@@ -29,6 +29,8 @@ namespace VuBib\Action\Agent;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -45,7 +47,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class ManageAgentAction
+class ManageAgentAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -300,14 +302,15 @@ class ManageAgentAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $table = new \VuBib\Db\Table\Agent($this->adapter);
         $characs = $table->findInitialLetter();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::agent::manage_agent', $this->router,
+            'vubib::agent/manage', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -316,7 +319,7 @@ class ManageAgentAction
         $paginator->setDefaultItemCountPerPage(15);
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::agent::manage_agent', $this->router,
+            'vubib::agent/manage', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
@@ -331,7 +334,7 @@ class ManageAgentAction
 
         return new HtmlResponse(
             $this->template->render(
-                'vubib::agent::manage_agent',
+                'vubib::agent/manage',
                 [
                     'rows' => $paginator,
                     'previous' => $pgs['prev'],

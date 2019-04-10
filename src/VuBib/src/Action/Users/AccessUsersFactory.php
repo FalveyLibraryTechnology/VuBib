@@ -61,7 +61,7 @@ class AccessUsersFactory
         $adapter = $container->get(Adapter::class);
         //return new AccessUsersAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::users::access_users', $router,
+            'vubib::users/access', $router,
             $template, $adapter
         );
     }

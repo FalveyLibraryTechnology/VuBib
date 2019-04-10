@@ -61,7 +61,7 @@ class NewPublisherFactory
         $adapter = $container->get(Adapter::class);
         //return new NewPublisherAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::new_publisher', $router,
+            'vubib::publisher/new', $router,
             $template, $adapter
         );
     }

@@ -61,7 +61,7 @@ class EditPublisherFactory
         $adapter = $container->get(Adapter::class);
         //return new EditPublisherAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::edit_publisher', $router,
+            'vubib::publisher/edit', $router,
             $template, $adapter
         );
     }

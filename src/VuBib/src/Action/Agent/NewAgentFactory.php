@@ -61,7 +61,7 @@ class NewAgentFactory
         $adapter = $container->get(Adapter::class);
         //return new NewAgentAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::agent::new_agent', $router, $template, $adapter
+            'vubib::agent/new', $router, $template, $adapter
         );
     }
 }

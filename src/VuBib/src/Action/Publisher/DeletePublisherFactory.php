@@ -61,7 +61,7 @@ class DeletePublisherFactory
         $adapter = $container->get(Adapter::class);
         //return new DeletePublisherAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::delete_publisher', $router,
+            'vubib::publisher/delete', $router,
             $template, $adapter
         );
     }

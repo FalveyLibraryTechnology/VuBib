@@ -61,8 +61,7 @@ class DeleteLanguageFactory
         $adapter = $container->get(Adapter::class);
         //return new DeleteLanguageAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::language::delete_language', $router,
-            $template, $adapter
+            'vubib::language/delete', $router, $template, $adapter
         );
     }
 }

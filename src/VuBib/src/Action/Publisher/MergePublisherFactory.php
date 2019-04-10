@@ -61,7 +61,7 @@ class MergePublisherFactory
         $adapter = $container->get(Adapter::class);
         //return new MergePublisherAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::merge_publisher', $router,
+            'vubib::publisher/merge', $router,
             $template, $adapter
         );
     }

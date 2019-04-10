@@ -61,8 +61,7 @@ class ExportListClassificationFactory
         $adapter = $container->get(Adapter::class);
         //return new ExportListClassificationAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::classification::exportlist_classification', $router,
-            $template, $adapter
+            'vubib::classification/exportlist', $router, $template, $adapter
         );
     }
 }

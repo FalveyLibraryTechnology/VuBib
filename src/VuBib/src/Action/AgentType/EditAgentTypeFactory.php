@@ -61,7 +61,7 @@ class EditAgentTypeFactory
         $adapter = $container->get(Adapter::class);
         //return new EditAgentTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::agenttype::edit_agenttype', $router, $template, $adapter
+            'vubib::agenttype/edit', $router, $template, $adapter
         );
     }
 }

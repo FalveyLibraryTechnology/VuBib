@@ -62,7 +62,7 @@ class DeleteMergePublisherLocationFactory
         //return new DeleteMergePublisherLocationAction($router,
         //$template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::delete_merge_publisher_location', $router,
+            'vubib::publisher/delete_merge_location', $router,
             $template, $adapter
         );
     }

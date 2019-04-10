@@ -61,7 +61,7 @@ class MergeAgentFactory
         $adapter = $container->get(Adapter::class);
         //return new MergeAgentAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::agent::merge_agent', $router, $template, $adapter
+            'vubib::agent/merge', $router, $template, $adapter
         );
     }
 }

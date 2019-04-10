@@ -61,7 +61,7 @@ class FindPublisherFactory
         $adapter = $container->get(Adapter::class);
         //return new FindPublisherAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::find_publisher', $router,
+            'vubib::publisher/find', $router,
             $template, $adapter
         );
     }

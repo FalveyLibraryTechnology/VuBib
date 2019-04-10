@@ -29,6 +29,8 @@ namespace VuBib\Action\Classification;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -45,7 +47,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class ManageClassificationAction
+class ManageClassificationAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -302,15 +304,15 @@ class ManageClassificationAction
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request server-side request.
+     * @param RequestHandlerInterface $handler request handler.
      *
-     * @return HtmlResponse
+     * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $query = $request->getqueryParams();
         $post = [];
         if ($request->getMethod() == 'POST') {
@@ -352,7 +354,7 @@ class ManageClassificationAction
 
         return new HtmlResponse(
             $this->template->render(
-                'vubib::classification::manage_classification',
+                'vubib::classification/manage',
                 [
                     'rows' => $paginator,
                     'previous' => $previous,
@@ -360,7 +362,7 @@ class ManageClassificationAction
                     'countp' => $countPages,
                     //'previous_folder' => $previous_folder,
                     'trail' => $ts,
-                'request' => $request,
+                    'request' => $request,
                     'searchParams' => $searchParams,
                 ]
             )

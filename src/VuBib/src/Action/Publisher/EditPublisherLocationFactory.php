@@ -61,7 +61,7 @@ class EditPublisherLocationFactory
         $adapter = $container->get(Adapter::class);
         //return new AddPublisherLocationAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::edit_publisher_location', $router,
+            'vubib::publisher/edit_location', $router,
             $template, $adapter
         );
     }

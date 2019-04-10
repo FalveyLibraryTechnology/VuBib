@@ -29,6 +29,8 @@ namespace VuBib\Action\Publisher;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -45,7 +47,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class ManagePublisherAction
+class ManagePublisherAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -341,19 +343,19 @@ class ManagePublisherAction
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request  server-side request.
+     * @param RequestHandlerInterface $handler  CallBack Handler.
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $characs = $this->getLetters();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::manage_publisher', $this->router,
+            'vubib::publisher/manage', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -362,7 +364,7 @@ class ManagePublisherAction
         $paginator->setDefaultItemCountPerPage(15);
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::manage_publisher', $this->router,
+            'vubib::publisher/manage', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
@@ -388,7 +390,7 @@ class ManagePublisherAction
 
             return new HtmlResponse(
                 $this->template->render(
-                    'vubib::publisher::manage_publisherlocation',
+                    'vubib::publisher/manage_location',
                     [
                     'rows' => $paginator,
                     'previous' => $pgs['prev'],
@@ -403,7 +405,7 @@ class ManagePublisherAction
         } else {
             return new HtmlResponse(
                 $this->template->render(
-                    'vubib::publisher::manage_publisher',
+                    'vubib::publisher/manage',
                     [
                     'rows' => $paginator,
                     'previous' => $pgs['prev'],

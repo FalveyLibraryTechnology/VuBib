@@ -29,6 +29,8 @@ namespace VuBib\Action\Preferences;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -44,7 +46,7 @@ use Zend\Expressive\Template;
  *
  * @link https://
  */
-class ChangePasswordPreferencesAction
+class ChangePasswordPreferencesAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -85,15 +87,15 @@ class ChangePasswordPreferencesAction
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request server-side request.
+     * @param RequestHandlerInterface $handler request Handler.
      *
-     * @return HtmlResponse
+     * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $post = [];
         if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
@@ -113,10 +115,10 @@ class ChangePasswordPreferencesAction
 
         return new HtmlResponse(
             $this->template->render(
-                'vubib::preferences::changepassword_preferences',
+                'vubib::preferences/changepassword',
                 [
-                'request' => $request,
-                'adapter' => $this->adapter
+                    'request' => $request,
+                    'adapter' => $this->adapter
                 ]
             )
         );

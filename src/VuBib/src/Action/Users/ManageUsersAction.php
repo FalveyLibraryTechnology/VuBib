@@ -29,6 +29,8 @@ namespace VuBib\Action\Users;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -45,7 +47,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class ManageUsersAction
+class ManageUsersAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -237,17 +239,17 @@ class ManageUsersAction
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request  server-side request.
+     * @param RequestHandlerInterface $handler  Request Handler.
      *
-     * @return HtmlResponse
+     * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::users::manage_users', $this->router,
+            'vubib::users/manage', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -257,7 +259,7 @@ class ManageUsersAction
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::users::manage_users', $this->router,
+            'vubib::users/manage', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
@@ -266,7 +268,7 @@ class ManageUsersAction
 
         return new HtmlResponse(
             $this->template->render(
-                'vubib::users::manage_users',
+                'vubib::users/manage',
                 [
                     'rows' => $paginator,
                     'previous' => $pgs['prev'],

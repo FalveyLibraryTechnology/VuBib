@@ -61,8 +61,7 @@ class EditLanguageFactory
         $adapter = $container->get(Adapter::class);
         //return new EditLanguageAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::language::edit_language', $router,
-            $template, $adapter
+            'vubib::language/edit', $router, $template, $adapter
         );
     }
 }

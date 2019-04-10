@@ -61,8 +61,7 @@ class EditClassificationFactory
         $adapter = $container->get(Adapter::class);
         //return new EditClassificationAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::classification::edit_classification', $router,
-            $template, $adapter
+            'vubib::classification/edit', $router, $template, $adapter
         );
     }
 }

@@ -61,7 +61,7 @@ class EditUserFactory
         $adapter = $container->get(Adapter::class);
         //return new EditWorkTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::users::edit_user', $router,
+            'vubib::users/edit', $router,
             $template, $adapter
         );
     }

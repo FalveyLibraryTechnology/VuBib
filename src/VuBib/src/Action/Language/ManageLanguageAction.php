@@ -29,6 +29,8 @@ namespace VuBib\Action\Language;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -45,7 +47,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class ManageLanguageAction
+class ManageLanguageAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -163,15 +165,15 @@ class ManageLanguageAction
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request server-side request.
+     * @param RequestHandlerInterface $handler request Handler.
      *
-     * @return HtmlResponse
+     * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
             'vubib::language::manage_language', $this->router,
             $this->template, $this->adapter
@@ -191,7 +193,7 @@ class ManageLanguageAction
 
         return new HtmlResponse(
             $this->template->render(
-                'vubib::language::manage_language',
+                'vubib::language/manage',
                 [
                     'rows' => $paginator,
                     'previous' => $pgs['prev'],

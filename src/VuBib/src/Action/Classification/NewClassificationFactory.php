@@ -61,7 +61,7 @@ class NewClassificationFactory
         $adapter = $container->get(Adapter::class);
         //return new NewClassificationAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::classification::new_classification', $router, $template, $adapter
+            'vubib::classification/new', $router, $template, $adapter
         );
     }
 }

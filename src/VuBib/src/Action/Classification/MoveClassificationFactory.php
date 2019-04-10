@@ -61,8 +61,7 @@ class MoveClassificationFactory
         $adapter = $container->get(Adapter::class);
         //return new MoveClassificationAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::classification::move_classification', $router,
-            $template, $adapter
+            'vubib::classification/move', $router, $template, $adapter
         );
     }
 }

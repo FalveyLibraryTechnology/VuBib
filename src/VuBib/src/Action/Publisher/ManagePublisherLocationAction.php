@@ -27,8 +27,11 @@
  */
 namespace VuBib\Action\Publisher;
 
+
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -44,7 +47,7 @@ use Zend\Expressive\Template;
  *
  * @link https://
  */
-class ManagePublisherLocationAction
+class ManagePublisherLocationAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -201,15 +204,15 @@ class ManagePublisherLocationAction
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request server-side request.
+     * @param RequestHandlerInterface $handler Response Handler.
      *
-     * @return HtmlResponse
+     * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
             'vubib::publisher::manage_publisherlocation', $this->router,
             $this->template, $this->adapter
@@ -228,15 +231,15 @@ class ManagePublisherLocationAction
 
         return new HtmlResponse(
             $this->template->render(
-                'vubib::publisher::manage_publisherlocation',
+                'vubib::publisher/manage_location',
                 [
-                'rows' => $paginator,
-                'previous' => $pgs['prev'],
-                'next' => $pgs['nxt'],
-                'countp' => $pgs['cp'],
-                //'searchParams' => implode('&', $searchParams),
-                'request' => $request,
-                'adapter' => $this->adapter,
+                    'rows' => $paginator,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
+                    //'searchParams' => implode('&', $searchParams),
+                    'request' => $request,
+                    'adapter' => $this->adapter,
                 ]
             )
         );
