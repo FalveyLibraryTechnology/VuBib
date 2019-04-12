@@ -1,6 +1,6 @@
 <?php
 /**
- * Search Work Factory
+ * New User Factory
  *
  * PHP version 5
  *
@@ -25,7 +25,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https:// Main Page
  */
-namespace VuBib\Action\Work;
+namespace VuBib\Action\User;
 
 use Interop\Container\ContainerInterface;
 use Zend\Db\Adapter\Adapter;
@@ -33,7 +33,7 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 /**
- * Class Definition for SearchWorkFactory.
+ * Class Definition for NewUserFactory.
  *
  * @category VuBib
  * @package  Code
@@ -42,7 +42,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  *
  * @link https://
  */
-class SearchWorkFactory
+class NewUserFactory
 {
     /**
      * Invokes required template
@@ -59,9 +59,9 @@ class SearchWorkFactory
             ? $container->get(TemplateRendererInterface::class)
             : null;
         $adapter = $container->get(Adapter::class);
-        //return new SearchWorkAction($router, $template, $adapter);
+        //return new NewUsersAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::work/search', $router,
+            'vubib::user/new', $router,
             $template, $adapter
         );
     }

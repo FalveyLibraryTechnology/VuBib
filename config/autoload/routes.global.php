@@ -79,11 +79,11 @@ return [
             VuBib\Action\Language\EditLanguageAction::class => VuBib\Action\SimpleRenderFactory::class,
             VuBib\Action\Language\DeleteLanguageAction::class => VuBib\Action\SimpleRenderFactory::class,
 
-            VuBib\Action\Users\ManageUsersAction::class => VuBib\Action\Users\ManageUsersFactory::class,
-            VuBib\Action\Users\AccessUsersAction::class => VuBib\Action\SimpleRenderFactory::class,
-            VuBib\Action\Users\DeleteUsersAction::class => VuBib\Action\SimpleRenderFactory::class,
-            VuBib\Action\Users\EditUsersAction::class => VuBib\Action\SimpleRenderFactory::class,
-            VuBib\Action\Users\NewUsersAction::class => VuBib\Action\SimpleRenderFactory::class,
+            VuBib\Action\User\ManageUserAction::class => VuBib\Action\User\ManageUserFactory::class,
+            VuBib\Action\User\AccessUserAction::class => VuBib\Action\SimpleRenderFactory::class,
+            VuBib\Action\User\DeleteUserAction::class => VuBib\Action\SimpleRenderFactory::class,
+            VuBib\Action\User\EditUserAction::class => VuBib\Action\SimpleRenderFactory::class,
+            VuBib\Action\User\NewUserAction::class => VuBib\Action\SimpleRenderFactory::class,
 
             VuBib\Action\Preferences\ChangePasswordPreferencesAction::class => VuBib\Action\Preferences\ChangePasswordPreferencesFactory::class,
         ],
@@ -769,55 +769,55 @@ return [
 
         [
             'name' => 'new_user',
-            'path' => '/Users/new',
+            'path' => '/User/new',
             'middleware' => [
                 //BodyParamsMiddleware::class,
                 \VuBib\Middleware\AuthenticationMiddleware::class,
-                VuBib\Action\Users\NewUserAction::class,
+                VuBib\Action\User\NewUserAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
 
         [
-            'name' => 'manage_users',
-            'path' => '/Users/manage',
+            'name' => 'manage_user',
+            'path' => '/User/manage',
             'middleware' => [
                 //BodyParamsMiddleware::class,
                 \VuBib\Middleware\AuthenticationMiddleware::class,
-                VuBib\Action\Users\ManageUsersAction::class,
+                VuBib\Action\User\ManageUserAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
 
         [
             'name' => 'edit_user',
-            'path' => '/Users/edit',
+            'path' => '/User/edit',
             'middleware' => [
                 //BodyParamsMiddleware::class,
                 \VuBib\Middleware\AuthenticationMiddleware::class,
-                VuBib\Action\Users\EditUserAction::class,
+                VuBib\Action\User\EditUserAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
 
         [
             'name' => 'delete_user',
-            'path' => '/Users/delete',
+            'path' => '/User/delete',
             'middleware' => [
                 //BodyParamsMiddleware::class,
                 \VuBib\Middleware\AuthenticationMiddleware::class,
-                VuBib\Action\Users\DeleteUserAction::class,
+                VuBib\Action\User\DeleteUserAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
 
         [
-            'name' => 'access_users',
-            'path' => '/Users/access',
+            'name' => 'access_user',
+            'path' => '/User/access',
             'middleware' => [
                 //BodyParamsMiddleware::class,
                 \VuBib\Middleware\AuthenticationMiddleware::class,
-                VuBib\Action\Users\AccessUsersAction::class,
+                VuBib\Action\User\AccessUserAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
