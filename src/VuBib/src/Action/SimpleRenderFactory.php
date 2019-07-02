@@ -60,7 +60,8 @@ class SimpleRenderFactory
         $className = array_pop($parts);
         $namespace = array_pop($parts);
 
-        list($action) = explode($namespace, $className);
+
+        $action = str_replace([$namespace, 'action'], '', $className);
 
         $router = $container->get(RouterInterface::class);
         $template = ($container->has(TemplateRendererInterface::class))
