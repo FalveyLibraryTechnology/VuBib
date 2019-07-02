@@ -78,9 +78,9 @@ if ($request->getqueryParams() != null) {
         <td>
             <?php
                     if (null === $row['status']): ?>
-                        <img src="../images/images_admin/inactive.gif" alt="In progress" title="Inactive">                        
+                        <img src="../images/images_admin/inactive.gif" alt="In progress" title="Inactive">
             <?php    elseif ($row['status'] == 1): ?>
-                        <img src="../images/images_admin/active.gif" alt="Complete" title="Active">                    
+                        <img src="../images/images_admin/active.gif" alt="Complete" title="Active">
             <?php    elseif ($row['status'] == 0 || $row['status'] == 2): ?>
                         <img src="../images/images_admin/review.gif" alt="Needs Review" title="Needs Review">
             <?php    endif;
@@ -108,10 +108,10 @@ if ($request->getqueryParams() != null) {
             ?>
         </td>
         <td class="actions">
-            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id'] . '&action=edit'?>">Edit</a>        
+            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id'] . '&action=edit'?>">Edit</a>
             |
             <a href="<?=$this->url('delete_work')?><?='?id=' . $row['id'] . '&action=delete'?>">Delete</a>
-        </td>            
+        </td>
         </tr>
         <?php endforeach; ?>
         </tbody>

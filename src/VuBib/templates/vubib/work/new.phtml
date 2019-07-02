@@ -136,6 +136,7 @@ $(document).ready(function() {
    });
 
    //Remove Parent Lookup
+   /*
    $('.pr_work_div').on('click', '#parent_removeBtn', function() {
        //alert("remove");
        $('#pr_work_lookup_id').val('');
@@ -143,6 +144,7 @@ $(document).ready(function() {
        $('.pr_work_div').append('<button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>');
        return false;
    });
+   */
 
     $('.addNewPubLink').on('click', function() {
         var lnk = $('.addNewPubLink', document);
@@ -255,9 +257,16 @@ $(document).ready(function() {
             <div class="form-group">
                 <input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
                 <label class="col-sm-2 control-label">Parent Work: </label>
-                <div class="col-sm-10 pr_work_div">
-                    <button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn"
-                            data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>
+                <div class="col-sm-10 pr_work_div parent-edit" id="parent-work-toggle">
+                    <div class="parent-work-set">
+                        <span id="parent-work-title"></span>
+                        <button type="button" class="btn btn-default btn-xs" name="parent_changeBtn" id="parent_changeBtn">Change</button>
+                        <button type="button" class="btn btn-default btn-xs" name="parent_removeBtn" id="parent_removeBtn">Remove</button>
+                    </div>
+                    <div class="parent-work-edit">
+                        <input class="form-control" id="parent-work-lookup" type="text" placeholder="Type to search" />
+                    </div>
+                    <script>bindParentWorkAutocomplete(workURL)</script>
                 </div>
                 <!-- Parent work Lookup -->
                 <div class="modal fade ig" id="parentLookup_modal" role="dialog">

@@ -104,9 +104,9 @@ if ($request->getqueryParams() != null) {
         <td>
             <?php
                     if (null === $row['status']): ?>
-                        <img src="../images/images_admin/inactive.gif" alt="In progress" title="Inactive">                        
+                        <img src="../images/images_admin/inactive.gif" alt="In progress" title="Inactive">
             <?php    elseif ($row['status'] == 1): ?>
-                        <img src="../images/images_admin/active.gif" alt="Complete" title="Active">                    
+                        <img src="../images/images_admin/active.gif" alt="Complete" title="Active">
             <?php    elseif ($row['status'] == 0 || $row['status'] == 2): ?>
                         <img src="../images/images_admin/review.gif" alt="Needs Review" title="Needs Review">
             <?php    endif;
@@ -140,7 +140,7 @@ if ($request->getqueryParams() != null) {
         </tbody>
         </table>
         <!--<button type="submit" class="btn btn-secondary" name="work_delete" id="work_delete" value="Delete">Delete</button>-->
-        <input type="submit" name="delWork" id="delWork" value="Delete">
+        <input class="btn btn-default" type="submit" name="delWork" id="delWork" value="Delete">
         </form>
         <?php if($this->countp > 1) {
         //echo "prev is $this->previous <br />";
