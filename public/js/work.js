@@ -365,7 +365,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                     $('<div class="form-group required">' +
                             '<label class="col-sm-2">'+val.field+'</label>' +
                             '<div class="col-sm-10">' +
-                              '<input class="form-control option-ac" placeholder="Type to Search" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
+                              '<input class="form-control option-ac" placeholder="Type to search" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
                               '<a class="addNewAttrOptionLink"' +
                               ' data-attribute-id="'+ val.field + ':' + val.id +'"' +
                               ' href="#' + val.field + ':' + val.id +'">Add New</a>' +
@@ -608,6 +608,48 @@ function bindClassification(that, context, workURL, for_str) {
 }
 
 //Parent lookup
+function bindParentWorkAutocomplete(workURL) {
+  const input = document.getElementById("parent-work-lookup");
+  const AC = new Autocomplete();
+  AC(input, function periodicalAC(query, callback) {
+    $.ajax({
+      method: "POST",
+      url: workURL,
+      data: { lookup_title: input.value }
+    })
+      .done(function(json) {
+        const data = JSON.parse(json);
+        if (data.prnt_lookup.length === 0) {
+          input.classList.add("ac-no-results");
+          callback([]);
+        } else {
+          input.classList.remove("ac-no-results");
+          callback(data.prnt_lookup.slice(0, 10).map(x => ({
+            id: x.id,
+            text: x.title,
+            sub: x.type
+          })));
+        }
+      });
+  });
+  const workID = document.getElementById("pr_work_lookup_id");
+  const workTitle = document.getElementById("parent-work-title");
+  const workToggle = document.getElementById("parent-work-toggle");
+  input.addEventListener("ac-select", function bindParentHidden(e) {
+    workID.value = e.detail.id;
+    workTitle.innerHTML = e.detail.text;
+    workToggle.className = workToggle.className.replace("parent-edit", "parent-set");
+  });
+  document.getElementById("parent_changeBtn").addEventListener("click", function changeParentWork() {
+    input.value = workTitle.innerHTML;
+    workToggle.className = workToggle.className.replace("parent-set", "parent-edit");
+  });
+  document.getElementById("parent_removeBtn").addEventListener("click", function removeParentWork() {
+    input.value = "";
+    workID.value = "";
+    workToggle.className = workToggle.className.replace("parent-set", "parent-edit");
+  });
+}
 function bindParentWork(context,workURL)
 {
     $('.pr_work_results').html('');
@@ -742,6 +784,129 @@ function addMergeButton(context, for_str) {
 }
 
 //For Publisher merge
+function _new_findPublisherLocAjax(publisherID, callback) {
+  $.ajax({
+    method: 'post',
+    url: workURL,
+    data: {
+      publisher_Id_locs: publisherID
+    },
+    dataType: "json",
+    cache: false,
+    success: function(data) {
+      if (data.pub_locs.length === 0) {
+        el.innerHTML = "No locations found. Check the database.";
+        return;
+      }
+      callback(data);
+    }
+  });
+  // Bind buttons
+}
+function _new_findSourcePublisherLoc(el, publisherID) {
+  el.innerHTML = "Loading...";
+  _new_findPublisherLocAjax(publisherID, function createSourceSelection(data) {
+    // Make list with buttons
+    let html = "<p>Select an action for each location:</p>";
+    for (let i = 0; i < data.pub_locs.length; i++) {
+      const loc = data.pub_locs[i];
+      html += '<div class="location-label">' + loc.location +
+        '<label class="location-source-control"><input type="radio" name="src_loc[' + loc.id + ']" value="merge"> Merge</label>' +
+        '<label class="location-source-control"><input type="radio" name="src_loc[' + loc.id + ']" value="move"> Move</label>' +
+        '<small>' + loc.works + " works</small></div>";
+    }
+    el.innerHTML = html;
+  });
+}
+function _new_findDestinationPublisherLoc(el, publisherID) {
+  el.innerHTML = "Loading...";
+  _new_findPublisherLocAjax(publisherID, function createDestinationSelection(data) {
+    // Make list with buttons
+    let html = "<p>Select which location to merge locations into:</p>";
+    for (let i = 0; i < data.pub_locs.length; i++) {
+      const loc = data.pub_locs[i];
+      html += '<label class="location-label">' +
+        '<input type="radio"] name="dest_loc[' + loc.id + ']" value="merge"/> ' +
+        loc.location + '<small>' + loc.works + " works</small></label>";
+    }
+    el.innerHTML = html;
+  });
+}
+function bindFindPublisher(workURL) {
+  setupACS(
+    ".publisher-acs",
+    acsStandardData("pub_name"),
+    acsStandardResults("pub_row", x => ({
+      id: x.id,
+      text: x.name,
+      sub: x.works + " works",
+      _disabled: document.getElementById("mrg_src_id").value == x.id
+    }))
+  );
+  // Source publisher locations
+  const srcInput = document.getElementById("find_src_pub");
+  const srcLocationEl = document.getElementById("src_locations");
+  srcInput.addEventListener("ac-select", function findSourceLocs(e) {
+    _new_findSourcePublisherLoc(srcLocationEl, e.detail.id);
+  }, false);
+  document.querySelectorAll("#acs_publisher_merge_src .acs-change, #acs_publisher_merge_src .acs-clear")
+    .forEach(function(btn) {
+      btn.addEventListener("click", function clearSourceLocations() {
+        srcLocationEl.innerHTML = "";
+      });
+    });
+  // Destination publisher locations
+  const destInput = document.getElementById("find_dest_pub");
+  const destLocationEl = document.getElementById("dest_locations");
+  destInput.addEventListener("ac-select", function findDestLocs(e) {
+    _new_findDestinationPublisherLoc(destLocationEl, e.detail.id);
+  }, false);
+  document.querySelectorAll("#acs_publisher_merge_dest .acs-change, #acs_publisher_merge_dest .acs-clear")
+    .forEach(function(btn) {
+      btn.addEventListener("click", function clearDestLocations() {
+        destLocationEl.innerHTML = "";
+      });
+    });
+
+  // Bind Merge Button
+  document.getElementById("merge_pub_form").addEventListener("submit", function submitPublisherMerge(event) {
+    const missingErrorEL = document.getElementById("mergeMissingError");
+    const identicalErrorEL = document.getElementById("mergePubError");
+    const pubSelErrorEL = document.getElementById("mergePubSelError");
+
+    missingErrorEL.style.display = "none";
+    identicalErrorEL.style.display = "none";
+    pubSelErrorEL.style.display = "none";
+
+    const srcHiddenEl = document.getElementById("mrg_src_id");
+    const destHiddenEl = document.getElementById("mrg_dest_id");
+
+    if (srcHiddenEl.value === "" || destHiddenEl.value === "") {
+      event.preventDefault();
+      missingErrorEL.style.display = "block";
+      return false;
+    }
+    if (srcHiddenEl.value === destHiddenEl.value) {
+      event.preventDefault();
+      identicalErrorEL.style.display = "block";
+      return false;
+    }
+    const sourceForm = document.getElementById("src_locations");
+    const numOfCheckedRadios = sourceForm.querySelectorAll(":checked").length;
+    const numOfSourceLocations = sourceForm.querySelectorAll(".location-label").length;
+    if (numOfCheckedRadios < numOfSourceLocations) {
+      event.preventDefault();
+      pubSelErrorEL.style.display = "block";
+      return false;
+    }
+    return true;
+  }, false);
+
+  // Bind Clear Button
+  document.getElementById("submit_clear").addEventListener("click", function clearPublisherMerge() {
+    document.querySelectorAll(".acs-clear").forEach(function(btn) { btn.click(); });
+  }, false);
+}
 function findPublisher(workURL, for_str) {
     var find_pub = $('#find_' + for_str + '_pub').val();
     $.ajax({

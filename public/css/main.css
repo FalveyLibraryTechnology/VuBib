@@ -7,6 +7,7 @@ body {
   font-family: "Bitstream Vera Sans", Verdana, Arial, Sans-Serif;
   font-size: 1rem;
 }
+p { margin: 1rem 0; }
 
 .banner,
 .navbar {
@@ -108,4 +109,75 @@ td[name="agFnCol"] {
 input[name="pub_yrFrom"],
 input[name="pub_yrTo"] {
   width: 100%;
+}
+
+/* --- WORK --- */
+.parent-edit .parent-work-set,
+.parent-set .parent-work-edit { display: none; }
+.parent-edit .parent-work-edit,
+.parent-set .parent-work-set { display: block; }
+
+.location-label {
+  display: block;
+  margin: 0;
+  padding: 6px 12px;
+  border-bottom: 1px solid #ccc;
+  font-weight: normal;
+}
+.location-label label:hover,
+label.location-label:hover {
+  background-color: #edf2f7;
+}
+.location-label:last-child {
+  border: 0;
+}
+.location-label small {
+  display: block;
+  color: #777;
+}
+label.location-label small {
+  margin-left: 1.25rem;
+}
+.location-source-control {
+  float: right;
+  padding: .5rem 1rem;
+}
+
+/* Autocomplete selector */
+.ac-item[disabled],
+.ac-item[disabled] small {
+  color: #777;
+  background-color: #fff;
+  cursor: not-allowed;
+}
+.acs-set {
+  display: flex;
+  align-items: center;
+  background-color: #edf2f7;
+}
+.acs-set .acs-input,
+.acs-editing .acs-title,
+.acs-editing .acs-change,
+.acs-editing .acs-clear {
+  display: none;
+}
+.acs-editing .acs-input {
+  display: block;
+}
+.acs-set .acs-title,
+.acs-set .acs-change,
+.acs-set .acs-clear {
+  display: inline-block;
+}
+.acs-set .acs-title {
+  flex: 1;
+  padding: 6px 12px;
+  vertical-align: middle;
+}
+.acs-set .acs-change {
+  margin-right: 4px;
+}
+.acs-btn-container {
+  flex: none;
+  padding: .5rem;
 }
