@@ -164,12 +164,12 @@ $(document).ready(function () {
     $("#pub_add").click(function(){
         var pub_row = $('<tr name="pub_row[]"><input type="hidden" data-same name="pub_id[]" id="pubId" value="">' +
                             '<td><input type="checkbox" name="removePublisher[]"></td>' +
-                            '<td name="pubNameCol"><input type="text" name="pub_name[]" id="pubName" placeholder="none"  size="80"/></td>'+
+                            '<td name="pubNameCol"><input class="form-control" type="text" name="pub_name[]" id="pubName" placeholder="none"  size="80"/></td>'+
                             '<input type="hidden" name="publoc_id[]" id="publoc_id" value="">' +
-                            '<td><select class="pub_locations" name="pub_location[]" id="pubLocation"  style="min-width: 100px;">' +
+                            '<td><select class="pub_locations form-control" name="pub_location[]" id="pubLocation"  style="min-width: 100px;">' +
                             '<option value=""></option></select></td>' +
-                            '<td class="yrFrom"><input type="text" name="pub_yrFrom[]" id="pubyrFrom" size="4" maxlength="4"/></td>' +
-                            '<td class="yrTo"><input type="text" name="pub_yrTo[]" id="pubyrTo" size="4" maxlength="4"/></td>' +
+                            '<td class="yrFrom"><input class="form-control" type="text" name="pub_yrFrom[]" id="pubyrFrom" size="4" maxlength="4"/></td>' +
+                            '<td class="yrTo"><input class="form-control" type="text" name="pub_yrTo[]" id="pubyrTo" size="4" maxlength="4"/></td>' +
                             '</tr>');
 
         $("#pub_table").append(pub_row);
@@ -211,7 +211,7 @@ $(document).ready(function () {
     $("#agent_add").click(function(){
         var agent_row = $('<tr><td><input type="checkbox" name="removeAgent[]"></td>' +
                         '<td><input type="hidden" name="agent_id[]" id="agentId" value="">'+
-                        '<select class="agent_type" name="agent_type[]" id="agent_type">'+
+                        '<select class="agent_type form-control" name="agent_type[]" id="agent_type">'+
                         '<option value=""></option>'+
                         <?php
                         foreach($paginator_agtype as $row) :
@@ -220,10 +220,10 @@ $(document).ready(function () {
                         <?php endforeach; ?>
                         '</select>'+
                         '</td>'+
-                        '<td name="agLnCol"><input type="text" name="agent_LastName[]" id="agent_LastName" /></td>'+
-                        '<td name="agFnCol"><input type="text" name="agent_FirstName[]" id="agent_FirstName" /></td>'+
-                        '<td><input type="text" name="agent_AlternateName[]" id="agent_AlternateName" /></td>'+
-                        '<td><input type="text" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>'+
+                        '<td name="agLnCol"><input class="form-control" type="text" name="agent_LastName[]" id="agent_LastName" /></td>'+
+                        '<td name="agFnCol"><input class="form-control" type="text" name="agent_FirstName[]" id="agent_FirstName" /></td>'+
+                        '<td><input class="form-control" type="text" name="agent_AlternateName[]" id="agent_AlternateName" /></td>'+
+                        '<td><input class="form-control" type="text" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>'+
                         '</tr>');
 
         $("#agent_table").append(agent_row);
@@ -249,7 +249,7 @@ $(document).ready(function () {
         var fl_row = $('<tr name="source_fl_row[]">' +
                         '<td><input type="checkbox" name="removeFolder[]"></td>' +
                         '<td class="source_fl_col" name="source_fl_col" id="source_fl_col">' +
-                        '<select class="select_source_fl select2" name="select_source_fl[]">' +
+                        '<select class="select_source_fl select2 form-control" name="select_source_fl[]">' +
                         '<option value=""></option>' +
                         <?php
                         $table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -287,15 +287,6 @@ $(document).ready(function () {
     $('#parentLookup_modal').on('shown.bs.modal', function() {
         bindParentWork(document,workURL);
         return false;
-    });
-
-    //Remove Parent Lookup
-    $('.pr_work_div').on('click', '#parent_removeBtn', function() {
-       $('#pr_work_lookup_id').val('');
-       $('.pr_work_div').html('');
-       $('.pr_work_div').append('<button type="button" class="btn btn-default btn-sm parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" ' +
-                                'data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>');
-       return false;
     });
 
     //Resize publisher name column for user to see complete text
@@ -564,95 +555,61 @@ $(document).ready(function () {
         <div class="form-group required">
             <label class="col-xs-1">Title: </label>
             <div class="col-xs-6">
-                <input type="text" name="edit_worktitle" id="editworktitle"  size="80"
+                <input class="form-control" type="text" name="edit_worktitle" id="editworktitle"  size="80"
                        required="true" value="<?=$escaper->escapeHtml($wk_row['title'])?>"/>
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-1">Sub Title: </label>
             <div class="col-xs-6">
-                <input type="text" name="edit_worksubtitle" id="editworksubtitle"  size="80"
+                <input class="form-control" type="text" name="edit_worksubtitle" id="editworksubtitle"  size="80"
                        value="<?=isset($wk_row['subtitle']) ? $escaper->escapeHtml($wk_row['subtitle']) : ""?>"/>
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-1">Parallel Title: </label>
             <div class="col-xs-6">
-                <input type="text" name="edit_workparalleltitle" id="editworkparalleltitle"  size="80"
+                <input class="form-control" type="text" name="edit_workparalleltitle" id="editworkparalleltitle"  size="80"
                        value="<?=isset($wk_row['paralleltitle']) ? $escaper->escapeHtml($wk_row['paralleltitle']) : ""?>"/>
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-1">Description: </label>
             <div class="col-xs-4">
-                <textarea placeholder="Message" name="description" id="description" rows="3" cols="60"><?php echo $escaper->escapeHtml(trim($wk_row['description'])); ?>
+                <textarea class="form-control" placeholder="Message" name="description" id="description" rows="3" cols="60"><?php echo $escaper->escapeHtml(trim($wk_row['description'])); ?>
                 </textarea>
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-1">Type: </label>
             <div class="col-xs-2">
-                <select name="edit_work_type" id="work_type" required="true">
-                <option value="<?=$wk_row['type_id']?>"><?php echo $escaper->escapeHtml($wk_type); ?></option>
-                <?php
-                foreach($paginator as $row) :
-                    if($row['type'] != $wk_type)
-                    {
-                ?>
-                        <option value="<?=$row['id']?>"><?php echo $escaper->escapeHtml($row['type']); ?></option>
-                <?php
-                    }
-                endforeach;
-                ?>
+                <select class="form-control" name="edit_work_type" id="work_type" required="true">
+                    <option value="<?=$wk_row['type_id']?>"><?php echo $escaper->escapeHtml($wk_type); ?></option>
+                    <?php
+                    foreach($paginator as $row) :
+                        if($row['type'] != $wk_type): ?>
+                            <option value="<?=$row['id']?>"><?php echo $escaper->escapeHtml($row['type']); ?></option>
+                    <?php
+                        endif;
+                    endforeach;
+                    ?>
                 </select>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-xs-1">Parent Work: </label>
-                <input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="<?=$pr_wrk_id ?? ""?>">
-                <div class="col-xs-6 pr_work_div">
-                    <?php
-                    if ($pr_wrk !== "") {
-                        echo $pr_wrk; ?>
-                        <button type="button" class="btn btn-default btn-xs parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn"
-                                data-toggle="modal" data-target="#parentLookup_modal">Change</button>
-                       <button type="button" class="btn btn-default btn-xs parent_Rmv_Btn" name="parent_removeBtn"
-                               id="parent_removeBtn">Remove</button>
-                    <?php
-                    } else {?>
-                    <button type="button" class="btn btn-default btn-sm parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn"
-                            data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>
-                    <?php } ?>
+            <input class="form-control" type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="<?=$pr_wrk_id ?? ""?>">
+            <label class="col-sm-1">Parent Work: </label>
+            <div class="col-sm-6 pr_work_div <?=$pr_wrk ? "parent-set" : "parent-edit" ?>" id="parent-work-toggle">
+                <div class="parent-work-set">
+                    <span id="parent-work-title"><?=$pr_wrk; ?></span>
+                    <button type="button" class="btn btn-default btn-xs" name="parent_changeBtn" id="parent_changeBtn">Change</button>
+                    <button type="button" class="btn btn-default btn-xs" name="parent_removeBtn" id="parent_removeBtn">Remove</button>
                 </div>
-                <!-- Parent work Lookup -->
-                <div class="modal fade ig" id="parentLookup_modal" role="dialog">
-                <div class="modal-dialog ig">
-                    <div class="modal-content ig">
-                        <div class="modal-header ig">
-                            <button type="button" class="close ig" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title ig" id="parentLookup_modalLabel">Lookup</h4>
-                        </div>
-                        <div class="modal-body ig">
-                             <div class="form-group ig">
-                                <label class="col-xs-2 control-label ig">Title: </label>
-                                <div class="col-xs-10 ig">
-                                    <input type="text" class="form-control ig parent_title" name="parent_title" id="parent_title" />
-                                </div>
-                            </div>
-                            <div class="form-group ig">
-                                <div class="col-sm-offset-2 col-sm-10 ig">
-                                    <button type="button" class="btn btn-primary ig parent_lookup_search" id="parentLookup_search">Search</button>
-                                </div>
-                            </div>
-                            <div class="pr_work_results ig">
-                            </div>
-                        </div>
-                        <div class="modal-footer ignore ig">
-                            <button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
+                <div class="parent-work-edit">
+                    <input class="form-control" id="parent-work-lookup" type="text" placeholder="Type to search" />
                 </div>
-                </div>
+                <script>bindParentWorkAutocomplete(workURL)</script>
+            </div>
         </div>
         <div class="form-group">
             <label class="col-xs-1 control-label">Status: </label>
@@ -661,85 +618,82 @@ $(document).ready(function () {
                 <input type="radio" id="editworkstatus" name="edit_workstatus" value="0" <?php echo ($status === 0)?'checked':'' ?>> Pending Review<br>
                 <input type="radio" id="editworkstatus" name="edit_workstatus" value="2" <?php echo ($status == 2)?'checked':'' ?>> Unseen Source Doc<br>
                 <?php if ($usr['level'] != 'User') { ?>
-                <input type="radio" id="editworkstatus" name="edit_workstatus" value="1" <?php echo ($status == 1)?'checked':'' ?>> Complete<br>
+                    <input type="radio" id="editworkstatus" name="edit_workstatus" value="1" <?php echo ($status == 1)?'checked':'' ?>> Complete<br>
                 <?php } ?>
             </div>
         </div>
     </div>
     <div class="tab-pane" id="Classification">
         <div class="form-group" id="class_grp">
-            <table id="outer_fl_table" style="border-spacing: 0px; border-collapse: separate;">
-                <tr valign="top">
-                <td><b style="font-size:8.5pt; padding: 20px;">Subject Tree:</b></td>
-                <td style="padding: 4px;">
-                <table name="source_fl_table" id="source_fl_table">
+            <b>Subject Tree:</b>
+            <table name="source_fl_table" id="source_fl_table">
+                <?php
+                if(count($wkfl_row) >= 1)
+                {
+                    $wkfl_row = array_reverse($wkfl_row);
+                    foreach($wkfl_row as $row):
+                    ?>
+                        <tr name="source_fl_row[]">
+                        <td><input type="checkbox" name="removeFolder[]"></td>
                     <?php
-                    if(count($wkfl_row) >= 1)
-                    {
-                        $wkfl_row = array_reverse($wkfl_row);
-                        foreach($wkfl_row as $row):
-                        ?>
-                            <tr name="source_fl_row[]">
-                            <td><input type="checkbox" name="removeFolder[]"></td>
-                        <?php
+                        $table = new \VuBib\Db\Table\Folder($this->adapter);
+                        $arr_fl = $table->getParentChain($row['folder_id']);
+                        for($i = 0; $i < count($arr_fl); $i++)
+                        {
                             $table = new \VuBib\Db\Table\Folder($this->adapter);
-                            $arr_fl = $table->getParentChain($row['folder_id']);
-                            for($i = 0; $i < count($arr_fl); $i++)
+                            $fl = $table->findRecordById($arr_fl[$i]);
+                    ?>
+                            <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
+                            <select class="select_source_fl select2 form-control" name="select_source_fl[]">
+                            <option value="<?=$fl['id']?>" selected><?php echo $fl['text_fr']; ?></option>
+                            <?php
+                            $table = new \VuBib\Db\Table\Folder($this->adapter);
+                            $fl_siblings = $table->getSiblings($fl['parent_id']);
+                            foreach($fl_siblings as $row) :
+                                if($row['id'] != $arr_fl[$i])
+                                {
+                        ?>
+                                    <option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>
+                                <?php
+                                }
+                            endforeach;
+                            ?>
+                            </select>
+                            <script>
+                            var fl_selected_text = "<?php echo $fl['text_fr'] ?>";
+                            var $test = $("<span>").html(fl_selected_text);
+                            // add to body, get width, and get out
+                            $test.appendTo('body');
+                            var txt_width = $test.width() + 70;
+                            $test.remove();
+                            // set select width
+                            $(".select_source_fl:last").width(txt_width + 'px');
+                            </script>
+                            </td>
+                            <?php
+                            if($i == (count($arr_fl) - 1))
                             {
                                 $table = new \VuBib\Db\Table\Folder($this->adapter);
-                                $fl = $table->findRecordById($arr_fl[$i]);
-                        ?>
-                                <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
-                                <select class="select_source_fl select2" name="select_source_fl[]">
-                                <option value="<?=$fl['id']?>" selected><?php echo $fl['text_fr']; ?></option>
-                                <?php
-                                $table = new \VuBib\Db\Table\Folder($this->adapter);
-                                $fl_siblings = $table->getSiblings($fl['parent_id']);
-                                foreach($fl_siblings as $row) :
-                                    if($row['id'] != $arr_fl[$i])
-                                    {
+                                $chl_rows = $table->getChild($arr_fl[$i]);
+                                if(count($chl_rows) != 0)
+                                {
                             ?>
+                                    <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
+                                    <select class="select_source_fl select2 form-control" name="select_source_fl[]">
+                                    <option value=""></option>
+                                    <?php
+                                    foreach($chl_rows as $row) :
+                                    ?>
                                         <option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>
                                     <?php
-                                    }
-                                endforeach;
-                                ?>
-                                </select>
-                                <script>
-                                var fl_selected_text = "<?php echo $fl['text_fr'] ?>";
-                                var $test = $("<span>").html(fl_selected_text);
-                                // add to body, get width, and get out
-                                $test.appendTo('body');
-                                var txt_width = $test.width() + 70;
-                                $test.remove();
-                                // set select width
-                                $(".select_source_fl:last").width(txt_width + 'px');
-                                </script>
-                                </td>
-                                <?php
-                                if($i == (count($arr_fl) - 1))
-                                {
-                                    $table = new \VuBib\Db\Table\Folder($this->adapter);
-                                    $chl_rows = $table->getChild($arr_fl[$i]);
-                                    if(count($chl_rows) != 0)
-                                    {
-                                ?>
-                                        <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
-                                        <select class="select_source_fl select2" name="select_source_fl[]">
-                                        <option value=""></option>
-                                        <?php
-                                        foreach($chl_rows as $row) :
-                                        ?>
-                                            <option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>
-                                        <?php
-                                        endforeach;
-                                    }
+                                    endforeach;
                                 }
                             }
-                            ?>
-                            </tr>
-                        <?php
-                        endforeach;
+                        }
+                        ?>
+                        </tr>
+                    <?php
+                    endforeach;
                 }
                 else
                 {
@@ -747,7 +701,7 @@ $(document).ready(function () {
                     <tr name="source_fl_row[]">
                         <td><input type="checkbox" name="removeFolder[]"></td>
                         <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
-                            <select class="select_source_fl select2" name="select_source_fl[]">
+                            <select class="select_source_fl select2 form-control" name="select_source_fl[]">
                             <option value=""></option>
                             <?php
                             $table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -766,7 +720,6 @@ $(document).ready(function () {
             </table>
             <button type="button" class="btn btn-outline-secondary btn-sm" name="fl_add" id="fl_add" value="Add">Add</button>
             <button type="button" class="btn btn-outline-secondary btn-sm" name="fl_remove" id="fl_remove" value="Remove">Remove</button>
-            </table>
         </div>
     </div>
     <div class="tab-pane" id="Publisher">
@@ -787,10 +740,10 @@ $(document).ready(function () {
             for($i = 0;$i < count($pub_rows);$i++)
             {
         ?>
-                    <tr name="pub_row[]">
+                <tr name="pub_row[]">
                     <input type="hidden" name="pub_id[]" id="pubId" value="<?=$pub_rows[$i]['publisher_id']?>" />
                     <td><input type="checkbox" name="removePublisher[]"></td>
-                    <td name="pubNameCol"><input type="text" name="pub_name[]" id="pubName"  value="<?=$pub_rows[$i]['name']?>" />
+                    <td name="pubNameCol"><input class="form-control" type="text" name="pub_name[]" id="pubName"  value="<?=$pub_rows[$i]['name']?>" />
                     </td>
                     <input type="hidden" name="publoc_id[]" id="publoc_id" value="<?=$pub_rows[$i]['location_id']?>">
                     <td>
@@ -798,7 +751,7 @@ $(document).ready(function () {
                         if(null !== $pub_rows[$i]['location_id'])
                         {
                     ?>
-                            <select class="pub_locations" name="pub_location[]" id="pubLocation">
+                            <select class="pub_locations form-control" name="pub_location[]" id="pubLocation">
                                 <option value="<?=$pub_rows[$i]['location_id']?>"><?php echo $pub_rows[$i]['location']; ?></option>
                                 <?php
                                 $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
@@ -818,16 +771,16 @@ $(document).ready(function () {
                         else
                         {
                         ?>
-                            <select class="pub_locations" name="pub_location[]" id="pubLocation"  style="min-width: 100px;" disabled>
+                            <select class="pub_locations form-control" name="pub_location[]" id="pubLocation"  style="min-width: 100px;" disabled>
                             <option value=""></option>
                         <?php
                         }
                     ?>
                     </select>
                     </td>
-                    <td class="yrFrom"><input type="text" name="pub_yrFrom[]" id="pubyrFrom"
+                    <td class="yrFrom"><input class="form-control" type="text" name="pub_yrFrom[]" id="pubyrFrom"
                         value="<?=$pub_rows[$i]['publish_year'] == 0 ? null : $pub_rows[$i]['publish_year']?>" size="4" maxlength="4"/></td>
-                    <td class="yrTo"><input type="text" name="pub_yrTo[]" id="pubyrTo"
+                    <td class="yrTo"><input class="form-control" type="text" name="pub_yrTo[]" id="pubyrTo"
                         value="<?=$pub_rows[$i]['publish_year_end'] == 0 ? null : $pub_rows[$i]['publish_year_end']?>" size="4" maxlength="4"/></td>
                 </tr>
             <?php
@@ -840,16 +793,16 @@ $(document).ready(function () {
                 <input type="hidden" name="pub_id[]" id="pubId" value="">
                 <td><input type="checkbox" name="removePublisher[]"></td>
                 <td name="pubNameCol">
-                <input type="text" name="pub_name[]" id="pubName" placeholder="none" size="80"/>
+                <input class="form-control" type="text" name="pub_name[]" id="pubName" placeholder="none" size="80"/>
                 </td>
                 <input type="hidden" name="publoc_id[]" id="publoc_id" value="">
                 <td>
-                    <select class="pub_locations" name="pub_location[]" id="pubLocation" style="min-width: 100px;" disabled>
+                    <select class="pub_locations form-control" name="pub_location[]" id="pubLocation" style="min-width: 100px;" disabled>
                     <option value=""></option>
                     </select>
                 </td>
-                <td class="yrFrom"><input type="text" name="pub_yrFrom[]" id="pubyrFrom" size="4" maxlength="4"/></td>
-                <td class="yrTo"><input type="text" name="pub_yrTo[]" id="pubyrTo" size="4" maxlength="4"/></td>
+                <td class="yrFrom"><input class="form-control" type="text" name="pub_yrFrom[]" id="pubyrFrom" size="4" maxlength="4"/></td>
+                <td class="yrTo"><input class="form-control" type="text" name="pub_yrTo[]" id="pubyrTo" size="4" maxlength="4"/></td>
             </tr>
         <?php
         }
@@ -884,7 +837,7 @@ $(document).ready(function () {
                     <td><input type="checkbox" name="removeAgent[]"></td>
                     <td>
                         <input type="hidden" name="agent_id[]" id="agentId" value="<?=$ag_rows[$i]['agent_id']?>">
-                        <select class="agent_type" name="agent_type[]" id="agent_type">
+                        <select class="agent_type form-control" name="agent_type[]" id="agent_type">
                         <option value="<?=$ag_rows[$i]['agenttype_id']?>"><?php echo $ag_rows[$i]['type']; ?></option>
                         <?php
                             foreach($paginator_agtype as $row) :
@@ -903,14 +856,14 @@ $(document).ready(function () {
                     if($ag_rows[$i]['lname'] == "" || $ag_rows[$i]['lname'] == null)
                     {
                     ?>
-                        <input type="text" name="agent_LastName[]" id="agent_LastName"
+                        <input class="form-control" type="text" name="agent_LastName[]" id="agent_LastName"
                                 value="" disabled />
                     <?php
                     }
                     else
                     {
                     ?>
-                        <input type="text" name="agent_LastName[]" id="agent_LastName"
+                        <input class="form-control" type="text" name="agent_LastName[]" id="agent_LastName"
                                 value="<?=$ag_rows[$i]['lname']?>" disabled />
                     <?php
                     }
@@ -921,14 +874,14 @@ $(document).ready(function () {
                     if($ag_rows[$i]['fname'] == "" || $ag_rows[$i]['fname'] == null)
                     {
                     ?>
-                        <input type="text" name="agent_FirstName[]" id="agent_FirstName"
+                        <input class="form-control" type="text" name="agent_FirstName[]" id="agent_FirstName"
                                 value="" disabled />
                     <?php
                     }
                     else
                     {
                     ?>
-                        <input type="text" name="agent_FirstName[]" id="agent_FirstName"
+                        <input class="form-control" type="text" name="agent_FirstName[]" id="agent_FirstName"
                                 value="<?=$ag_rows[$i]['fname']?>" disabled />
                     <?php
                     }
@@ -946,7 +899,7 @@ $(document).ready(function () {
                     else
                     {
                     ?>
-                        <input type="text" name="agent_AlternateName[]" id="agent_AlternateName"
+                        <input class="form-control" type="text" name="agent_AlternateName[]" id="agent_AlternateName"
                                 value="<?=$ag_rows[$i]['alternate_name']?>" disabled />
                     <?php
                     }
@@ -957,14 +910,14 @@ $(document).ready(function () {
                     if($ag_rows[$i]['organization_name'] == "" || $ag_rows[$i]['organization_name'] == null)
                     {
                     ?>
-                        <input type="text" name="agent_FirstName[]" id="agent_FirstName"
+                        <input class="form-control" type="text" name="agent_FirstName[]" id="agent_FirstName"
                                 value="" disabled />
                     <?php
                     }
                     else
                     {
                     ?>
-                        <input type="text" name="agent_OrganizationName[]" id="agent_OrganizationName"
+                        <input class="form-control" type="text" name="agent_OrganizationName[]" id="agent_OrganizationName"
                                 value="<?=$ag_rows[$i]['organization_name']?>" disabled />
                     <?php
                     }
@@ -981,7 +934,7 @@ $(document).ready(function () {
                 <td><input type="checkbox" name="removeAgent[]"></td>
                 <td>
                     <input type="hidden" name="agent_id[]" id="agentId" value="">
-                    <select class="agent_type" name="agent_type[]" id="agent_type">
+                    <select class="agent_type form-control" name="agent_type[]" id="agent_type">
                     <option value=""></option>
                     <?php
                         foreach($paginator_agtype as $row) :
@@ -992,10 +945,10 @@ $(document).ready(function () {
                     ?>
                     </select>
                 </td>
-                <td name="agLnCol"><input type="text" name="agent_LastName[]" id="agent_LastName" /></td>
-                <td name="agFnCol"><input type="text" name="agent_FirstName[]" id="agent_FirstName" /></td>
-                <td><input type="text" name="agent_AlternateName[]" id="agent_AlternateName" /></td>
-                <td><input type="text" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>
+                <td name="agLnCol"><input class="form-control" type="text" name="agent_LastName[]" id="agent_LastName" /></td>
+                <td name="agFnCol"><input class="form-control" type="text" name="agent_FirstName[]" id="agent_FirstName" /></td>
+                <td><input class="form-control" type="text" name="agent_AlternateName[]" id="agent_AlternateName" /></td>
+                <td><input class="form-control" type="text" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>
             </tr>
         <?php
         }
@@ -1181,6 +1134,9 @@ $(document).ready(function () {
         </div>
     </div>
 </div>
+</div>
+</div>
+</div>
 <?php
-    }
+    endif; // edit
 ?>
