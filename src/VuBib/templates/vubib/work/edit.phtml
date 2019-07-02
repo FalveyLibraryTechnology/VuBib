@@ -2,8 +2,6 @@
 $this->headTitle('Edit Work');
 ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>'
-                                    . ' Edit';
       $this->layout()->page = "Work/edit?action=edit";
  ?>
 <?php
@@ -367,10 +365,9 @@ $(document).ready(function () {
 <?php
     $usr = $this->isUser()->getUserType();
     $escaper = new Zend\Escaper\Escaper('utf-8');
-    if (($status == 1) && ($usr['level'] == 'User')) {
-        echo 'This work has been completed, you do not have access to edit this.';
+    if (($status == 1) && ($usr['level'] == 'User')): // view
+        $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '"> Work</a> &gt; View';
     ?>
-        <div style="float: left; margin: 20px 5px 0px 5px;">
         <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">
             <tr>
             <th align="right">Title: </th>
@@ -531,13 +528,11 @@ $(document).ready(function () {
             ?>
             </tr>
         </table>
-        </div>
-    <?php
-    }
-    else
-    {
-?>
-<div class="col-md-12">
+
+    <?php else: // edit
+        $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '"> Work</a> &gt; Edit';
+    ?>
+
 <form id="edit-work-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
 <input type="hidden" name="id" value="<?=$id?>">
 <input type="hidden" name="action" value="<?=$action?>">
