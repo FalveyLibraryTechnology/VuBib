@@ -142,6 +142,12 @@ label.location-label small {
   float: right;
   padding: .5rem 1rem;
 }
+tr[name="pub_row[]"] td {
+  min-width: 110px;
+}
+tr[name="pub_row[]"] td:first-of-type {
+  min-width: auto;
+}
 
 /* Autocomplete selector */
 .ac-item[disabled],

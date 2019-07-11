@@ -16,23 +16,12 @@
     $itemsCount_ag = $paginator_agtype->getTotalItemCount();
     $paginator_agtype->setItemCountPerPage($itemsCount_ag);
 
+    $this->headScript()->appendFile($this->url('home') . 'js/menu.js');
     $this->headScript()->appendFile($this->url('home') . 'js/work.js');
 ?>
-<script type="text/template" id="template-pub-row">
-    <tr name="pub_row[]">
-        <input type="hidden" name="pub_id[]" id="pubId" value="">
-        <td><input class="form-control" type="checkbox" name="removePublisher[]"></td>
-        <td name="pubNameCol"><input class="form-control" type="text" name="pub_name[]" id="pubName" placeholder="none"  size="80"/></td>
-        <input type="hidden" name="publoc_id[]" id="publoc_id" value="">
-        <td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation"  style="min-width: 100px;">
-        <option value=""></option></select></td>
-        <td class="yrFrom"><input class="form-control" type="text" name="pub_yrFrom[]" id="pubyrFrom" size="4" maxlength="4"/></td>
-        <td class="yrTo"><input class="form-control" type="text" name="pub_yrTo[]" id="pubyrTo"  size="4" maxlength="4"/></td>
-    </tr>
-</script>
 <script type="text/template" id="template-agent-row">
     <tr>
-        <td><input class="form-control" type="checkbox" name="removeAgent[]"></td>
+        <td><input type="checkbox" name="removeAgent[]"></td>
         <td>
             <input type="hidden" name="agent_id[]" id="agentId" value="">
             <select class="form-control agent_type" name="agent_type[]" id="agent_type">
@@ -50,7 +39,7 @@
 </script>
 <script type="text/template" id="template-fl-row">
     <tr name="source_fl_row[]">
-        <td><input class="form-control" type="checkbox" name="removeFolder[]"></td>
+        <td><input type="checkbox" name="removeFolder[]"></td>
         <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
             <select class="form-control select_source_fl select2" name="select_source_fl[]">
                 <option value=""></option>
@@ -86,12 +75,14 @@ $(document).ready(function() {
         }
     }
     //Publisher
-    bindPublisherAutocomplete(document, workURL);
+    const initialPubRow = document.getElementById("template-pub-row");
+    const templatePubRow = initialPubRow.outerHTML;
+    bindPublisherAutocomplete(initialPubRow, workURL);
     //add publisher rows
     $("#pub_add").click(function() {
-        var pub_row = $($("#template-pub-row").html());
-        $("#pub_table").append(pub_row);
-        bindPublisherAutocomplete(pub_row, workURL);
+        var pub_row = $(templatePubRow);
+        $("#pub_table tbody").append(pub_row);
+        bindPublisherAutocomplete(pub_row[0], workURL);
         return false;
     });
     //remove publisher rows
@@ -255,47 +246,13 @@ $(document).ready(function() {
                 </div>
             </div>
             <div class="form-group">
-                <input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
                 <label class="col-sm-2 control-label">Parent Work: </label>
-                <div class="col-sm-10 pr_work_div parent-edit" id="parent-work-toggle">
-                    <div class="parent-work-set">
-                        <span id="parent-work-title"></span>
-                        <button type="button" class="btn btn-default btn-xs" name="parent_changeBtn" id="parent_changeBtn">Change</button>
-                        <button type="button" class="btn btn-default btn-xs" name="parent_removeBtn" id="parent_removeBtn">Remove</button>
+                <div class="col-sm-10">
+                    <div id="parent-work-lookup">
+                        <input type="hidden" class="acs-hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
+                        <input class="acs-input form-control" type="text" placeholder="Type to search" />
                     </div>
-                    <div class="parent-work-edit">
-                        <input class="form-control" id="parent-work-lookup" type="text" placeholder="Type to search" />
-                    </div>
-                    <script>bindParentWorkAutocomplete(workURL)</script>
-                </div>
-                <!-- Parent work Lookup -->
-                <div class="modal fade ig" id="parentLookup_modal" role="dialog">
-                <div class="modal-dialog ig">
-                    <div class="modal-content ig">
-                        <div class="modal-header ig">
-                            <button type="button" class="close ig" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title ig" id="parentLookup_modalLabel">Lookup</h4>
-                        </div>
-                        <div class="modal-body ig">
-                             <div class="form-group ig">
-                                <label class="col-sm-2 control-label ig">Title: </label>
-                                <div class="col-sm-10 control-label0 ig">
-                                    <input class="form-control" type="text" class="form-control ig parent_title" name="parent_title" id="parent_title" />
-                                </div>
-                            </div>
-                            <div class="form-group ig">
-                                <div class="col-sm-offset-2 col-sm-10 ig">
-                                    <button type="button" class="btn btn-primary ig parent_lookup_search" id="parentLookup_search">Search</button>
-                                </div>
-                            </div>
-                            <div class="pr_work_results ig">
-                            </div>
-                        </div>
-                        <div class="modal-footer ignore ig">
-                            <button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
+                    <script>bindParentWorkAutocomplete()</script>
                 </div>
             </div>
             <div class="form-group">
@@ -313,7 +270,7 @@ $(document).ready(function() {
                 <label class="control-label">Subject Tree: </label>
                 <table name="source_fl_table" id="source_fl_table" style="margin:1rem 0">
                     <tr name="source_fl_row[]">
-                        <td><input class="form-control" type="checkbox" name="removeFolder[]"></td>
+                        <td><input type="checkbox" name="removeFolder[]"></td>
                         <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
                             <select class="form-control select_source_fl select2" name="select_source_fl[]">
                                 <option value=""></option>
@@ -342,14 +299,13 @@ $(document).ready(function() {
                 <th>Year To</th>
             </thead>
             <tbody>
-                <tr name="pub_row[]">
+                <tr name="pub_row[]" id="template-pub-row">
                     <input type="hidden" name="pub_id[]" id="pubId" value="">
-                    <td><input class="form-control" type="checkbox" name="removePublisher[]"></td>
-                    <td name="pubNameCol">
-                        <input class="form-control" type="text" name="pub_name[]" id="pubName" placeholder="none" size="80"/>
-                    </td>
-                    <!--<td><input class="form-control" type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
                     <input type="hidden" name="publoc_id[]" id="publoc_id" value="">
+                    <td><input type="checkbox" name="removePublisher[]"></td>
+                    <td name="pubNameCol">
+                        <input class="pub-name form-control" type="text" name="pub_name[]" placeholder="Type to search publishers" size="80"/>
+                    </td>
                     <td>
                         <select class="form-control pub_locations" name="pub_location[]" id="pubLocation" style="min-width: 100px;">
                             <option value=""></option>
@@ -379,7 +335,7 @@ $(document).ready(function() {
             </thead>
             <tbody>
                 <tr>
-                    <td><input class="form-control" type="checkbox" name="removeAgent[]"></td>
+                    <td><input type="checkbox" name="removeAgent[]"></td>
                     <td>
                         <input type="hidden" name="agent_id[]" id="agentId" value="">
                         <select class="form-control agent_type" name="agent_type[]" id="agent_type">

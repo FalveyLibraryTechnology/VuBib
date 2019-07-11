@@ -6,105 +6,69 @@ $.fn.textWidth = function(text, font) {
 };
 
 //Publisher autocomplete and location fetch
+const newPubRowAC = new Autocomplete({ minInputLength: 1 });
 function bindPublisherAutocomplete(context, workURL) {
-    //publisher enable/disable fields
-    $("#pubLocation", context).prop("disabled", "disabled");
+  //publisher enable/disable fields
+  $("#pubLocation", context).prop("disabled", "disabled");
 
-    //Publisher autocomplete
-    $("#pubName", context).autocomplete({
-        autoFocus: true,
-        source: function (request, response) {
-            $.ajax({
-                url: ur + workURL + '?autofor=publisher',
-                type: "get",
-                dataType: "json",
-                cache: false,
-                data: {
-                    term : $("#pubName", context).val(),
-                },
-                success: function (data) {
-                    if(!data.length){
-                        /*var to_add = $('<p>No matches found. </p>'+
-                                     '<a type="button" class="addNewPubLink" href="#addPublisherLookup" data-toggle="modal" ' +
-                                         'style="text-decoration: underline;">Add New</a>');*/
-                        var to_add = $('<p>No matches found. </p>'+
-                                     '<a type="button" class="addNewPubLink" ' +
-                                         'style="text-decoration: underline;">Add New</a>');
-                        $('#pubName', context).nextAll().remove()
-                        $('#pubName', context).after(to_add);
-                    }
-                    else{
-                        // normal response
-                        response($.map(data, function (item) {
-                            return {
-                                label: item.label,
-                                value: item.value,
-                                id:    item.id
-                            }
-                        }));
-                    }
-                },
-            });
+  //Publisher autocomplete
+  const inputs = context.querySelectorAll(".pub-name");
+  for (const input of inputs) {
+    newPubRowAC(input, function newPublisherRowAC(query, callback) {
+      $.ajax({
+        url: workURL + '?autofor=publisher',
+        type: "get",
+        dataType: "json",
+        cache: false,
+        data: { term: query },
+        success: function (data) {
+          if(!data.length){
+            callback([]);
+          } else {
+            // TODO: Add new
+            callback($.map(data, function (item) {
+              return {
+                text: item.label,
+                value: item.value,
+                id:    item.id
+              }
+            }));
+          }
         },
-        open: function(event, ui) {
-            $('.ui-autocomplete').append('<a type="button" class="addNewItemPubLink" ' +
-                                           'style="text-decoration: underline; color:blue;" data-value="'+ $(this).val() + '"' +
-                                           'data-ele=""' + '>Add New</a>'); //Add new link at end of results
-
-            $('.addNewItemPubLink').on('click',function(){
-                var lnk = $(event.target);
-                addNewPublisher(context,workURL,lnk);
-                return false;
-            });
-         },
-        minLength: 3,
-        select: function(event, ui) {
-            if(ui.item.label == "No matches found") {
-                $('#pubName', context).val(ui.item.value);
-                //$('#pubName', context).after('<a>Add New</a>');
-                return false;
-            }
-            else{
-                $('#pubName', context).val(ui.item.label);
-                //Resizing text field to make selected publisher visible
-                var pbLen = $(this).textWidth(ui.item.label) + 35;
-                $('#pubName', context).css('width',pbLen + 'px');
-                $('#pubId', context).val(ui.item.id);
-                //$("#pubLocation", context).prop("disabled", false);
-                $(".pub_locations", context).prop("disabled", false);
-                return false;
-            }
+      });
+    });
+    input.addEventListener("ac-select", function newPublisherRowSelect(e) {
+      $('[name="pub_id[]"]', context).eq(0).val(e.detail.id);
+      $.ajax({
+        method: 'post',
+        url: ur + workURL,
+        data: { publisher_Id: e.detail.id },
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+          const $locationsSel = $(".pub_locations", context)
+          $locationsSel.html('');
+          if (data.publoc.length === 0) {
+            $locationsSel.html('<option id="-1">none available</option>');
+            $locationsSel.attr("disabled", true);
+            return false;
+          }
+          for (var i = 0; i < data.publoc.length; i++) {
+            const val = data.publoc[i];
+            $locationsSel.append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
+            $('[name="publoc_id[]"]', context).eq(i).val(val.id);
+            //Setting select to auto width to make selected publisher location visible
+            $locationsSel.css('width', 'auto');
+            $locationsSel.attr("disabled", false);
+          }
+        },
+        error: function() {
+          $(".pub_locations", context).html('<option id="-1">none available</option>');
+          $(".pub_locations", context).attr("disabled", true);
         }
-    });
-    $('#pubName', context).on('autocompleteselect', function(e, ui) {
-        var publisher_Id = ui.item.id;
-        i = 0;
-        //arr = [];
-        $.ajax({
-            method: 'post',
-            url: ur + workURL,
-            data: {
-                publisher_Id: publisher_Id
-            },
-            dataType: "json",
-            cache: false,
-            success: function(data) {
-                $(".pub_locations", context).html('');
-                $.each(data.publoc, function(key, val) {
-                    $(".pub_locations", context).append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
-                    $("#publoc_id", context).eq(i).val(val.id);
-
-                    //Setting select to auto width to make selected publisher location visible
-                    $(this).closest(".pub_locations", context).css('width', 'auto');
-
-                    i++;
-                })
-            },
-            error: function() {
-                $("#pubLocation", context).html('<option id="-1">none available</option>');
-            }
-        });
-    });
+      });
+    }, false);
+  }
 }
 
 //add new publisher
@@ -346,31 +310,31 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                     val.type == 'Text'
                 ) {
                     $('<div class="form-group required">' +
-                        '<label class="col-sm-2">' + val.field + '</label>' +
-                        '<div class="col-sm-10">' +
-                            '<input class="form-control" type="text" name="wkatid,' + val.id + '" id="' + val.field + '" size="50"/>' +
-                        '</div>' +
-                    '</div>').appendTo("#Citation");
+                          '<label class="col-sm-2">' + val.field + '</label>' +
+                          '<div class="col-sm-10">' +
+                              '<input class="form-control" type="text" name="wkatid,' + val.id + '" id="' + val.field + '" size="50"/>' +
+                          '</div>' +
+                      '</div>').appendTo("#Citation");
                 }
                 if (val.type == 'RadioButton') {
                     $('<div class="form-group required">' +
-                            '<label class="col-sm-2">' + val.field + '</label>' +
-                            '<div class="col-sm-10">' +
-                                '<input class="form-control" type="radio" name="wkatid,' + val.id + '" value="true" /> True<br>' +
-                                '<input class="form-control" type="radio" name="wkatid,' + val.id + '" value="false" /> False<br>' +
-                            '</div>' +
-                    '</div>').appendTo("#Citation");
+                          '<label class="col-sm-2">' + val.field + '</label>' +
+                          '<div class="col-sm-10">' +
+                              '<input class="form-control" type="radio" name="wkatid,' + val.id + '" value="true" /> True<br>' +
+                              '<input class="form-control" type="radio" name="wkatid,' + val.id + '" value="false" /> False<br>' +
+                          '</div>' +
+                      '</div>').appendTo("#Citation");
                 }
                 if (val.type == 'Select') { // Autocomplete
                     $('<div class="form-group required">' +
-                            '<label class="col-sm-2">'+val.field+'</label>' +
-                            '<div class="col-sm-10">' +
-                              '<input class="form-control option-ac" placeholder="Type to search" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
-                              '<a class="addNewAttrOptionLink"' +
-                              ' data-attribute-id="'+ val.field + ':' + val.id +'"' +
-                              ' href="#' + val.field + ':' + val.id +'">Add New</a>' +
-                            '</div>' +
-                    '</div>').appendTo("#Citation");
+                          '<label class="col-sm-2">'+val.field+'</label>' +
+                          '<div class="col-sm-10">' +
+                            '<input class="form-control option-ac" placeholder="Type to search" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
+                            '<a class="addNewAttrOptionLink"' +
+                            ' data-attribute-id="'+ val.field + ':' + val.id +'"' +
+                            ' href="#' + val.field + ':' + val.id +'">Add New</a>' +
+                          '</div>' +
+                      '</div>').appendTo("#Citation");
                 }
             })
             $(".optionLookupBtn").on('click', function(e) {
@@ -466,7 +430,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
             });
 
             // Autocomplete test
-            const AC = new Autocomplete({ limit: 10, minInputLength: 1 });
+            const AC = new Autocomplete({ minInputLength: 1 });
             const citationInputs = $(".option-ac");
             for (let i = 0; i < citationInputs.length; i++) {
               const input = citationInputs[i];
@@ -608,47 +572,23 @@ function bindClassification(that, context, workURL, for_str) {
 }
 
 //Parent lookup
-function bindParentWorkAutocomplete(workURL) {
-  const input = document.getElementById("parent-work-lookup");
-  const AC = new Autocomplete();
-  AC(input, function periodicalAC(query, callback) {
-    $.ajax({
-      method: "POST",
-      url: workURL,
-      data: { lookup_title: input.value }
-    })
-      .done(function(json) {
-        const data = JSON.parse(json);
-        if (data.prnt_lookup.length === 0) {
-          input.classList.add("ac-no-results");
-          callback([]);
-        } else {
-          input.classList.remove("ac-no-results");
-          callback(data.prnt_lookup.slice(0, 10).map(x => ({
-            id: x.id,
-            text: x.title,
-            sub: x.type
-          })));
-        }
-      });
-  });
-  const workID = document.getElementById("pr_work_lookup_id");
-  const workTitle = document.getElementById("parent-work-title");
-  const workToggle = document.getElementById("parent-work-toggle");
-  input.addEventListener("ac-select", function bindParentHidden(e) {
-    workID.value = e.detail.id;
-    workTitle.innerHTML = e.detail.text;
-    workToggle.className = workToggle.className.replace("parent-edit", "parent-set");
-  });
-  document.getElementById("parent_changeBtn").addEventListener("click", function changeParentWork() {
-    input.value = workTitle.innerHTML;
-    workToggle.className = workToggle.className.replace("parent-set", "parent-edit");
-  });
-  document.getElementById("parent_removeBtn").addEventListener("click", function removeParentWork() {
-    input.value = "";
-    workID.value = "";
-    workToggle.className = workToggle.className.replace("parent-set", "parent-edit");
-  });
+function bindParentWorkAutocomplete() {
+  setupACS(
+    "#parent-work-lookup",
+    function parentWorkACData(input) {
+      return { lookup_title: input.value }
+    },
+    function parentWorkACSuccess(data, callback, input) {
+      input.classList.remove("ac-no-results");
+      callback(
+        data.prnt_lookup.slice(0, 20).map(x => ({
+          id: x.id,
+          text: x.title,
+          sub: x.type
+        }))
+      );
+    },
+  );
 }
 function bindParentWork(context,workURL)
 {

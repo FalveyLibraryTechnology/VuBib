@@ -63,6 +63,7 @@ if ($request->getqueryParams('id') !== null) {
 }
 $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
+$this->headScript()->appendFile($this->url('home') . 'js/menu.js');
 $this->headScript()->appendFile($this->url('home') . 'js/work.js');
 ?>
 <style>
@@ -597,16 +598,12 @@ $(document).ready(function () {
             </div>
         </div>
         <div class="form-group">
-            <input class="form-control" type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="<?=$pr_wrk_id ?? ""?>">
+            <input class="form-control" type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
             <label class="col-sm-1">Parent Work: </label>
-            <div class="col-sm-6 pr_work_div <?=$pr_wrk ? "parent-set" : "parent-edit" ?>" id="parent-work-toggle">
-                <div class="parent-work-set">
-                    <span id="parent-work-title"><?=$pr_wrk; ?></span>
-                    <button type="button" class="btn btn-default btn-xs" name="parent_changeBtn" id="parent_changeBtn">Change</button>
-                    <button type="button" class="btn btn-default btn-xs" name="parent_removeBtn" id="parent_removeBtn">Remove</button>
-                </div>
-                <div class="parent-work-edit">
-                    <input class="form-control" id="parent-work-lookup" type="text" placeholder="Type to search" />
+            <div class="col-sm-6">
+                <div id="parent-work-lookup">
+                    <input type="hidden" class="acs-hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="<?=$pr_wrk_id ?? ""?>" />
+                    <input class="acs-input form-control" type="text" placeholder="Type to search" value="<?=$pr_wrk ?? ""; ?>" />
                 </div>
                 <script>bindParentWorkAutocomplete(workURL)</script>
             </div>
