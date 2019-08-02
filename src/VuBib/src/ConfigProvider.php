@@ -108,7 +108,10 @@ class ConfigProvider
             [
                 'name' => 'login',
                 'path' => '/login',
-                'middleware' => LoginPageAction::class,
+                'middleware' => [
+                    SlimFlashMiddleware::class,
+                    LoginPageAction::class,
+                ],
                 'allowed_methods' => ['GET', 'POST'],
             ],
         ];

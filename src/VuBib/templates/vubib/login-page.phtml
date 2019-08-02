@@ -7,8 +7,11 @@
         $params = $this->request->getqueryParams();
         $redirect_url = $params['redirect_to'];
     }
-
  ?>
+
+<?php foreach ($this->flashMessages['error'] as $msg): ?>
+    <div class="alert alert-danger"><?=$msg ?></div>
+<?php endforeach; ?>
 
 <form class="form-horizontal" method="post" action="<?=$this->url('login')?><?='?action=login' . '&redirect_to=' . $redirect_url?>">
     <input type="hidden" name="action" value="login">

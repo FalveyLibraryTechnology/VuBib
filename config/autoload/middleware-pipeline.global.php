@@ -5,14 +5,15 @@ use Zend\Expressive\Helper;
 return [
     'dependencies' => [
         'factories' => [
-        //new
-        Blast\BaseUrl\BaseUrlMiddleware::class => Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
-
+            //new
+            Blast\BaseUrl\BaseUrlMiddleware::class => Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
-            'VuBib\SlimFlashMiddleware' => VuBib\SlimFlashMiddlewareFactory::class,
-            VuBib\FormHelpersMiddleware::class => VuBib\FormHelpersMiddlewareFactory::class
+            VuBib\FormHelpersMiddleware::class => VuBib\FormHelpersMiddlewareFactory::class,
         ],
+        'invokables' => [
+            VuBib\SlimFlashMiddleware::class => VuBib\SlimFlashMiddleware::class,
+        ]
     ],
     // This can be used to seed pre- and/or post-routing middleware
     'middleware_pipeline' => [
@@ -47,7 +48,6 @@ return [
                 Helper\ServerUrlMiddleware::class,
                 //new
                 Blast\BaseUrl\BaseUrlMiddleware::class,
-                'VuBib\SlimFlashMiddleware',
             ],
             'priority' => 10000,
         ],
@@ -59,9 +59,9 @@ return [
                 //Zend\Expressive\Helper\UrlHelperMiddleware::class,
                 //Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
 
-                ApplicationFactory::ROUTING_MIDDLEWARE,
+                \Zend\Expressive\Router\Middleware\RouteMiddleware::class,
                 Helper\UrlHelperMiddleware::class,
-                ApplicationFactory::DISPATCH_MIDDLEWARE,
+                \Zend\Expressive\Router\Middleware\DispatchMiddleware::class,
                 // Add more middleware here that needs to introspect the routing
                 // results; this might include:
                 // - route-based authentication

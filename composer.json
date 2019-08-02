@@ -42,6 +42,7 @@
         "mtymek/blast-base-url": "^1.0",
         "sandrokeil/interop-config": "^2.1",
         "shrikeh/teapot": "^2.3",
+        "slim/flash": "^0.4.0",
         "zendframework/zend-code": "^3.3",
         "zendframework/zend-component-installer": "^2.1.1",
         "zendframework/zend-config-aggregator": "^1.0",

@@ -203,6 +203,8 @@ class LoginPageAction implements MiddlewareInterface
                     );
                 }
             }
+            $flash = $request->getAttribute('flash');
+            $flash->addMessage('error', 'Invalid username or password.');
             return new RedirectResponse(
                 $this->getRedirectUri($request),
                 RFC7231::FOUND
@@ -236,10 +238,12 @@ class LoginPageAction implements MiddlewareInterface
      */
     protected function renderLoginFormResponse($request)
     {
+        $flash = $request->getAttribute('flash');
+        $messages = $flash->getMessages();
         return new HtmlResponse(
             $this->template->render(
                 self::PAGE_TEMPLATE, ['request' => $request,
-                'adapter' => $this->adapter, ]
+                'adapter' => $this->adapter, 'flashMessages' => $messages]
             )
         );
     }
