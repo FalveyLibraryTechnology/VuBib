@@ -1,7 +1,7 @@
 <?php $this->headTitle('Edit Language'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_language') . '" style="float:left;color:white;"> Language > </a>'
-                                    . ' Edit';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_language') . '">Language</a> &gt; Edit';
+    $this->layout()->page = "Language/Edit";
  ?>
 <?php
 $id;
@@ -20,7 +20,7 @@ if ($request->getqueryParams('id') !== null) {
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_language') ?>">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
         <input type="hidden" name="id" value="<?= trim($id) ?>">
-        <div class="form-group">   
+        <div class="form-group">
             <label class="col-xs-2 control-label">de: </label>
             <div class="col-xs-7">
                 <input type="text" class="form-control" name="de_newlang" id="denewlang" value="<?= $escaper->escapeHtml(trim($row['text_de'])) ?>" />
@@ -31,7 +31,7 @@ if ($request->getqueryParams('id') !== null) {
             <div class="col-xs-7">
                 <input type="text" class="form-control" name="en_newlang" id="ennewlang" value="<?= $escaper->escapeHtml(trim($row['text_en'])) ?>" />
             </div>
-        </div> 
+        </div>
         <div class="form-group">
             <label class="col-xs-2 control-label">es: </label>
             <div class="col-xs-7">
@@ -58,7 +58,7 @@ if ($request->getqueryParams('id') !== null) {
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
             </div>
         </div>

@@ -7,9 +7,8 @@ if ($request->getqueryParams('id') !== null) {
     $action = $params['action'];
     $id = $params['id'];
     $wkat_id = $params['wkat_id'];
-    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' .
-            '<a href="' . $this->url('manage_subattributes') . '?wkat_id=' . $wkat_id . '" style="float:left;color:white;"> Sub Attributes > </a>'
-            . ' Edit';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; <a href="' . $this->url('manage_subattributes', ['id' => $wkat_id]) . '">Sub Attributes</a> &gt; Edit';
+    $this->layout()->page = "Sub Attributes/Edit";
     //fetch sub attribute name based on id
     $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($adapter);
     $subattr_row = $table->findRecordById($id);
@@ -27,7 +26,7 @@ if ($request->getqueryParams('id') !== null) {
     <input type="hidden" name="action" value="<?= $action ?>">
     <input type="hidden" name="wkat_id" value="<?= $wkat_id ?>">
     <input type="hidden" name="id" value="<?= $id ?>">
-    <div class="form-group">   
+    <div class="form-group">
         <label class="col-xs-4 control-label">Sub Attribute: </label>
         <div class="col-xs-7">
             <input type="text" class="form-control" name="edit_subattr" id="editsubattr" value="<?=$escaper->escapeHtml($subattribute)?>" />
@@ -36,7 +35,7 @@ if ($request->getqueryParams('id') !== null) {
     </div>
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
+            <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
             <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
         </div>
     </div>

@@ -9,13 +9,13 @@
     if ($request->getMethod() == 'POST') {
         $post = $request->getParsedBody();
     }
-    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' .
-            '<a href="' . $this->url('manage_subattributes') . '?id=' . $post['wkat_id'] . '" style="float:left;color:white;"> Sub Attributes > </a>'
-            . ' Delete';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; <a href="' . $this->url('manage_subattributes', ['id' => $post['wkat_id']]) . '">Sub Attributes</a> &gt; Delete';
+    $this->layout()->page = "Sub Attributes/Delete";
+?>
  ?>
 <div class="col-xs-4">
     <form method="post" action="<?=$this->url('manage_subattributes')?>">
-        <p>Are you sure you want to delete this?</p>  
+        <p>Are you sure you want to delete this?</p>
         <ul>
             <li><?php
                 if ($request->getqueryParams('action') !== null) {
@@ -34,7 +34,7 @@
         <input type="hidden" name="wkat_id" value="<?=$post['wkat_id']?>">
         <input type="hidden" name="subattr_id" value="<?=$post['subat_id']?>">
         <input type="hidden" name="action" value="<?=$action?>">
-        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Delete">
         <input type="submit" name="submitt" value="Cancel">
     </form>
 </div>

@@ -1,12 +1,11 @@
 <?php $this->headTitle('Delete AgentType'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agenttype') . '" style="float:left;color:white;"> Agenttype > </a>'
-                                      . ' Delete';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agenttype') . '">Agent Type</a> &gt; Delete';
+    $this->layout()->page = "Agenttype/Delete";
  ?>
-
 <div class="col-xs-4">
     <form method="post" action="<?= $this->url('manage_agenttype') ?>">
-        <p>Are you sure you want to delete this?</p>        
+        <p>Are you sure you want to delete this?</p>
         <?php
         $id;
         if ($request->getqueryParams('id') !== null) {
@@ -29,14 +28,14 @@
                 echo "<li>$type</li>";
         ?>
         <ul>
-        <input type="hidden" name="agType_id[]" value="<?=$agType['id']?>">                        
+        <input type="hidden" name="agType_id[]" value="<?=$agType['id']?>">
         <input type="hidden" name="action" value="<?=$action?>">
-        </ul>                        
+        </ul>
         <?php
             endforeach;
         }
         ?>
-        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Delete">
         <input type="submit" name="submitt" value="Cancel">
     </form>
 </div>

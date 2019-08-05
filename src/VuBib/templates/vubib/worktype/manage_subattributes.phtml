@@ -1,10 +1,8 @@
+<?php $this->headTitle('Manage Sub Attributes'); ?>
 <?php
-$this->headTitle('Manage Sub Attributes');
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; Manage Sub Attributes';
+    $this->layout()->page = "Attributes/Manage Sub Attributes";
 ?>
-<?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
-                                    . ' Sub Attributes';
- ?>
 <?php
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
@@ -18,7 +16,7 @@ if ($request->getqueryParams('action') !== null) {
 }
 ?>
 <div class="col-md-9">
-    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p> 
+    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p>
     <?php
     if (count($subattr_row) > 0){
         $subattr_Id = $subattr_row['id'];
@@ -28,7 +26,7 @@ if ($request->getqueryParams('action') !== null) {
         <form action="<?=$this->url('delete_subattribute')?><?='?action=delete'?>" method="post">
             <input type="hidden" name="wkat_id" value="<?=$attr_id?>">
             <input type="hidden" name="subat_id" value="<?=$subattr_Id?>">
-            <div class="form-group">   
+            <div class="form-group">
                 <label class="col-xs-2 control-label">Sub Attribute: </label>
                 <div class="col-xs-5">
                     <a href="<?=$this->url('edit_subattribute')?><?='?wkat_id=' . $attr_id . '&id=' . $subattr_Id . '&action=edit'?>">
@@ -45,7 +43,7 @@ if ($request->getqueryParams('action') !== null) {
     <?php
     } else {
     ?>
-        <p><b style="font-size: 10pt; padding: 20px;">Sub Attribute: None</b></p>  
+        <p><b style="font-size: 10pt; padding: 20px;">Sub Attribute: None</b></p>
         <a href="<?=$this->url('new_subattribute')?><?='?id=' . $attr_id . '&action=new'?>"><b style="text-decoration: underline;">Add Sub Attribute</b></a>
     <?php
     }

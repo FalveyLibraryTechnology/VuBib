@@ -1,7 +1,8 @@
 <?php $this->headTitle('Review Work'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '"> Work</a> &gt; Review';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '">Work</a> &gt; Review';
+    $this->layout()->page = "Work/Review";
+?>
 <style>
 table {
     width: 100%;

@@ -1,7 +1,7 @@
 <?php $this->headTitle('Find Attribute Options'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
-                                    . ' Attribute Options Search';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; Options Search';
+    $this->layout()->page = "Attributes/Options Search";
 ?>
 <?php
 //fetch worktypes
@@ -42,12 +42,12 @@ if($itemsCount > 0) {
                 <button type="submit" class="btn btn-default" name="submit" value="Search">Search</button>
             </div>
         </div>
-    </form>   
+    </form>
 </div>
 <?php
 } else {
 ?>
-        <p> No Attributes of type select to search options for. Please Add an attribute of type select. 
+        <p> No Attributes of type select to search options for. Please Add an attribute of type select.
         <a href="<?=$this->url('new_attribute')?><?='?action=new'?>"><b style="text-decoration: underline;">Add Attribute</b></a>
         </p>
 <?php

@@ -1,6 +1,7 @@
 <?php $this->headTitle('Attributes Work Type'); ?>
 <?php
-      $this->layout()->breadcrumbs .= ' Attributes';
+    $this->layout()->breadcrumbs .= ' Attributes';
+    $this->layout()->page = "Attributes";
  ?>
 <script type='text/javascript'>
 $(document).ready(function () {
@@ -43,7 +44,7 @@ $(document).ready(function () {
             </td>
             <td>
                 <a href="<?=$this->url('edit_attribute')?><?='?id=' . $row['id'] . '&action=edit'?>">
-                <?php echo $escaper->escapeHtml($row['field']); ?></a>        
+                <?php echo $escaper->escapeHtml($row['field']); ?></a>
             </td>
             <td>
                 <?php

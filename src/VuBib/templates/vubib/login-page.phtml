@@ -9,9 +9,13 @@
     }
  ?>
 
-<?php foreach ($this->flashMessages['error'] as $msg): ?>
-    <div class="alert alert-danger"><?=$msg ?></div>
-<?php endforeach; ?>
+<?php
+    if (array_key_exists('error', $this->flashMessages)) {
+        foreach ($this->flashMessages['error'] as $msg) {
+            echo '<div class="alert alert-danger">' . $msg . '</div>';
+        }
+    }
+?>
 
 <form class="form-horizontal" method="post" action="<?=$this->url('login')?><?='?action=login' . '&redirect_to=' . $redirect_url?>">
     <input type="hidden" name="action" value="login">

@@ -1,7 +1,8 @@
 <?php $this->headTitle('New Users'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_users') . '" style="float:left;color:white;"> Users > </a>' . '  New';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_users') . '">Users</a> &gt; New';
+    $this->layout()->page = "Users/New";
+?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {

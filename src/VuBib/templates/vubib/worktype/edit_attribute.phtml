@@ -1,8 +1,8 @@
 <?php $this->headTitle('Edit Attribute'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
-                                     . ' Edit';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; Edit';
+    $this->layout()->page = "Worktype/Edit";
+?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {
@@ -20,7 +20,7 @@ if ($request->getqueryParams('id') !== null) {
 <form class="form-horizontal" method="post" action="<?=$this->url('attributes_worktype')?>">
     <input type="hidden" name="action" value="<?=trim($action)?>">
     <input type="hidden" name="id" value="<?=trim($id)?>">
-    <div class="form-group">   
+    <div class="form-group">
         <label class="col-xs-3 control-label">Attribute: </label>
         <div class="col-xs-7">
             <input type="text" class="form-control" name="edit_attribute" id="editattribute" value="<?=$escaper->escapeHtml(trim($field))?>" />
@@ -28,7 +28,7 @@ if ($request->getqueryParams('id') !== null) {
     </div>
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
+            <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
             <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
         </div>
     </div>

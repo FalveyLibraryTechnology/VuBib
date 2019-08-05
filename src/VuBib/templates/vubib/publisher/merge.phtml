@@ -1,7 +1,9 @@
 <?php $this->headTitle('Merge Publisher'); ?>
 <?php
-    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '" style="float:left;color:white;"> Publisher > </a>'
-                                    . ' Merge';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '">Publisher</a> &gt; Merge';
+    $this->layout()->page = "Publisher/Merge";
+?>
+<?php
     $this->headScript()->appendFile($this->url('home') . 'js/menu.js');
     $this->headScript()->appendFile($this->url('home') . 'js/work.js');
 ?>

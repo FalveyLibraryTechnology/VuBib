@@ -5,6 +5,8 @@ if ($request->getqueryParams('id') !== null) {
     $action = $params['action'];
     $id = $params['id'];
     $wkat_id = $params['wkat_id'];
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; <a href="' . $this->url('manage_subattributes', ['id' => $wkat_id]) . '">Sub Attributes</a> &gt; Values';
+    $this->layout()->page = "Sub Attributes/Values";
 
     //fetch name based on id
     $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
@@ -34,7 +36,7 @@ $(document).ready(function(){
         .on('click', '.removeButton', function() {
             console.log('rmv here');
             var $row    = $(this).parents('.form-group');
-            
+
             // Remove element containing the option
             $row.remove();
         });
@@ -69,7 +71,7 @@ $(document).ready(function(){
                     <div class="col-sm-4">
                         <button type="button" class="btn btn-default addButton"><i class="fa fa-plus">+</i></button>
                     </div>
-                </div>  
+                </div>
     <?php
             } else {
     ?>
@@ -109,7 +111,7 @@ $(document).ready(function(){
             <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus">-</i></button>
         </div>
     </div>
-    
+
     <div class="form-group">
         <div class="col-sm-5 col-sm-offset-3">
             <button type="submit" class="btn btn-primary" name="submitt" value="Save">Save</button>

@@ -1,8 +1,8 @@
 <?php $this->headTitle('New Attribute'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
-                                     . ' New';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; New';
+    $this->layout()->page = "Attributes/New";
+?>
 <?php
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();

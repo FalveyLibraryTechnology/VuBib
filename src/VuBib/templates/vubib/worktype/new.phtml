@@ -1,13 +1,13 @@
 <?php $this->headTitle('New Work Type'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_worktype') . '" style="float:left;color:white;"> Worktype > </a>'
-                                     . ' New';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_worktype') . '">Worktype</a> &gt; New';
+    $this->layout()->page = "Worktype/New";
+?>
 <?php
-if ($request->getqueryParams('action') !== null) {
-    $params = $request->getqueryParams();
-    $action = $params['action'];
-}
+    if ($request->getqueryParams('action') !== null) {
+        $params = $request->getqueryParams();
+        $action = $params['action'];
+    }
 ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?>">

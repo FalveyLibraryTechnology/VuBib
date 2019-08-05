@@ -14,9 +14,8 @@ if ($request->getqueryParams('action') !== null) {
     $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
     $subattr = $table->findRecordsByWorkAttrId($wkat_id);
 
-    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' .
-                '<a href="' . $this->url('manage_attribute_options') . '?id=' . $wkat_id . '" style="float:left;color:white;"> Attribute Options > </a>'
-                . ' New';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; <a href="' . $this->url('manage_attribute_options', ['id' => $wkat_id]) . '">Attribute Options</a> &gt; New';
+    $this->layout()->page = "Attributes Options/New";
 }
 ?>
 <script>
@@ -34,7 +33,7 @@ $(document).ready(function(){
         // Remove button click handler
         .on('click', '.removeButton', function() {
             var $row    = $(this).parents('.form-group');
-            
+
             // Remove element containing the option
             $row.remove();
         });

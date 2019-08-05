@@ -1,8 +1,8 @@
 <?php $this->headTitle('Edit Publisher'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '" style="float:left;color:white;"> Publisher > </a>'
-                                    . ' Edit';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '">Publisher</a> &gt; Edit';
+    $this->layout()->page = "Publisher/Edit";
+?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {
@@ -20,15 +20,15 @@ if ($request->getqueryParams('id') !== null) {
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
         <input type="hidden" name="action" value="<?php echo $action; ?>">
         <input type="hidden" name="id" value="<?php echo $id; ?>">
-        <div class="form-group">   
+        <div class="form-group">
             <label class="col-xs-2 control-label">Name: </label>
-            <div class="col-xs-7">    
+            <div class="col-xs-7">
                 <input type="text" class="form-control" name="publisher_newname" id="newpublishername" value="<?= $escaper->escapeHtml($name) ?>" />
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
             </div>
         </div>

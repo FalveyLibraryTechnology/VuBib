@@ -1,9 +1,8 @@
 <?php $this->headTitle('Edit AgentType'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agenttype') . '" style="float:left;color:white;"> Agenttype > </a>'
-                                      . ' Edit';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agenttype') . '">Agent Type</a> &gt; Edit';
+    $this->layout()->page = "Agenttype/Edit";
  ?>
-
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {
@@ -21,7 +20,7 @@ if ($request->getqueryParams('id') !== null) {
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_agenttype') ?>">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
         <input type="hidden" name="id" value="<?= trim($id) ?>">
-        <div class="form-group">   
+        <div class="form-group">
             <label class="col-xs-2 control-label">Type: </label>
             <div class="col-xs-7">
                 <input type="text" class="form-control" name="edit_agenttype" id="editagenttype" value="<?= $escaper->escapeHtml(trim($type)) ?>" />
@@ -29,7 +28,7 @@ if ($request->getqueryParams('id') !== null) {
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
             </div>
         </div>

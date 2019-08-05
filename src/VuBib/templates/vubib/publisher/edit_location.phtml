@@ -1,4 +1,8 @@
-<?php $this->headTitle('Edit Publisher'); ?>
+<?php $this->headTitle('Edit Location Publisher'); ?>
+<?php
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '">Publisher</a> &gt; Edit Location';
+    $this->layout()->page = "Publisher/Edit Location";
+?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {
@@ -28,21 +32,21 @@ if ($request->getqueryParams('id') !== null) {
         <input type="hidden" name="action" value="<?php echo $action; ?>">
         <input type="hidden" name="publisher_id" value="<?php echo $pub_id; ?>">
         <input type="hidden" name="location_id" value="<?php echo $loc_id; ?>">
-         <div class="form-group form-inline">   
+         <div class="form-group form-inline">
             <label class="col-xs-2 control-label">Publisher: </label>
-            <div class="controls col-xs-7"> 
+            <div class="controls col-xs-7">
                  <p class="form-control-static">&nbsp;&nbsp;<?php echo $publisher; ?></p>
             </div>
         </div>
-        <div class="form-group">   
+        <div class="form-group">
             <label class="col-xs-2 control-label">Location: </label>
-            <div class="col-xs-7">    
+            <div class="col-xs-7">
                 <input type="text" class="form-control" name="location_newname" id="newpublocationname" value="<?= $escaper->escapeHtml($location) ?>" />
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
             </div>
         </div>

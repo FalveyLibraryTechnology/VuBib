@@ -1,9 +1,8 @@
 <?php $this->headTitle('Delete Publisher'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '" style="float:left;color:white;"> Publisher > </a>'
-                                    . ' Delete';
- ?>
-
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '">Publisher</a> &gt; Delete';
+    $this->layout()->page = "Publisher/Delete";
+?>
 <div class="col-xs-4">
     <form method="post" action="<?= $this->url('manage_publisher') ?>">
         <p>Are you sure you want to delete this?</p>
@@ -29,14 +28,14 @@
                         echo "<li>$name</li>";
             ?>
                         <ul>
-                        <input type="hidden" name="pub_id[]" value="<?=$pub['id']?>">                        
+                        <input type="hidden" name="pub_id[]" value="<?=$pub['id']?>">
                         <input type="hidden" name="action" value="<?=$action?>">
-                        </ul>                        
+                        </ul>
                         <?php
                     endforeach;
                 }
            ?>
-        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Delete">
         <input type="submit" name="submitt" value="Cancel">
     </form>
 </div>

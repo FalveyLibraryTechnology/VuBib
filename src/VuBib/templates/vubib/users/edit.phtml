@@ -1,7 +1,8 @@
-<?php $this->headTitle('Edit User'); ?>
+<?php $this->headTitle('Edit Users'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_users') . '" style="float:left;color:white;"> Users > </a>' . ' Edit';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_users') . '">Users</a> &gt; Edit';
+    $this->layout()->page = "Users/Edit";
+?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -49,7 +50,7 @@ if ($request->getqueryParams('id') !== null) {
                 <input type="text" class="form-control" name="edituser_name" id="username" value="<?= $escaper->escapeHtml($name) ?>"/>
             </div>
         </div>
-        <div class="form-group">  
+        <div class="form-group">
             <label class="col-xs-4 control-label">Access Level: </label>
             <div class="col-xs-7">
                 <select class="form-control" name="access_level">
@@ -85,7 +86,7 @@ if ($request->getqueryParams('id') !== null) {
         </div>
         <div class="form-group">
             <div class="col-sm-offset-4 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submitt" id="submit_Save" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submitt" id="submit_Save" value="Save">Save</button>
                 <button type="submit" class="btn btn-default"  name="submitt" value="Cancel">Cancel</button>
                 <p class="loginError" style="display:none;color:red;margin-bottom:20px;">Password and confirm password must match</p>
             </div>

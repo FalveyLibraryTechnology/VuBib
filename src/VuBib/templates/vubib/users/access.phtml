@@ -1,8 +1,8 @@
 <?php $this->headTitle('Access Users'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_users') . '" style="float:left;color:white;"> Users > </a>' . ' Access';
- ?>
-
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_users') . '">Users</a> &gt; Access';
+    $this->layout()->page = "Users/Access";
+?>
 <div class="col-md-9">
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_users') ?>">
     <input type="hidden" name="action" value="users_access">
@@ -19,12 +19,12 @@
                     <td>
                         Administrator
                     </td>
-                    <td> 
+                    <td>
                         <table style="font-size:10pt;">
                             <tr align="center">
                                 <td>
                                     Work <br>
-                                    <div class="checkbox">                
+                                    <div class="checkbox">
                                         <input type="checkbox" name="access[Work][Administrator]" value="1" checked disabled>
                                     </div>
                                 </td>
@@ -78,13 +78,13 @@
                                 </td>
                             </tr>
                         </table>
-                    </td>              
+                    </td>
                 </tr>
                 <tr>
                     <td>
                         Super User
                     </td>
-                    <td> 
+                    <td>
                         <table style="font-size:10pt;">
                             <tr align="center">
                             <?php
@@ -193,13 +193,13 @@
                                 </td>
                             </tr>
                         </table>
-                    </td>              
+                    </td>
                 </tr>
                 <tr>
                     <td>
                         User
                     </td>
-                    <td>   
+                    <td>
                         <table style="font-size:10pt;">
                             <tr align="center">
                             <?php
@@ -308,7 +308,7 @@
                                 </td>
                             </tr>
                         </table>
-                    </td>              
+                    </td>
                 </tr>
             </form>
             </tbody>

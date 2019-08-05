@@ -2,8 +2,8 @@
 $this->headTitle('Manage Options - Attributes');
 ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
-                                    . ' Attribute Options';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; Manage Options';
+    $this->layout()->page = 'Attributes/Manage Options';
  ?>
 <?php
 if ($request->getqueryParams('action') !== null) {
@@ -52,7 +52,7 @@ $(document).ready(function () {
 });
 </script>
 <div class="col-md-9">
-    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p> 
+    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p>
     <a href="<?=$this->url('new_option')?><?='?id=' . $id . '&action=new'?>"><b style="text-decoration: underline;">Add Option</b></a>
     &nbsp;&nbsp;&nbsp;
     <a href="<?=$this->url('merge_options')?><?='?id=' . $id . '&action=merge_options'?>"><b style="text-decoration: underline;">Merge Options</b></a>
@@ -81,7 +81,7 @@ $(document).ready(function () {
                 </td>
                 <td>
                     <a href="<?=$this->url('edit_option')?><?='?wkat_id=' . $id . '&id=' . $row['id'] . '&action=edit'?>">
-                    <?php echo $escaper->escapeHtml($row['title']); ?></a>            
+                    <?php echo $escaper->escapeHtml($row['title']); ?></a>
                 </td>
                 <?php
                 if (count($subattr) > 0){
@@ -116,5 +116,5 @@ $(document).ready(function () {
                 ]
             );?>
         </form>
-    <?php } ?> 
+    <?php } ?>
 </div>

@@ -1,7 +1,7 @@
 <?php $this->headTitle('Move Classification'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '" style="float:left;color:white;"> Classification > </a>'
-                                    . ' Move';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '">Classification</a> &gt; Move';
+    $this->layout()->page = "Classification/Move";
  ?>
 <?php
 $id;
@@ -167,10 +167,10 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
     });
 </script>
 <div class="col-md-7" name="mv_classification" id="mv_classification">
-    <form id="move-folder-data" class="form-horizontal" name="form_mv_classification" id="form_mv_classification" 
+    <form id="move-folder-data" class="form-horizontal" name="form_mv_classification" id="form_mv_classification"
           method="POST" action="<?= $this->url('manage_classification') ?>">
         <input type="hidden" name="action" value="<?= $action ?>">
-        <input type="hidden" name="id" id="mv_fl_id" value="<?= $id ?>">    
+        <input type="hidden" name="id" id="mv_fl_id" value="<?= $id ?>">
         <?php
         $arr_fl = [];
         if (isset($id)) {
@@ -199,11 +199,11 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                                 $fl_siblings = $table->getChild($arr_fl[$i + 1]);
                                 foreach ($fl_siblings as $row) :
                                 ?>
-                                    <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>    
+                                    <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                    </div>    
+                    </div>
                 <?php
                 }
                 elseif ($i != ($cnt - 1)) {
@@ -222,14 +222,14 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                                 foreach ($fl_siblings as $row) :
                                     if ($row['id'] != $arr_fl[$i]) {
                                 ?>
-                                        <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>                            
+                                        <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
                                 <?php
                                     }
                                 endforeach;
                                 ?>
                             </select>
                         </div>
-                    </div>        
+                    </div>
                 <?php
                 } else {
                     $table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -248,14 +248,14 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                                 foreach ($fl_siblings as $row) :
                                     if ($row['id'] != $arr_fl[$i]) {
                                 ?>
-                                        <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>                            
+                                        <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
                                 <?php
                                     }
                                 endforeach;
                                 ?>
                             </select>
                         </div>
-                    </div>    
+                    </div>
                 <?php
                 }
             }
@@ -263,7 +263,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         ?>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submit" value="Cancel">Cancel</button>
                 <p class="moveError" style="display:none;color:red;margin-bottom:20px;">Cannot move a classification into itself.</p>
             </div>

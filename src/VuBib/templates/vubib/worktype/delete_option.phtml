@@ -1,19 +1,18 @@
 <?php $this->headTitle('Delete Option'); ?>
+<?php
+?>
 <?php //$this->layout()->instructions = ""; ?>
 <?php
-$id;
 if ($request->getqueryParams('id') !== null) {
-    $params = $request->getqueryParams();
     $action = $params['action'];
     $wkat_id = $params['wkat_id'];
-    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' .
-            '<a href="' . $this->url('manage_attribute_options') . '?id=' . $wkat_id . '" style="float:left;color:white;"> Attribute Options > </a>'
-            . ' Delete';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; <a href="' . $this->url('manage_attribute_options', ['id' => $wkat_id]) . '">Attribute Options</a> &gt; Delete';
+    $this->layout()->page = "Attributes Options/Delete";
 }
 ?>
 <div class="col-xs-4">
     <form method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
-        <p>Are you sure you want to delete this?</p>  
+        <p>Are you sure you want to delete this?</p>
         <?php
                 if ($request->getqueryParams('action') !== null)
                 {
@@ -23,7 +22,6 @@ if ($request->getqueryParams('id') !== null) {
 
                 if ($request->getMethod() == 'POST') {
                     $post = $request->getParsedBody();
-                    //$id      = $params['id'];
                 }
 
                 $wkAttr_Opt = [];
@@ -40,15 +38,15 @@ if ($request->getqueryParams('id') !== null) {
                         $paginator = $table->countRecordsByAttributeOption($wkat_id, $wkAttr_Opt['id']);
                         $cnt = $paginator->getTotalItemCount();
                         echo "<p><b>There are $cnt works associated with it.</b></p>"; ?>
-                        <ul>    
-                        <input type="hidden" name="workattropt_id[]" value="<?=$wkAttr_Opt['id']?>">                        
+                        <ul>
+                        <input type="hidden" name="workattropt_id[]" value="<?=$wkAttr_Opt['id']?>">
                         <input type="hidden" name="action" value="<?=$action?>">
-                        </ul>                        
+                        </ul>
                         <?php
                     endforeach;
                 }
             ?>
-        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Delete">
         <input type="submit" name="submitt" value="Cancel">
     </form>
 </div>

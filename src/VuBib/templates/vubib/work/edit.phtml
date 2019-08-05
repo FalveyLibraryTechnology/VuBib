@@ -1,9 +1,8 @@
+<?php $this->headTitle('Edit Work'); ?>
 <?php
-$this->headTitle('Edit Work');
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '">Work</a> &gt; Edit';
+    $this->layout()->page = "Work/Edit?action=edit";
 ?>
-<?php
-      $this->layout()->page = "Work/edit?action=edit";
- ?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {

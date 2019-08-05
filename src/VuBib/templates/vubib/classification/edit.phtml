@@ -1,9 +1,8 @@
 <?php $this->headTitle('Edit Classification'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '" style="float:left;color:white;"> Classification > </a>'
-                                    . ' Edit';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '">Classification</a> &gt; Edit';
+    $this->layout()->page = "Classification/Edit";
  ?>
-
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {
@@ -71,7 +70,7 @@ if ($request->getqueryParams('id') !== null) {
         </div>
         <div class="form-group">
             <div class="col-sm-offset-4 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submit" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submit" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submit" value="Cancel">Cancel</button>
             </div>
         </div>

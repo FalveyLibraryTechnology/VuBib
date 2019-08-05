@@ -1,7 +1,8 @@
 <?php $this->headTitle('Manage Work'); ?>
 <?php
-      $this->layout()->breadcrumbs .= ' Work';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '">Work</a> &gt; Manage';
+    $this->layout()->page = "Work/Manage";
+?>
 <style>
 table {
     width: 100%;

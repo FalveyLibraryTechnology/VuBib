@@ -1,8 +1,8 @@
 <?php $this->headTitle('Classify Work'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>'
-                                    . ' Classify';
- ?>
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '">Work</a> &gt; Classify';
+    $this->layout()->page = "Work/Classify";
+?>
 <style>
 table {
     width: 100%;

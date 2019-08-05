@@ -1,7 +1,7 @@
 <?php $this->headTitle('New Language'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_language') . '" style="float:left;color:white;"> Language > </a>'
-                                    . ' New';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_language') . '">Language</a> &gt; New';
+    $this->layout()->page = "Language/New";
  ?>
 <?php
 if ($request->getqueryParams('action') !== null) {

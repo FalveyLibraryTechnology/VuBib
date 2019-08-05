@@ -1,17 +1,19 @@
 <?php $this->headTitle('Delete Attribute'); ?>
 <?php
-$this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
-                                     . ' Merge';
-$this->headScript()->appendFile($this->url('home') . 'js/work.js');
-if ($request->getqueryParams('action') !== null) {
-    $params = $request->getqueryParams();
-    $action = $params['action'];
-    $wkat_id = $params['id'];
-    //fetch attribute name based on id
-    $table = new \VuBib\Db\Table\WorkAttribute($adapter);
-    $row = $table->findRecordById($wkat_id);
-    $attribute = $row['field'];
-}
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attribute</a> &gt; Delete';
+    $this->layout()->page = "Attribute/Delete";
+?>
+<?php
+    $this->headScript()->appendFile($this->url('home') . 'js/work.js');
+    if ($request->getqueryParams('action') !== null) {
+        $params = $request->getqueryParams();
+        $action = $params['action'];
+        $wkat_id = $params['id'];
+        //fetch attribute name based on id
+        $table = new \VuBib\Db\Table\WorkAttribute($adapter);
+        $row = $table->findRecordById($wkat_id);
+        $attribute = $row['field'];
+    }
  ?>
 <script>
     var ur = "";
@@ -27,7 +29,7 @@ if ($request->getqueryParams('action') !== null) {
         });
          //source select
         $(document).on('click', '#btn_select_src', function () {
-            if ($("#src_result_table input:checkbox:checked").length > 0) {              
+            if ($("#src_result_table input:checkbox:checked").length > 0) {
                 var src_selected = new Array();
                 var src_selected_ids = new Array();
 
@@ -36,18 +38,18 @@ if ($request->getqueryParams('action') !== null) {
                      src_selected_ids.push($(this).val());
                      src_selected.push(opt_name);
                 });
-                
+
                 var newHTML = $.map(src_selected, function(value) {
                     return('<span style="font-weight: normal;">' + value + '</span>');
                 });
-                
+
                 // convert the array to string and store the value in hidden input field
                 $('#src_opts_hidden').val(src_selected_ids.toString());
 
                 $('#src_label').append('<br/>').append(newHTML.join('<br/>'));
                 $('#src_find_outer_div').html('');
                 $('#src_select_div').html('');
-                
+
                 $("#find_dest_opt").prop("disabled", false);
                 $("#dest_opt_find_bt").prop("disabled", false);
             } else {
@@ -62,17 +64,17 @@ if ($request->getqueryParams('action') !== null) {
         });
         //destination select
         $(document).on('click', '#btn_select_dest', function () {
-            if ($('input[name="dest_select"]').is(':checked')) {  
+            if ($('input[name="dest_select"]').is(':checked')) {
                 var dest_opt_id = $('input[name="dest_select"]:checked').val();
                 $('#dest_opt_hidden').val(dest_opt_id);
-                
+
                 var dest_opt_name = $('input[name="dest_select"]:checked').closest("tr").find('td[class="dest_opt_name"]').text();
                 var destLabelHTML = '<span style="font-weight: normal;">' + dest_opt_name + '</span>';
-            
+
                 $('#dest_label').append('<br/>').append(destLabelHTML);
                 $('#dest_find_outer_div').html('');
                 $('#dest_select_div').html('');
-                
+
                 addMergeButton(document, "opt_merge");
             } else {
                 alert("No option(s) selected, Please select option(s) to merge.");
@@ -90,28 +92,28 @@ if ($request->getqueryParams('action') !== null) {
     });
 </script>
 <div class="col-lg-12">
-    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p> 
+    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p>
     <form class="form-horizontal" name="merge_pub_form" id="merge_pub_form" method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
         <input type="hidden" name="action" value="<?=$action?>">
         <input type="hidden" name="mrg_attr_id" id="mrg_attr_id" value="<?=$wkat_id?>">
         <input type="hidden" id="src_opts_hidden" name="src_opts_hidden">
         <input type="hidden" id="dest_opt_hidden" name="dest_opt_hidden">
         <div class="form-group">
-            <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
+            <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">
                 <tbody>
-                    <tr valign="Top">            
-                        <td style="border-spacing: 10px;" id="src_find_col">                
+                    <tr valign="Top">
+                        <td style="border-spacing: 10px;" id="src_find_col">
                             <b id="src_label">Source Option(s)</b><br>
                             <div class="form-group" id="src_find_outer_div">
                                 <label class="col-xs-4 control-label">Find: </label>
                                 <div class="col-xs-7">
                                     <input type="text" class="form-control" name="find_src_opt" id="find_src_opt" placeholder="enter option"/>
-                                </div>    
+                                </div>
                                 <div class="col-xs-7">
                                     <button type="button" class="btn btn-default" name="src_opt_find_bt" id="src_opt_find_bt" value="Save">Find</button>
                                 </div>
                             </div>
-                        </td>    
+                        </td>
                         <td style="border-spacing: 10px;">
                             <b id="dest_label">Destination Option(s)</b><br>
                             <div class="form-group" id="dest_find_outer_div">
@@ -123,11 +125,11 @@ if ($request->getqueryParams('action') !== null) {
                                     <button type="button" class="btn btn-default" name="dest_opt_find_bt" id="dest_opt_find_bt" value="Save">Find</button>
                                 </div>
                             </div>
-                        </td>            
+                        </td>
                     </tr>
                 </tbody>
-            </table>        
-        </div>    
+            </table>
+        </div>
         <div class="form-group">
             <div class="col-sm-offset-4 col-sm-10">
                 <!--<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Merge</button>-->

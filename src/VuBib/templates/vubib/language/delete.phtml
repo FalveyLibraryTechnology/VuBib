@@ -1,8 +1,8 @@
 <?php header('Content-Type: text/html; charset=UTF-8'); ?>
 <?php $this->headTitle('Delete Language'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_language') . '" style="float:left;color:white;"> Language > </a>'
-                                    . ' Delete';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_language') . '">Language</a> &gt; Delete';
+    $this->layout()->page = "Language/Delete";
  ?>
 <div class="col-xs-4">
     <form method="post" action="<?= $this->url('manage_language') ?>">
@@ -26,7 +26,7 @@
             <input type="hidden" name="id" value="<?= $id ?>">
             <input type="hidden" name="action" value="<?= $action ?>">
         </ul>
-        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Delete">
         <input type="submit" name="submitt" value="Cancel">
     </form>
 </div>

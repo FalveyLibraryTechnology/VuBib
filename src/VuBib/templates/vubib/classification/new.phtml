@@ -1,7 +1,7 @@
 <?php $this->headTitle('New Classification'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '" style="float:left;color:white;"> Classification > </a>'
-                                    . ' New';
+    $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '">Classification</a> &gt; New';
+    $this->layout()->page = "Classification/New";
  ?>
 <?php
 if ($request->getqueryParams('action') !== null) {
@@ -35,9 +35,9 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
                 <input type="text" class="form-control" name="new_classif_sortorder" id="newclassif_sortorder" />
             </div>
         </div>
-        <div class="form-group">  
+        <div class="form-group">
             <label class="col-xs-4 control-label">Parent: </label>
-            <div class="col-xs-7">                   
+            <div class="col-xs-7">
                     <?php if($from === "") { ?>
                         <select class="form-control" name="parent_id">
                         <option value=""></option>
@@ -46,7 +46,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
                             $fl_parents = $table->findParent();
                             foreach ($fl_parents as $row) :
                             ?>
-                                <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>                            
+                                <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
                         <?php endforeach;
                     } else { ?>
                         <select class="form-control" name="parent_id">
@@ -101,7 +101,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
         </div>
         <div class="form-group">
             <div class="col-sm-offset-4 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submit" value="Save">Save</button> 
+                <button type="submit" class="btn btn-default" name="submit" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submit" value="Cancel">Cancel</button>
             </div>
         </div>
