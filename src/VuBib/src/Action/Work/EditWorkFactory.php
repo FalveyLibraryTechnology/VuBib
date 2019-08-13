@@ -31,6 +31,7 @@ use Interop\Container\ContainerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\Session;
 
 /**
  * Class Definition for EditWorkFactory.
@@ -54,15 +55,13 @@ class EditWorkFactory
      */
     public function __invoke(ContainerInterface $container)
     {
+        $adapter = $container->get(Adapter::class);
         $router = $container->get(RouterInterface::class);
+        $session = $container->get(Session\Container::class);
         $template = ($container->has(TemplateRendererInterface::class))
             ? $container->get(TemplateRendererInterface::class)
             : null;
-        $adapter = $container->get(Adapter::class);
-        //return new EditWorkAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction(
-            'vubib::work/edit', $router,
-            $template, $adapter
-        );
+
+        return new EditWorkAction($router, $template, $adapter, $session);
     }
 }

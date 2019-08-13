@@ -17,7 +17,7 @@ return [
             VuBib\Action\Work\ManageWorkAction::class => VuBib\Action\Work\ManageWorkFactory::class,
             VuBib\Action\Work\ClassifyWorkAction::class => VuBib\Action\SimpleRenderFactory::class,
             VuBib\Action\Work\DeleteWorkAction::class => VuBib\Action\SimpleRenderFactory::class,
-            VuBib\Action\Work\EditWorkAction::class => VuBib\Action\SimpleRenderFactory::class,
+            VuBib\Action\Work\EditWorkAction::class => VuBib\Action\Work\EditWorkFactory::class,
             VuBib\Action\Work\NewWorkAction::class => VuBib\Action\SimpleRenderFactory::class,
             VuBib\Action\Work\ReviewWorkAction::class => VuBib\Action\SimpleRenderFactory::class,
             VuBib\Action\Work\SearchWorkAction::class => VuBib\Action\SimpleRenderFactory::class,

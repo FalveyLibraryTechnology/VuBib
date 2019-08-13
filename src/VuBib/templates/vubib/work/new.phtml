@@ -182,7 +182,7 @@ $(document).ready(function() {
 });
  </script>
 <form id="new-work-data" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?>">
-    <input type="hidden" name="action" value="work_new">
+    <input type="hidden" name="action" value="<?=$this->formAction ?>">
     <!--<input type="hidden" name="arr[]" id="arrs" value="frm jquery">-->
     <?php
         //get user

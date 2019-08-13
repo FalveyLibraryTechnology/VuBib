@@ -304,6 +304,8 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
         success: function(data) {
             $("#Citation").html("");
             $.each(data.worktype_attribute, function(key, val) {
+                const valEl = document.getElementById("work-citation-" + val.id);
+                const setValue = valEl ? valEl.value : "";
                 // append input control at end of form
                 if (
                     val.type == 'Textarea' ||
@@ -312,7 +314,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                     $('<div class="form-group required">' +
                           '<label class="col-sm-2">' + val.field + '</label>' +
                           '<div class="col-sm-10">' +
-                              '<input class="form-control" type="text" name="wkatid,' + val.id + '" id="' + val.field + '" size="50"/>' +
+                              '<input class="form-control" type="text" name="wkatid,' + val.id + '" id="' + val.field + '" value="' + setValue + '" size="50"/>' +
                           '</div>' +
                       '</div>').appendTo("#Citation");
                 }
@@ -329,7 +331,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                     $('<div class="form-group required">' +
                           '<label class="col-sm-2">'+val.field+'</label>' +
                           '<div class="col-sm-10">' +
-                            '<input class="form-control option-ac" placeholder="Type to search" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
+                            '<input class="form-control option-ac" placeholder="Type to search" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" value="' + setValue + '" size="50"/>' +
                             '<a class="addNewAttrOptionLink"' +
                             ' data-attribute-id="'+ val.field + ':' + val.id +'"' +
                             ' href="#' + val.field + ':' + val.id +'">Add New</a>' +

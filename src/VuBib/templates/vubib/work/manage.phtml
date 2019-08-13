@@ -91,7 +91,7 @@ if ($request->getqueryParams() != null) {
             <input type="checkbox" id="selWork" name="selectWork[]" value=<?=$row['id']?>>
         </td>
         <td class="title">
-            <a href="<?=$this->url('edit_work')?><?='?action=edit&id=' . $row['id']?>"><?php echo $escaper->escapeHtml($row['title']); ?></a>
+            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id']?>"><?php echo $escaper->escapeHtml($row['title']); ?></a>
         </td>
         <td class="type">
             <?php
