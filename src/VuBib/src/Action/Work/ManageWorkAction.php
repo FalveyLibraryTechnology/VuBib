@@ -265,16 +265,20 @@ class ManageWorkAction implements MiddlewareInterface
                 //update General(work)
                 $table = new \VuBib\Db\Table\Work($this->adapter);
                 $table->updateRecords(
-                    $pr_workid, $post['id'], $post['edit_work_type'],
-                    $post['edit_worktitle'], $post['edit_worksubtitle'],
-                    $post['edit_workparalleltitle'], $post['description'],
+                    $pr_workid, $post['id'], $post['work_type'],
+                    $post['work_title'], $post['work_subtitle'],
+                    $post['work_paralleltitle'], $post['description'],
                     date('Y-m-d H:i:s'), $post['user'],
-                    $post['edit_workstatus'], $post['pub_yrFrom']
+                    $post['work_status'], $post['pub_yrFrom']
                 );
 
+                // update classifications
+                //delete all workfolders
+                $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
+                $table->deleteRecordByWorkId($post['id']);
                 //extract classification rows
-                if (isset($post['arr'])) {
-                    foreach ($post['arr'] as $row) {
+                if (isset($post['classification_row'])) {
+                    foreach ($post['classification_row'] as $row) {
                         $fl[] = explode(',', trim($row, ','));
                     }
                     //extract folder ids for each row
@@ -336,27 +340,15 @@ class ManageWorkAction implements MiddlewareInterface
                         $wkopt_id[] = $value;
                     }
                 }
-                if (!empty($wkat_id)) { //this
-                    if ($wkat_id[0] != null) {
-                        //delete workattribute records
-                        $table = new \VuBib\Db\Table\Work_WorkAttribute(
-                            $this->adapter
-                        );
-                        $table->deleteRecordByWorkId($post['id']);
 
-                        //insert workattributes again
-                        $table = new \VuBib\Db\Table\Work_WorkAttribute(
-                            $this->adapter
-                        );
-                        $table->insertRecords(
-                            $post['id'],
-                            $wkat_id, $wkopt_id
-                        );
-                    }
-                } else {
-                    //delete workattribute records
+                // update workattributes
+                //delete workattribute records
+                $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+                $table->deleteRecordByWorkId($post['id']);
+                //insert workattributes again
+                if (!empty($wkat_id) && $wkat_id[0] != null) {
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-                    $table->deleteRecordByWorkId($post['id']);
+                    $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
                 }
             }
         }

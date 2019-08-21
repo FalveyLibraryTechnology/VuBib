@@ -124,13 +124,11 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
     {
         for ($i = 0; $i < count($ag_id); ++$i) {
             if ($ag_id[$i] != null && $agt_id[$i] != null) {
-                $this->insert(
-                    [
+                $this->insert([
                     'work_id' => $wk_id,
                     'agent_id' => $ag_id[$i],
                     'agenttype_id' => $agt_id[$i],
-                    ]
-                );
+                ]);
             }
         }
     }

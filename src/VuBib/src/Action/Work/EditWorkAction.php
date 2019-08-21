@@ -195,7 +195,7 @@ class EditWorkAction implements MiddlewareInterface
 
         // default classifications
         $table = new \VuBib\Db\Table\Folder($this->adapter);
-        $params['rootFolders'] = $table->getFoldersWithNullParent();
+        $viewData['rootFolders'] = $table->getFoldersWithNullParent();
 
         //fetch publishers attached to work
         $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);

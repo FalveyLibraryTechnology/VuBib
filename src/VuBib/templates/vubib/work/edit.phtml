@@ -153,27 +153,19 @@ $(document).ready(function() {
             return false;
         });
 
-        var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
-        var arr = [];
-        var values;
-        $('table[name="source_fl_table"]').each(function() {
-            $(this).find('tr').each(function() {
-                values = [];
-                $(this).find('td').find('.select_source_fl').each(function() {
-                    //$(this).find('.select_source_fl').each(function(){
-                    values.push($(this).val());
-                        //});
-                });
-                var newInput = $('<input type="hidden" name="arr[]" value="">');
-                newInput.val(values);
-                $("#new-work-data").append(newInput);
-            });
+        $("tr", "#source_fl_table").each(function() {
+            const values = $('.select_source_fl', this).map(function() {
+                return $(this).val();
+            }).get();
+            var newInput = $('<input type="hidden" name="classification_row[]" value="">');
+            newInput.val(values);
+            $("#work-data-form").append(newInput);
         });
         return true;
     });
 });
  </script>
-<form id="new-work-data" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?>">
+<form id="work-data-form" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?>">
     <input type="hidden" name="id" value="<?=$this->work['id'] ?? 'NEW' ?>">
     <input type="hidden" name="action" value="<?=$this->formAction ?>">
     <!--<input type="hidden" name="arr[]" id="arrs" value="frm jquery">-->
@@ -199,31 +191,31 @@ $(document).ready(function() {
         <div class="tab-pane active" id="General">
             <div class="form-group required">
                 <label class="col-sm-2 control-label">Title: </label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" name="new_worktitle" id="newworktitle" value="<?=$this->work['title'] ?? '' ?>" required="true" size="80"/>
+                <div class="col-sm-10 col-md-8">
+                    <input class="form-control" type="text" name="work_title" value="<?=$this->work['title'] ?? '' ?>" required="true" size="80"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Sub Title: </label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" name="new_worksubtitle" id="newworksubtitle" value="<?=$this->work['subtitle'] ?? '' ?>" size="80"/>
+                <div class="col-sm-10 col-md-8">
+                    <input class="form-control" type="text" name="work_subtitle" value="<?=$this->work['subtitle'] ?? '' ?>" size="80"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Parallel Title: </label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" name="new_workparalleltitle" id="newworkparalleltitle" value="<?=$this->work['paralleltitle'] ?? '' ?>" size="80"/>
+                <div class="col-sm-10 col-md-8">
+                    <input class="form-control" type="text" name="work_paralleltitle" value="<?=$this->work['paralleltitle'] ?? '' ?>" size="80"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Description: </label>
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-md-8">
                     <textarea class="form-control" name="description" id="description" rows="3" placeholder="Message"><?=$this->work['description'] ?? '' ?></textarea>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Type: </label>
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-md-8">
                     <select class="form-control" name="work_type" id="work_type" required="true">
                         <option value="">Choose Work Type</option>
                         <?php foreach ($this->workTypes as $workType): ?>
@@ -237,7 +229,7 @@ $(document).ready(function() {
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Parent Work: </label>
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-md-8">
                     <div id="parent-work-lookup">
                         <input type="hidden" class="acs-hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="<?=$this->work['parent']['id'] ?? '' ?>">
                         <input class="acs-input form-control" type="text" placeholder="Type to search" value="<?=$this->work['parent']['title'] ?? '' ?>" />
@@ -247,15 +239,19 @@ $(document).ready(function() {
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Status: </label>
-                <div class="col-sm-10">
-                    <label><input type="radio" name="select_workstatus" value="00"<?=($this->work['status'] == '00') ? ' checked' : '' ?>> In Progress</label><br/>
-                    <label><input type="radio" name="select_workstatus" value="0" <?=($this->work['status'] == '0') ? ' checked' : '' ?>> Pending Review</label><br/>
-                    <label><input type="radio" name="select_workstatus" value="2" <?=($this->work['status'] == '2') ? ' checked' : '' ?>> Unseen Source Doc</label><br/>
-                    <label><input type="radio" name="select_workstatus" value="1" <?=($this->work['status'] == '1') ? ' checked' : '' ?>> Complete</label><br/>
+                <div class="col-sm-10 col-md-8">
+                    <label><input type="radio" name="work_status" value="00"<?=($this->work['status'] == '00') ? ' checked' : '' ?>> In Progress</label><br/>
+                    <label><input type="radio" name="work_status" value="0" <?=($this->work['status'] == '0') ? ' checked' : '' ?>> Pending Review</label><br/>
+                    <label><input type="radio" name="work_status" value="2" <?=($this->work['status'] == '2') ? ' checked' : '' ?>> Unseen Source Doc</label><br/>
+                    <label><input type="radio" name="work_status" value="1" <?=($this->work['status'] == '1') ? ' checked' : '' ?>> Complete</label>
                 </div>
             </div>
         </div>
         <div class="tab-pane" id="Classification">
+            <nav>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="fl_add" value="Add">Add</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="fl_remove" value="Remove">Remove</button>
+            </nav>
             <?php
                 if (!isset($this->classifications)) {
                     $this->classifications = $this->rootFolders;
@@ -271,7 +267,7 @@ $(document).ready(function() {
                         <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
                             <select class="form-control select_source_fl select2" name="select_source_fl[]">
                                 <?php foreach($folderSiblings as $folder): ?>
-                                    <option value="<?=$folder['id'] ?>"<?=$folder['selected'] ? ' selected' : '' ?>><?=$folder['text_en'] ?></option>
+                                    <option value="<?=$folder['id'] ?>"<?=isset($folder['selected']) ? ' selected' : '' ?>><?=$folder['text_en'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -353,7 +349,6 @@ $(document).ready(function() {
                 <tr>
                     <td><input type="checkbox" name="removeAgent[]"></td>
                     <td>
-                        <input type="hidden" name="agent_id[]" id="agentId" value="">
                         <select class="form-control agent_type" name="agent_type[]" id="agent_type">
                             <option value=""></option>
                             <?php foreach ($this->agentTypes as $agentType): ?>
@@ -408,27 +403,18 @@ $(document).ready(function() {
                 <button type="button" class="close ig" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title ig" id="newAttrOptionModalLabel">New Attribute Option</h4>
             </div>
-            <div class="modal-body ig">
+            <div class="modal-body ig clearfix">
                 <div class="alert alert-success hidden" id="addAttributeSuccess">
                     Option successfully added
                 </div>
                 <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label"><span id="new-option-label">Option</span>: </label>
-                        <div class="col-sm-7">
-                            <input class="form-control" type="text" class="form-control" name="name_option" id="newoption" required="true" />
-                        </div>
+                    <div>
+                        <label class="control-label"><span id="new-option-label">Option</span>: </label>
+                        <input class="form-control" type="text" class="form-control" name="name_option" id="newoption" required="true" />
                     </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary" id="addNewOpt" name="submitt" value="Save">Save</button>
-                            <!--<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>-->
-                        </div>
-                    </div>
+                    <button type="submit" class="btn btn-primary pull-right" id="addNewOpt" name="submitt" value="Save">Save</button>
                 </form>
-            </div>
-            <div class="modal-footer ignore ig">
-                <button type="button" class="btn btn-default add_new_opt_close ig" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default add_new_opt_close ig pull-left" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
