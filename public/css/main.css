@@ -96,10 +96,8 @@ td.addEle {
 td[name="source_fl_col"] {
   padding: 2px;
 }
-td[name="pubNameCol"],
-td[name="agLnCol"],
-td[name="agFnCol"] {
-  width: auto;
+#agent_table td {
+  vertical-align: middle;
 }
 .yrFrom,
 .yrTo {
@@ -163,16 +161,14 @@ tr[name="pub_row[]"] td:first-of-type {
 }
 .acs-set .acs-input,
 .acs-editing .acs-title,
-.acs-editing .acs-change,
-.acs-editing .acs-clear {
+.acs-editing .acs-btn-container {
   display: none;
 }
 .acs-editing .acs-input {
   display: block;
 }
 .acs-set .acs-title,
-.acs-set .acs-change,
-.acs-set .acs-clear {
+.acs-set .acs-btn-container {
   display: inline-block;
 }
 .acs-set .acs-title {

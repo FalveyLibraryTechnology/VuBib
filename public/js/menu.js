@@ -85,11 +85,18 @@ function acsStandardResults(key, mapFunc) {
   };
 }
 function setupACS(selector, ajaxData, ajaxSuccess) {
-  document.querySelectorAll(selector).forEach(function setupACSel(el) {
+  let elements = document.querySelectorAll(selector);
+  elements.forEach(function setupACSel(el) {
+    // Run setup
     const input = el.querySelector(".acs-input");
-    ascAC(input, function periodicalAC(query, callback) {
+    if (!input) {
+      console.error(input);
+      return;
+    }
+    // Bind autocomplete
+    ascAC(input, function publisherAC(query, callback) {
       $.ajax({
-        method: "POST",
+        method: "GET",
         url: workURL,
         data: ajaxData(input)
       }).done(function(json) {
@@ -105,44 +112,66 @@ function setupACS(selector, ajaxData, ajaxSuccess) {
       });
     });
     // Add UI
-    const titleEl = document.createElement("span");
-    titleEl.className = "acs-title";
-    const btnContainer = document.createElement("div");
-    btnContainer.className = "acs-btn-container";
-    const changeBtn = document.createElement("span");
-    changeBtn.className = "acs-change btn btn-default btn-xs";
-    changeBtn.innerHTML = "Change";
-    const clearBtn = document.createElement("span");
-    clearBtn.className = "acs-clear btn btn-default btn-xs";
-    clearBtn.innerHTML = "Clear";
-    el.appendChild(titleEl);
-    el.appendChild(btnContainer);
-    btnContainer.appendChild(changeBtn);
-    btnContainer.appendChild(clearBtn);
+    let titleEl, changeBtn, clearBtn;
+    if (!el.querySelector(".acs-title")) {
+      // Make new elements
+      titleEl = document.createElement("span");
+      titleEl.className = "acs-title";
+      const btnContainer = document.createElement("div");
+      btnContainer.className = "acs-btn-container";
+      changeBtn = document.createElement("button");
+      changeBtn.className = "acs-change btn btn-default btn-xs";
+      changeBtn.innerHTML = "Change";
+      clearBtn = document.createElement("button");
+      clearBtn.className = "acs-clear btn btn-default btn-xs";
+      clearBtn.innerHTML = "Clear";
+      el.appendChild(titleEl);
+      el.appendChild(btnContainer);
+      btnContainer.appendChild(changeBtn);
+      btnContainer.appendChild(clearBtn);
+    } else {
+      // Select UI elements
+      titleEl = el.querySelector(".acs-title");
+      changeBtn = el.querySelector(".acs-change");
+      clearBtn = el.querySelector(".acs-clear");
+    }
     // Add event listeners
     const hiddenEl = el.querySelector(".acs-hidden");
     input.addEventListener("ac-select", function bindParentHidden(e) {
-      hiddenEl.value = e.detail.id;
-      titleEl.innerHTML = e.detail.text;
+      titleEl.innerHTML = e.detail.value || e.detail.text;
       el.className = el.className.replace("acs-editing", "acs-set");
+      if (hiddenEl) {
+        hiddenEl.value = e.detail.id;
+      }
     }, false);
+    // Change button
     changeBtn.addEventListener("click", function changeParentWork(e) {
+      e.preventDefault();
       input.value = titleEl.innerHTML;
-      hiddenEl.value = "";
       el.className = el.className.replace("acs-set", "acs-editing");
       input.select();
+      if (hiddenEl) {
+        hiddenEl.value = "";
+      }
     }, false);
+    // Clear button
     clearBtn.addEventListener("click", function removeParentWork(e) {
+      e.preventDefault();
       input.value = "";
-      hiddenEl.value = "";
       el.className = el.className.replace("acs-set", "acs-editing");
+      if (hiddenEl) {
+        hiddenEl.value = "";
+      }
     }, false);
     // Set initial state
     if (typeof input.value === "undefined" || input.value === "") {
+      el.className = el.className.replace("acs-set", "");
       el.className += " acs-editing";
     } else {
       el.className += " acs-set";
+      el.className = el.className.replace("acs-editing", "");
       titleEl.innerHTML = input.value;
     }
   });
+  return elements;
 }
