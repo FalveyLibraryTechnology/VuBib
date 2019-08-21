@@ -227,6 +227,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($id, $locs) {
             $select->where->in('location', $locs);
             $select->where->equalTo('publisher_id', $id);
+            $select->order('location');
         };
 
         return $this->select($callback)->toArray();

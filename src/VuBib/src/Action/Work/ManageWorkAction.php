@@ -284,58 +284,36 @@ class ManageWorkAction implements MiddlewareInterface
 
                     //update classification(work_folder)
                     if ($folder[0] != null) {
-                        //delete all workfolders
-                        $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
-                        $table->deleteRecordByWorkId($post['id']);
-
                         //insert all workfolders again
                         $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
                         $table->insertWorkFolderRecords($post['id'], $folder);
                     }
-                } else {
-                    //delete all workfolders
-                    $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
-                    $table->deleteRecordByWorkId($post['id']);
                 }
 
                 //update Publisher(work_publisher)
-                if (isset($post['pub_id'])) {
-                    if ($post['pub_id'][0] != null) {
-                        //delete all publishers
-                        $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                        $table->deleteRecordByWorkId($post['id']);
-
-                        //insert all publishers again
-                        $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                        $table->insertRecords(
-                            $post['id'], $post['pub_id'],
-                            $post['pub_location'], $post['pub_yrFrom'],
-                            $post['pub_yrTo']
-                        );
-                        //$table->insertRecords($post['id'], $post['pub_id'],
-                        //$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
-                    }
-                } else {
-                    //delete all publishers
+                //delete all publishers
+                $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
+                $table->deleteRecordByWorkId($post['id']);
+                //insert all publishers again
+                if (isset($post['pub_id'])/* && $post['pub_id'][0] != null*/) {
                     $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                    $table->deleteRecordByWorkId($post['id']);
+                    $table->insertRecords(
+                        $post['id'], $post['pub_id'],
+                        $post['pub_location'], $post['pub_yrFrom'],
+                        $post['pub_yrTo']
+                    );
+                    //$table->insertRecords($post['id'], $post['pub_id'],
+                    //$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
                 }
 
                 //update Agent(work_agent)
-                if (isset($post['agent_id'])) {
-                    if ($post['agent_id'][0] != null) {
-                        //delete all agents
-                        $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-                        $table->deleteRecordByWorkId($post['id']);
-
-                        //insert Agents again
-                        $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-                        $table->insertRecords($post['id'], $post['agent_id'], $post['agent_type']); //this
-                    }
-                } else {
-                    //delete all agents
+                //delete all agents
+                $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
+                $table->deleteRecordByWorkId($post['id']);
+                //insert Agents again
+                if (isset($post['agent_id']) && $post['agent_id'][0] != null) {
                     $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-                    $table->deleteRecordByWorkId($post['id']);
+                    $table->insertRecords($post['id'], $post['agent_id'], $post['agent_type']); //this
                 }
 
                 //map work to citation(work_workattribute)

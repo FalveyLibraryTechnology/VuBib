@@ -5,40 +5,58 @@ $.fn.textWidth = function(text, font) {
                     return $.fn.textWidth.fakeEl.width();
 };
 
+// el.closest(sel) polyfill (IE8+)
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/closest
+if (window.Element && !Element.prototype.closest) {
+  Element.prototype.closest =
+  function(s) {
+    var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+        i,
+        el = this;
+    do {
+      i = matches.length;
+      while (--i >= 0 && matches.item(i) !== el) {};
+    } while ((i < 0) && (el = el.parentElement));
+    return el;
+  };
+}
+
 //Publisher autocomplete and location fetch
 const newPubRowAC = new Autocomplete({ minInputLength: 1 });
-function bindPublisherAutocomplete(context, workURL) {
-  //publisher enable/disable fields
-  $("#pubLocation", context).prop("disabled", "disabled");
-
+function bindPublisherAutocomplete() {
   //Publisher autocomplete
-  const inputs = context.querySelectorAll(".pub-name");
-  for (const input of inputs) {
-    newPubRowAC(input, function newPublisherRowAC(query, callback) {
-      $.ajax({
-        url: workURL + '?autofor=publisher',
-        type: "get",
-        dataType: "json",
-        cache: false,
-        data: { term: query },
-        success: function (data) {
-          if(!data.length){
-            callback([]);
-          } else {
-            // TODO: Add new
-            callback($.map(data, function (item) {
-              return {
-                text: item.label,
-                value: item.value,
-                id:    item.id
-              }
-            }));
+  setupACS(
+    ".pub-name-acs.acs-unset",
+    function ajaxData(input) {
+      return { autofor: "publisher", term: input.value };
+    },
+    function ajaxSuccess(data, callback, input) {
+      if(!data.length){
+        callback([{ text: "no matches", _disabled: true }]);
+      } else {
+        // TODO: Add new
+        callback($.map(data, function (item) {
+          return {
+            text: item.label,
+            value: item.value,
+            id:    item.id
           }
-        },
-      });
+        }));
+      }
+    }
+  ).forEach(function bindLocationSelect(cell) {
+    cell.classList.remove("acs-unset");
+    var row = cell.closest("td");
+    row.querySelector(".acs-clear").addEventListener("click", function (e) {
+      $(".pub-locations", row).html("");
+      $("input", row).val("");
     });
+
+    var input = cell.querySelector(".acs-input");
+    //publisher enable/disable fields
+    $(".pub-locations", row).prop("disabled", !input.value);
+    // Populate locations event listener
     input.addEventListener("ac-select", function newPublisherRowSelect(e) {
-      $('[name="pub_id[]"]', context).eq(0).val(e.detail.id);
       $.ajax({
         method: 'post',
         url: ur + workURL,
@@ -46,29 +64,29 @@ function bindPublisherAutocomplete(context, workURL) {
         dataType: "json",
         cache: false,
         success: function(data) {
-          const $locationsSel = $(".pub_locations", context)
+          const $locationsSel = $(".pub-locations", row)
+          console.log(row, $locationsSel);
           $locationsSel.html('');
           if (data.publoc.length === 0) {
             $locationsSel.html('<option id="-1">none available</option>');
             $locationsSel.attr("disabled", true);
             return false;
           }
+          $locationsSel.append('<option value="-1">Select a location</option>');
           for (var i = 0; i < data.publoc.length; i++) {
             const val = data.publoc[i];
             $locationsSel.append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
-            $('[name="publoc_id[]"]', context).eq(i).val(val.id);
-            //Setting select to auto width to make selected publisher location visible
-            $locationsSel.css('width', 'auto');
+            $('[name="publoc_id[]"]', row).eq(i).val(val.id);
             $locationsSel.attr("disabled", false);
           }
         },
         error: function() {
-          $(".pub_locations", context).html('<option id="-1">none available</option>');
-          $(".pub_locations", context).attr("disabled", true);
+          $(".pub-locations", row).html('<option id="-1">none available</option>');
+          $(".pub-locations", row).attr("disabled", true);
         }
       });
-    }, false);
-  }
+    });
+  });
 }
 
 //add new publisher
@@ -105,13 +123,13 @@ function addNewPublisher(context,workURL,lnk) {
                         lnk.closest('tr').find('#pubName', context).css('width',pbLen + 'px');
                         if(typeof(data.newPublisher.pubLoc_id) != "undefined" && data.newPublisher.pubLoc_id !== null) {
                             lnk.closest('tr').find('#pubLocation', context).prop("disabled", false);
-                            lnk.closest('tr').find('.pub_locations', context).append('<option id="' + data.newPublisher.pubLoc_id +
+                            lnk.closest('tr').find('.pub-locations', context).append('<option id="' + data.newPublisher.pubLoc_id +
                                                                             '" value="' + data.newPublisher.pubLoc_id + '" selected="selected">' +
                                                                              data.newPublisher.pub_loc + '</option>');
                             lnk.closest('tr').find('#publoc_id', context).eq(0).val(data.newPublisher.pubLoc_id);
 
                             //Setting select to auto width to make selected publisher location visible
-                            lnk.closest('tr').find('.pub_locations', context).css('width', 'auto');
+                            lnk.closest('tr').find('.pub-locations', context).css('width', 'auto');
                         }
                         lnk.closest('tr').find('#pubName', context).nextAll().remove();
                 }

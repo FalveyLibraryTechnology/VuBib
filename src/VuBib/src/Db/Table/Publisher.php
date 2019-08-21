@@ -215,6 +215,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
                 mb_strtolower($name) . '%'
             );
             //$select->where->like('name', '%'.$name.'%');
+            $select->order('name');
         };
         $rows = $this->select($callback)->toArray();
 
