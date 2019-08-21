@@ -333,7 +333,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
             $rows = $table->getLikeRecords($search_term);
             foreach ($rows as $i => $row) {
                 $rows[$i]['id'] = $row['id'];
-                $rows[$i]['label'] = $row['lname'] . " FN: " . $row['fname'];
+                $rows[$i]['label'] = $row['lname'];
                 $rows[$i]['fname'] = $row['fname'];
                 $rows[$i]['lname'] = $row['lname'];
                 $rows[$i]['alternate_name'] = $row['alternate_name'];

@@ -359,23 +359,18 @@ $(document).ready(function() {
                         </select>
                     </td>
                     <td name="agLnCol">
-                        <input class="form-control" type="text" name="agent_LastName[]" value="<?=$agent['lname'] ?? '' ?>" />
+                        <div class="agent-acs acs-unset">
+                            <input class="acs-hidden" type="hidden" name="agent_id[]" id="agentId" value="">
+                            <input class="acs-input form-control" type="text" placeholder="Type to search agents by last name" value="<?=$agent['lname'] ?? ''?>"/>
+                        </div>
                     </td>
-                    <td name="agFnCol">
-                        <input class="form-control" type="text" name="agent_FirstName[]" value="<?=$agent['fname'] ?? '' ?>" />
-                    </td>
-                    <td>
-                        <input class="form-control" type="text" name="agent_AlternateName[]" value="<?=$agent['alternate_name'] ?? '' ?>" />
-                    </td>
-                    <td>
-                        <input class="form-control" type="text" name="agent_OrganizationName[]" value="<?=$agent['organization_name'] ?? '' ?>" />
-                    </td>
+                    <td class="agent-fname"><?=$agent['fname'] ?? ''?></td>
+                    <td class="agent-alternate_name"><?=$agent['alternate_name'] ?? ''?></td>
+                    <td class="agent-organization_name"><?=$agent['organization_name'] ?? ''?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
             </table>
-            <button type="button" class="btn btn-secondary btn-sm" name="agent_add" id="agent_add" value="Add">Add</button>
-            <button type="button" class="btn btn-secondary btn-sm" name="agent_remove" id="agent_remove" value="Remove">Remove</button>
         </div>
         <?php // Pass citations to JS
             foreach ($this->citationTypes as $type) {

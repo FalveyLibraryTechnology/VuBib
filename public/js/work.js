@@ -144,6 +144,45 @@ function addNewPublisher(context,workURL,lnk) {
 
 //Agent Autocomplete
 function bindAgentAutocomplete(context, workURL) {
+  //Publisher autocomplete
+  setupACS(
+    ".agent-acs.acs-unset",
+    function ajaxData(input) {
+      return { autofor: "agent", term: input.value };
+    },
+    function ajaxSuccess(data, callback, input) {
+      if(!data.length){
+        callback([{ text: "no matches", _disabled: true }]);
+      } else {
+        // TODO: Add new
+        callback($.map(data, function (item) {
+          item.text = item.lname + " (" + item.fname + ")";
+          item.value = item.lname;
+          return item;
+        }));
+      }
+    }
+  ).forEach(function bindLocationSelect(acs) {
+    acs.classList.remove("acs-unset");
+    var input = acs.querySelector(".acs-input");
+    var row = acs.closest("tr");
+    // Populate locations event listener
+    input.addEventListener("ac-select", function newPublisherRowSelect(e) {
+      row.querySelector(".agent-fname").innerHTML = e.detail.fname;
+      row.querySelector(".agent-alternate_name").innerHTML = e.detail.alternate_name;
+      row.querySelector(".agent-organization_name").innerHTML = e.detail.organization_name;
+    });
+    // Clear row on change
+    function clearRow() {
+      row.querySelector(".agent-fname").innerHTML = "";
+      row.querySelector(".agent-alternate_name").innerHTML = "";
+      row.querySelector(".agent-organization_name").innerHTML = "";
+    }
+    row.querySelector(".acs-change").addEventListener("click", clearRow, { passive: true });
+    row.querySelector(".acs-clear").addEventListener("click", clearRow, { passive: true });
+  });
+
+/*
     //agent enable/disable fields
     $("#agent_FirstName", context).prop("disabled", "disabled");
     $("#agent_LastName", context).prop("disabled", "disabled");
@@ -236,7 +275,7 @@ function bindAgentAutocomplete(context, workURL) {
             $("#agent_OrganizationName", context).prop("disabled", false);
             $("#agent_OrganizationName", context).val(ui.item.organization_name);
         }
-    });
+    });*/
 }
 
 //add new agent
