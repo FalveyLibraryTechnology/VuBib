@@ -105,7 +105,6 @@ $(document).ready(function() {
     $("#fl_add").on('click', function() {
         var fl_row = $($("#template-fl-row").html());
         $("#source_fl_table").append(fl_row);
-        //bindClassification(this,document,workURL,'source');
         return false;
     });
     //remove classification rows
@@ -356,7 +355,7 @@ $(document).ready(function() {
                         <select class="form-control agent_type" name="agent_type[]" id="agent_type">
                             <option value=""></option>
                             <?php foreach ($this->agentTypes as $agentType): ?>
-                                <option value="<?=$agentType['id'] ?>"<?=$agent['agenttype_id'] == $agentType['id'] ? ' selected' : '' ?>>
+                                <option value="<?=$agentType['id'] ?>"<?=($agent['agenttype_id'] ?? -1) == $agentType['id'] ? ' selected' : '' ?>>
                                     <?=$agentType['type']; ?>
                                 </option>
                             <?php endforeach; ?>
