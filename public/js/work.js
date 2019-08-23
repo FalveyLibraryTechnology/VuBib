@@ -143,7 +143,7 @@ function addNewPublisher(context,workURL,lnk) {
 }
 
 //Agent Autocomplete
-function bindAgentAutocomplete(context, workURL) {
+function bindAgentAutocomplete() {
   //Publisher autocomplete
   setupACS(
     ".agent-acs.acs-unset",

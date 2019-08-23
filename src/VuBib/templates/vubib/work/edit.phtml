@@ -64,10 +64,10 @@ $(document).ready(function() {
     // Publisher
     // make template
     var templatePubRow = $('[name="pub_row[]"]').eq(0).clone(true);
-    templatePubRow.find(".acs-clear").click();
-    templatePubRow.find(".pub-locations").html("");
-    templatePubRow.find(".pub-name");
     templatePubRow.find("input, select").val("");
+    templatePubRow.find(".pub-locations").html("");
+    // bind autocomplete
+    bindPublisherAutocomplete();
     // add publisher rows
     $("#pub_add").click(function() {
         var pub_row = templatePubRow.clone();
@@ -77,20 +77,24 @@ $(document).ready(function() {
     });
     // remove publisher rows
     $("#pub_remove").on('click', removeByName("removePublisher"));
-    // bind autocomplete
-    bindPublisherAutocomplete();
 
-    //agent
-    bindAgentAutocomplete(document, workURL);
+    // Agent
+    // make template
+    var templateAgentRow = $(".agent-row").eq(0).clone(true);
+    templateAgentRow.find("input, select").val("");
+    templateAgentRow.find(".agent-fname,.agent-alternate_name,.agent-organization_name").html("");
+    // bind autocomplete
+    bindAgentAutocomplete();
     //add agent rows
     $("#agent_add").click(function() {
-        var agent_row = $($("#template-agent-row").html());
+        var agent_row = templateAgentRow.clone();
         $("#agent_table").append(agent_row);
-        bindAgentAutocomplete(agent_row, workURL);
+        bindAgentAutocomplete();
         return false;
     });
     //remove agent rows
     $("#agent_remove").on('click', removeByName("removeAgent"));
+
     //get attributes for selected worktypes
     $('#work_type', document).on('change', function() {
         bindWorkTypeAttributes(document, workURL, sattrURL);
@@ -105,7 +109,7 @@ $(document).ready(function() {
         return false;
     });
     //remove classification rows
-    $("#outer_fl_table").find('#fl_remove').on('click', removeByName("removeFolder"));
+    $('#fl_remove').on('click', removeByName("removeFolder"));
 
     $('table[name="source_fl_table"]').on('change', ".select_source_fl", function() {
         mergeClassification(this, document, workURL, 'source');
@@ -331,7 +335,7 @@ $(document).ready(function() {
                 <button type="button" class="btn btn-secondary btn-sm" name="agent_remove" id="agent_remove" value="Remove">Remove</button>
             </nav>
             <?php
-                if (!isset($this->agents)) {
+                if (!isset($this->agents) || empty($this->agents)) {
                     $this->agents = [[]];
                 }
             ?>
@@ -346,7 +350,7 @@ $(document).ready(function() {
             </thead>
             <tbody>
                 <?php foreach ($this->agents as $agent): ?>
-                <tr>
+                <tr class="agent-row">
                     <td><input type="checkbox" name="removeAgent[]"></td>
                     <td>
                         <select class="form-control agent_type" name="agent_type[]" id="agent_type">
