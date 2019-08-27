@@ -217,6 +217,11 @@ $(document).ready(function() {
                         </td>
                     </tr>
                 </script>
+                <?php
+                    if (!isset($this->classifications)) {
+                        $this->classifications = [];
+                    }
+                ?>
                 <table name="source_fl_table" id="source_fl_table">
                     <?php foreach ($this->classifications as $folderChain): ?>
                     <tr name="source_fl_row[]">
@@ -240,11 +245,6 @@ $(document).ready(function() {
                 <button type="button" class="btn btn-secondary btn-sm" id="pub_add" value="Add">Add</button>
                 <button type="button" class="btn btn-secondary btn-sm" id="pub_remove" value="Remove">Remove</button>
             </nav>
-            <?php
-                if (!isset($this->publishers)) {
-                    $this->publishers = [['locations' => []]]; // One empty publisher
-                }
-            ?>
             <table class="table table-condensed" name="pub_table" id="pub_table">
             <thead>
                 <th></th>
@@ -254,6 +254,11 @@ $(document).ready(function() {
                 <th>Year To</th>
             </thead>
             <tbody>
+                <?php
+                    if (!isset($this->publishers)) {
+                        $this->publishers = [['locations' => []]]; // One empty publisher
+                    }
+                ?>
                 <?php foreach ($this->publishers as $i=>$publisher): ?>
                     <tr name="pub_row[]">
                         <td><input type="checkbox" name="removePublisher[]"></td>
@@ -288,11 +293,6 @@ $(document).ready(function() {
                 <button type="button" class="btn btn-secondary btn-sm" name="agent_add" id="agent_add" value="Add">Add</button>
                 <button type="button" class="btn btn-secondary btn-sm" name="agent_remove" id="agent_remove" value="Remove">Remove</button>
             </nav>
-            <?php
-                if (!isset($this->agents) || empty($this->agents)) {
-                    $this->agents = [[]];
-                }
-            ?>
             <table class="table table-condensed" id="agent_table">
             <thead>
                 <th></th>
@@ -303,6 +303,11 @@ $(document).ready(function() {
                 <th>Organization Name</th>
             </thead>
             <tbody>
+                <?php
+                    if (!isset($this->agents) || empty($this->agents)) {
+                        $this->agents = [[]];
+                    }
+                ?>
                 <?php foreach ($this->agents as $agent): ?>
                 <tr class="agent-row">
                     <td><input type="checkbox" name="removeAgent[]"></td>
@@ -330,6 +335,11 @@ $(document).ready(function() {
             </tbody>
             </table>
         </div>
+        <?php
+            if (!isset($this->citationTypes) || empty($this->citationTypes)) {
+                $this->citationTypes = [];
+            }
+        ?>
         <?php // Pass citations to JS
             foreach ($this->citationTypes as $type) {
                 if (isset($this->citations[$type['id']])): ?>
