@@ -146,14 +146,32 @@ class EditWorkAction implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $params = $request->getqueryParams();
-        $workId = $params['id'];
+        $workId = $params['id'] ?? 'NEW';
+
+        $viewData = ['formAction' => $workId == 'NEW' ? 'work_new' : 'work_edit'];
+
+        // default classifications
+        $table = new \VuBib\Db\Table\Folder($this->adapter);
+        $viewData['rootFolders'] = $table->getFoldersWithNullParent();
+
+        // fetch agent types
+        $table = new \VuBib\Db\Table\AgentType($this->adapter);
+        $agentTypes = $table->fetchAgentTypes();
+        $itemsCount = $agentTypes->getTotalItemCount();
+        $agentTypes->setItemCountPerPage($itemsCount);
+        $viewData['agentTypes'] = $agentTypes;
+
+        // fetch worktypes
+        $table = new \VuBib\Db\Table\WorkType($this->adapter);
+        $viewData['workTypes'] = $table->fetchAllWorkTypes();
+        $itemsCount = $viewData['workTypes']->getTotalItemCount();
+        $viewData['workTypes']->setItemCountPerPage($itemsCount);
 
         // - New - //
         if ($workId == 'NEW') {
-            return $this->render('vubib::work/edit', ['formAction' => 'work_new']);
+            return $this->render('vubib::work/edit', $viewData);
         }
 
-        $viewData = [];
         $workTable = new \VuBib\Db\Table\Work($this->adapter);
         $workRow = $workTable->findRecordById($workId);
         $user = $this->getUserType();
@@ -193,10 +211,6 @@ class EditWorkAction implements MiddlewareInterface
         }
         $viewData['classifications'] = $workClassifications;
 
-        // default classifications
-        $table = new \VuBib\Db\Table\Folder($this->adapter);
-        $viewData['rootFolders'] = $table->getFoldersWithNullParent();
-
         //fetch publishers attached to work
         $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
         $pub_rows = $table->findRecordByWorkId($workId);
@@ -210,23 +224,9 @@ class EditWorkAction implements MiddlewareInterface
         }
         $viewData['publishers'] = $pub_rows;
 
-
-        // fetch agent types
-        $table = new \VuBib\Db\Table\AgentType($this->adapter);
-        $agentTypes = $table->fetchAgentTypes();
-        $itemsCount = $agentTypes->getTotalItemCount();
-        $agentTypes->setItemCountPerPage($itemsCount);
-        $viewData['agentTypes'] = $agentTypes;
-
         //fetch agents attached to work
         $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
         $viewData['agents'] = $table->findRecordByWorkId($workId);
-
-        // worktypes
-        $table = new \VuBib\Db\Table\WorkType($this->adapter);
-        $viewData['workTypes'] = $table->fetchAllWorkTypes();
-        $itemsCount = $viewData['workTypes']->getTotalItemCount();
-        $viewData['workTypes']->setItemCountPerPage($itemsCount);
 
         // citations
         $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
@@ -249,7 +249,6 @@ class EditWorkAction implements MiddlewareInterface
         }
 
         // - Edit - //
-        $viewData['formAction'] = 'work_edit';
         return $this->render('vubib::work/edit', $viewData);
     }
 }

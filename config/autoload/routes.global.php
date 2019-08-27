@@ -119,12 +119,12 @@ return [
         ],
 
         [
-           'name' => 'new_work',
+            'name' => 'new_work',
             'path' => '/Work/new',
             'middleware' => [
                 \VuBib\Middleware\AuthenticationMiddleware::class,
                 //BodyParamsMiddleware::class,
-                VuBib\Action\Work\NewWorkAction::class,
+                VuBib\Action\Work\EditWorkAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
