@@ -65,7 +65,6 @@ function bindPublisherAutocomplete() {
         cache: false,
         success: function(data) {
           const $locationsSel = $(".pub-locations", row)
-          console.log(row, $locationsSel);
           $locationsSel.html('');
           if (data.publoc.length === 0) {
             $locationsSel.html('<option id="-1">none available</option>');
@@ -181,101 +180,6 @@ function bindAgentAutocomplete() {
     row.querySelector(".acs-change").addEventListener("click", clearRow, { passive: true });
     row.querySelector(".acs-clear").addEventListener("click", clearRow, { passive: true });
   });
-
-/*
-    //agent enable/disable fields
-    $("#agent_FirstName", context).prop("disabled", "disabled");
-    $("#agent_LastName", context).prop("disabled", "disabled");
-    $("#agent_AlternateName", context).prop("disabled", "disabled");
-    $("#agent_OrganizationName", context).prop("disabled", "disabled");
-
-    $('#agent_type', context).on('change', function() {
-        $("#agent_LastName", context).prop("disabled", false);
-
-        //Agent autocomplete
-        $("#agent_LastName", context).autocomplete({
-            autoFocus: true,
-            source: function (request, response) {
-                $.ajax({
-                    url: ur + workURL + '?autofor=agent',
-                    autoFocus: true,
-                    type: "get",
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        term : $("#agent_LastName", context).val(),
-                    },
-                    success: function (data) {
-                        if(!data.length){
-                            var to_add = $('<p>No matches found. </p>'+
-                                            '<a type="button" class="addNewAgLink" href="#addAgentLookup" data-toggle="modal" ' +
-                                            'style="text-decoration: underline;">Add New</a>');
-                            $('#agent_LastName', context).nextAll().remove()
-                            $('#agent_LastName', context).after(to_add);
-                        }
-                        else{
-                            // normal response
-                            response($.map(data, function (item) {
-                                return {
-                                    label: item.label,
-                                    lname: item.lname,
-                                    fname: item.fname,
-                                    alternate_name: item.alternate_name,
-                                    organization_name: item.organization_name,
-                                    id:    item.id
-                                }
-                            }));
-                        }
-                    },
-                });
-            },
-            open: function(event, ui) {
-                $('.ui-autocomplete').append('<li><a class="addNewItemAgLink" ' +
-                                         'style="text-decoration: underline; color:blue" data-value="'+ $(this).val() +'"' +
-                                           'data-ele=""' + '>Add New</a></li>'); //Add new link at end of results
-                $('.addNewItemAgLink').on('click',function(){
-                    var lnk = $(event.target);
-                    addNewAgent(context,workURL,lnk);
-                    return false;
-                });
-            },
-            minLength: 3,
-            select: function(event, ui) {
-                if(ui.item.label == "No matches found") {
-                    $('#agent_LastName', context).val("");
-                    //$('#pubName', context).after('<a>Add New</a>');
-                    return false
-                }
-                else{
-                    var arr = ui.item.label.split(' FN: ');
-                    ui.item.label = arr[0];
-                    $('#agent_LastName', context).val(ui.item.label);
-                    $('#agentId', context).val(ui.item.id);
-                    return false;
-                }
-            }
-        });
-    });
-    $('#agent_LastName', context).on('autocompleteselect', function(e, ui) {
-        //Resizing text field to make selected agent last name visible
-        var agent_ln = $('#agent_LastName').textWidth(ui.item.lname) + 25;	//ui.item.fname.length + 5;
-        var agent_fn = $('#agent_FirstName').textWidth(ui.item.fname) + 25;	//ui.item.lname.length + 5;
-        $('#agent_LastName', context).css('width', agent_ln + 'px');
-        if (ui.item.fname != '') {
-            $("#agent_FirstName", context).prop("disabled", false);
-            $("#agent_FirstName", context).val(ui.item.fname);
-            //Resizing text field to make selected agent first name visible
-            $('#agent_FirstName', context).css('width', agent_fn + 'px');
-        }
-        if (ui.item.alternate_name != '') {
-            $("#agent_AlternateName", context).prop("disabled", false);
-            $("#agent_AlternateName", context).val(ui.item.alternate_name);
-        }
-        if (ui.item.organization_name != '') {
-            $("#agent_OrganizationName", context).prop("disabled", false);
-            $("#agent_OrganizationName", context).val(ui.item.organization_name);
-        }
-    });*/
 }
 
 //add new agent

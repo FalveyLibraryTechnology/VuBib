@@ -10,37 +10,6 @@
     //get user
     $user = $this->isUser()->getUser();
 ?>
-<script type="text/template" id="template-agent-row">
-    <tr>
-        <td><input type="checkbox" name="removeAgent[]"></td>
-        <td>
-            <input type="hidden" name="agent_id[]" id="agentId" value="">
-            <select class="form-control agent_type" name="agent_type[]" id="agent_type">
-                <option value=""></option>
-                <?php foreach ($this->agentTypes as $agentType): ?>
-                    <option value="<?=$agentType['id'] ?>"><?=$agentType['type'] ?></option>
-                <?php endforeach; ?>
-            </select>
-        </td>
-        <td><input class="form-control" type="text" name="agent_LastName[]" /></td>
-        <td><input class="form-control" type="text" name="agent_FirstName[]" /></td>
-        <td><input class="form-control" type="text" name="agent_AlternateName[]" /></td>
-        <td><input class="form-control" type="text" name="agent_OrganizationName[]" /></td>
-    </tr>
-</script>
-<script type="text/template" id="template-fl-row">
-    <tr name="source_fl_row[]">
-        <td><input type="checkbox" name="removeFolder[]"></td>
-        <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
-            <select class="form-control select_source_fl select2" name="select_source_fl[]">
-                <option value=""></option>
-                <?php foreach ($this->rootFolders as $folder) : ?>
-                    <option value="<?=$folder['id'] ?>"><?=$folder['text_en'] ?></option>
-                <?php endforeach; ?>
-            </select>
-        </td>
-    </tr>
-</script>
 <script>
 var ur = "";
 var workURL = '<?=$this->url('get_work_details')?>';
@@ -102,8 +71,9 @@ $(document).ready(function() {
 
     //classification
     //add classification rows
+    var templateFolderTemplate = $($("#template-fl-row").html()).clone(true);
     $("#fl_add").on('click', function() {
-        var fl_row = $($("#template-fl-row").html());
+        var fl_row = templateFolderTemplate.clone();
         $("#source_fl_table").append(fl_row);
         return false;
     });
@@ -115,32 +85,9 @@ $(document).ready(function() {
         return false;
     });
 
-   //Parent Lookup
-   $('#parentLookup_modal').on('shown.bs.modal', function() {
-       bindParentWork(document, workURL);
-       return false;
-   });
-
-   //Remove Parent Lookup
-   /*
-   $('.pr_work_div').on('click', '#parent_removeBtn', function() {
-       //alert("remove");
-       $('#pr_work_lookup_id').val('');
-       $('.pr_work_div').html('');
-       $('.pr_work_div').append('<button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>');
-       return false;
-   });
-   */
-
-    $('.addNewPubLink').on('click', function() {
-        var lnk = $('.addNewPubLink', document);
-        addNewPublisher(document,workURL,lnk);
-        return false;
-    });
-
-    $('.addNewAgLink').on('click', function() {
-        var lnk = $('.addNewAgLink', document);
-        addNewAgent(document,workURL,lnk);
+    //Parent Lookup
+    $('#parentLookup_modal').on('shown.bs.modal', function() {
+        bindParentWork(document, workURL);
         return false;
     });
 
@@ -255,13 +202,21 @@ $(document).ready(function() {
                 <button type="button" class="btn btn-outline-secondary btn-sm" id="fl_add" value="Add">Add</button>
                 <button type="button" class="btn btn-outline-secondary btn-sm" id="fl_remove" value="Remove">Remove</button>
             </nav>
-            <?php
-                if (!isset($this->classifications)) {
-                    $this->classifications = $this->rootFolders;
-                }
-            ?>
             <div id="class_grp">
                 <label class="control-label">Subject Tree: </label>
+                <script type="text/template" id="template-fl-row">
+                    <tr>
+                        <td><input type="checkbox" name="removeFolder[]"></td>
+                        <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
+                            <select class="form-control select_source_fl" name="select_source_fl[]">
+                                <option value=""></option>
+                                <?php foreach ($this->rootFolders as $folder) : ?>
+                                    <option value="<?=$folder['id'] ?>"><?=$folder['text_en'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                </script>
                 <table name="source_fl_table" id="source_fl_table">
                     <?php foreach ($this->classifications as $folderChain): ?>
                     <tr name="source_fl_row[]">
