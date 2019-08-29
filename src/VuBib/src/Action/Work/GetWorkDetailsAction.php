@@ -32,6 +32,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
+use Zend\Diactoros\Response\JsonResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 
@@ -625,8 +626,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
                 $search_term = $_GET['term'];
                 $rows = $this->getAutoSuggest($autofor, $search_term);
             }
-            echo json_encode($rows);
-            exit;
+            return new JsonResponse($rows);
         }
 
         $post = [];
@@ -634,5 +634,6 @@ class GetWorkDetailsAction implements MiddlewareInterface
             $post = $request->getParsedBody();
             $this->doPost($post);
         }
+        return new JsonResponse([]);
     }
 }
