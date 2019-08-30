@@ -109,9 +109,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         for ($i = 0; $i < count($no_of_wks); $i++) {
             $pub_row[$i]['works'] = $no_of_wks[$i];
         }
-        $output = ['pub_row' => $pub_row];
-        echo json_encode($output);
-        exit;
+        return ['pub_row' => $pub_row];
     }
 
     /**
@@ -121,9 +119,8 @@ class GetWorkDetailsAction implements MiddlewareInterface
      *
      * @return string $output
      */
-    protected function publisherIdLocs($post)
+    protected function publisherIdLocs($pub_id)
     {
-        $pub_id = $post['publisher_Id_locs'];
         $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
         $pub_loc_rows = $table->getPublisherLocations($pub_id);
         foreach ($pub_loc_rows as $i => $row) {
@@ -140,9 +137,10 @@ class GetWorkDetailsAction implements MiddlewareInterface
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
         }
-        $output = ['pub_locs' => $pub_loc_rows];
-        echo json_encode($output);
-        exit;
+        usort($pub_loc_rows, function($a, $b) {
+            return strcmp($a['label'], $b['label']);
+        });
+        return ['publocs' => $pub_loc_rows];
     }
 
     /**
@@ -167,9 +165,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $ag_row[$i]['works'] = $no_of_wks[$i];
         }
-        $output = ['ag_row' => $ag_row];
-        echo json_encode($output);
-        exit;
+        return ['ag_row' => $ag_row];
     }
 
     /**
@@ -191,7 +187,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
             $table = new \VuBib\Db\Table\Page_Instructions($this->adapter);
             $table->insertRecord($pg_nm, $ins_str);
         }
-        exit;
+        return null;
     }
 
     /**
@@ -206,9 +202,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         $fl_id = $post['folder_Id'];
         $table = new \VuBib\Db\Table\Folder($this->adapter);
         $rows = $table->getChild($fl_id);
-        $output = ['folder_children' => $rows];
-        echo json_encode($output);
-        exit;
+        return ['folder_children' => $rows];
     }
 
     /**
@@ -223,9 +217,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         $fl_id = $post['fl_id'];
         $table = new \VuBib\Db\Table\Folder($this->adapter);
         $src_row = $table->getParentChain($fl_id);
-        $output = ['fl_row' => $src_row];
-        echo json_encode($output);
-        exit;
+        return ['fl_row' => $src_row];
     }
 
     /**
@@ -242,9 +234,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         //$wkat_id = $_POST['attribute_Id'];
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $rows = $table->getAttributeOptions($opt_title, $wkat_id);
-        $output = ['attribute_options' => $rows];
-        echo json_encode($output);
-        exit;
+        return ['attribute_options' => $rows];
     }
 
     /**
@@ -265,9 +255,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         foreach ($paginator as $row) {
             $rows[] = $row;
         }
-        $output = ['worktype_attribute' => $rows];
-        echo json_encode($output);
-        exit;
+        return ['worktype_attribute' => $rows];
     }
 
     /**
@@ -277,9 +265,8 @@ class GetWorkDetailsAction implements MiddlewareInterface
      *
      * @return string $output
      */
-    protected function publisherId($post)
+    protected function publisherId($pub_id)
     {
-        $pub_id = $post['publisher_Id'];
         $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
         $rows = $table->getPublisherLocations($pub_id);
         foreach ($rows as $i => $row) {
@@ -287,9 +274,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
             $rows[$i]['label'] = $row['location'];
             $rows[$i]['id'] = $row['id'];
         }
-        $output = ['publoc' => $rows];
-        echo json_encode($output);
-        exit;
+        return ['publoc' => $rows];
     }
 
     /**
@@ -304,9 +289,26 @@ class GetWorkDetailsAction implements MiddlewareInterface
         $ag_id = $post['ag_id'];
         $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
         $wks = $table->findRecordByAgentId($ag_id);
-        $output = ['ag_no_of_wks' => count($wks)];
-        echo json_encode($output);
-        exit;
+        return ['ag_no_of_wks' => count($wks)];
+    }
+
+    /**
+     * Fetches work title
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
+    public function getParentLookup($lookup_title)
+    {
+        $table = new \VuBib\Db\Table\Work($this->adapter);
+        $rows = $table->fetchParentLookup($lookup_title);
+        foreach ($rows as $i => $row) {
+            $rows[$i]['id'] = $row['id'];
+            $rows[$i]['label'] = $row['title'];
+            $rows[$i]['type'] = $row['type'];
+        }
+        return ['prnt_lookup' => $rows];
     }
 
     /**
@@ -342,28 +344,12 @@ class GetWorkDetailsAction implements MiddlewareInterface
             }
             return $rows;
         }
-    }
-
-    /**
-     * Fetches work title
-     *
-     * @param Array $post contains posted elements of form
-     *
-     * @return string $output
-     */
-    public function getParentLookup($post)
-    {
-        $lookup_title = $post['lookup_title'];
-        $table = new \VuBib\Db\Table\Work($this->adapter);
-        $rows = $table->fetchParentLookup($lookup_title);
-        foreach ($rows as $i => $row) {
-            $rows[$i]['id'] = $row['id'];
-            $rows[$i]['label'] = $row['title'];
-            $rows[$i]['type'] = $row['type'];
+        if ($autofor == 'lookup_title') {
+            return $this->getParentLookup($search_term);
         }
-        $output = ['prnt_lookup' => $rows];
-        echo json_encode($output);
-        exit;
+        if ($autofor == 'publisher_loc') {
+            return $this->publisherIdLocs($search_term);
+        }
     }
 
     /**
@@ -394,9 +380,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
             $row['pub_loc'] = $newPub_Loc;
         }
 
-        $output = ['newPublisher' => $row];
-        echo json_encode($output);
-        exit;
+        return ['newPublisher' => $row];
     }
 
     /**
@@ -428,9 +412,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         $row['ag_orgname'] = $newAg_OrgName;
         $row['ag_email'] = $newAg_Email;
 
-        $output = ['newAgent' => $row];
-        echo json_encode($output);
-        exit;
+        return ['newAgent' => $row];
     }
 
     /**
@@ -472,9 +454,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         $row['opt_title'] = $new_Option;
         //$row['opt_value'] = $new_OptType;
 
-        $output = ['newOption' => $row];
-        echo json_encode($output);
-        exit;
+        return ['newOption' => $row];
     }
 
     /**
@@ -503,9 +483,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $opt_row[$i]['works'] = $no_of_wks[$i];
         }
-        $output = ['opt_row' => $opt_row];
-        echo json_encode($output);
-        exit;
+        return ['opt_row' => $opt_row];
     }
 
     /**
@@ -543,9 +521,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
             $row['subattr_vals'] = $arr;
         }
 
-        $output = ['subattr' => $row];
-        echo json_encode($output);
-        exit;
+        return ['subattr' => $row];
     }
 
     /**
@@ -557,53 +533,50 @@ class GetWorkDetailsAction implements MiddlewareInterface
      */
     public function doPost($post)
     {
-        if (isset($post['publisher_Id'])) {
-            $this->publisherId($post);
+        if (isset($post['publisher_id'])) {
+            return $this->publisherId($post);
         }
         if (isset($post['pub_name'])) {
-            $this->pubName($post);
+            return $this->pubName($post);
         }
         if (isset($post['publisher_Id_locs'])) {
-            $this->publisherIdLocs($post);
+            return $this->publisherIdLocs($post);
         }
         if (isset($post['worktype_Id'])) {
-            $this->worktypeId($post);
+            return $this->worktypeId($post);
         }
         if (isset($post['option'])) {
-            $this->option($post);
+            return $this->option($post);
         }
         if (isset($post['folder_Id'])) {
-            $this->folderId($post);
+            return $this->folderId($post);
         }
         if (isset($post['fl_id'])) {
-            $this->flId($post);
+            return $this->flId($post);
         }
         if (isset($post['ag_name'])) {
-            $this->agName($post);
+            return $this->agName($post);
         }
         if (isset($post['ag_id'])) {
-            $this->agId($post);
+            return $this->agId($post);
         }
         if (isset($post['ins_text'])) {
-            $this->insText($post);
-        }
-        if (isset($post['lookup_title'])) {
-            $this->getParentLookup($post);
+            return $this->insText($post);
         }
         if (isset($post['addAction'])) {
             if ($post['addAction'] == 'addNewPublisher') {
-                $this->addAndGetNewPub($post);
+                return $this->addAndGetNewPub($post);
             } elseif ($post['addAction'] == 'addNewAgent') {
-                $this->addAndGetNewAgent($post);
+                return $this->addAndGetNewAgent($post);
             } elseif ($post['addAction'] == 'addNewOption') {
-                $this->addAndGetNewAttrOption($post);
+                return $this->addAndGetNewAttrOption($post);
             }
         }
         if (isset($post['opt_name'])) {
-            $this->optName($post);
+            return $this->optName($post);
         }
         if (isset($post['subattr'])) {
-            $this->getSubAttr($post);
+            return $this->getSubAttr($post);
         }
     }
 
@@ -632,8 +605,8 @@ class GetWorkDetailsAction implements MiddlewareInterface
         $post = [];
         if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
-            $this->doPost($post);
+            return new JsonResponse($this->doPost($post));
         }
-        return new JsonResponse([]);
+        return new JsonResponse(['error: default process bottom']);
     }
 }

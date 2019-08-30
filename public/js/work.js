@@ -46,7 +46,7 @@ function bindPublisherAutocomplete() {
     }
   ).forEach(function bindLocationSelect(cell) {
     cell.classList.remove("acs-unset");
-    var row = cell.closest("td");
+    var row = cell.closest("tr");
     row.querySelector(".acs-clear").addEventListener("click", function (e) {
       $(".pub-locations", row).html("");
       $("input", row).val("");
@@ -58,22 +58,22 @@ function bindPublisherAutocomplete() {
     // Populate locations event listener
     input.addEventListener("ac-select", function newPublisherRowSelect(e) {
       $.ajax({
-        method: 'post',
+        method: 'get',
         url: ur + workURL,
-        data: { publisher_Id: e.detail.id },
+        data: { autofor: "publisher_loc", term: e.detail.id },
         dataType: "json",
         cache: false,
         success: function(data) {
-          const $locationsSel = $(".pub-locations", row)
+          const $locationsSel = $(".pub-locations", row);
           $locationsSel.html('');
-          if (data.publoc.length === 0) {
+          if (data.publocs.length === 0) {
             $locationsSel.html('<option id="-1">none available</option>');
             $locationsSel.attr("disabled", true);
             return false;
           }
           $locationsSel.append('<option value="-1">Select a location</option>');
-          for (var i = 0; i < data.publoc.length; i++) {
-            const val = data.publoc[i];
+          for (var i = 0; i < data.publocs.length; i++) {
+            const val = data.publocs[i];
             $locationsSel.append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
             $('[name="publoc_id[]"]', row).eq(i).val(val.id);
             $locationsSel.attr("disabled", false);
@@ -403,8 +403,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                   url: URL + "/Work/get_work_details",
                   data: { option: query, "attribute_Id": input.id }
                 })
-                  .done(function(json) {
-                    const data = JSON.parse(json);
+                  .done(function(data) {
                     callback(data.attribute_options.map(x => x.title));
                     if (data.attribute_options.length === 0) {
                       input.classList.add("ac-no-results");
@@ -539,7 +538,7 @@ function bindParentWorkAutocomplete() {
   setupACS(
     "#parent-work-lookup",
     function parentWorkACData(input) {
-      return { lookup_title: input.value }
+      return { autofor: "lookup_title", term: input.value }
     },
     function parentWorkACSuccess(data, callback, input) {
       input.classList.remove("ac-no-results");
@@ -691,9 +690,7 @@ function _new_findPublisherLocAjax(publisherID, callback) {
   $.ajax({
     method: 'post',
     url: workURL,
-    data: {
-      publisher_Id_locs: publisherID
-    },
+    data: { autofor: "publisher_id_locs", term: publisherID },
     dataType: "json",
     cache: false,
     success: function(data) {

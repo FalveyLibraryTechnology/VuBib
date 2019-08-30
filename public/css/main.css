@@ -50,6 +50,7 @@ p { margin: 1rem 0; }
 }
 
 .autocomplete-results {
+  max-width: 52rem;
   margin-top: 4px;
 }
 .ac-no-results,

@@ -99,9 +99,8 @@ function setupACS(selector, ajaxData, ajaxSuccess) {
         method: "GET",
         url: workURL,
         data: ajaxData(input)
-      }).done(function(json) {
+      }).done(function(data) {
         try {
-          const data = JSON.parse(json);
           ajaxSuccess(data, callback, input);
         } catch (e) {
           console.error("Invalid JSON returned", e);
