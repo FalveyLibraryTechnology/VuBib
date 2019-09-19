@@ -9,7 +9,7 @@
     <?php else: ?>
         <span class="disabled">First</span> |
     <?php endif; ?>
- 
+
     <!-- Previous page link -->
     <?php if (isset($this->previous)): ?>
         <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->previous) . $extraParams ?>">
@@ -18,7 +18,18 @@
     <?php else: ?>
         <span class="disabled">&lt; Previous</span> |
     <?php endif; ?>
- 
+
+    <!-- Range numbers -->
+    <?php if (count($this->pagesInRange) > 1): ?>
+      <?php foreach ($this->pagesInRange as $page): ?>
+        <?php if ($page != $this->current): ?>
+          <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($page) . $extraParams ?>"><?=$page?></a>
+        <?php else: ?>
+          <span><?=$page?></span>
+        <?php endif; ?>
+      <?php endforeach; ?> |
+    <?php endif; ?>
+
     <!-- Next page link -->
     <?php if (isset($this->next)): ?>
         <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->next) . $extraParams ?>">
@@ -27,7 +38,7 @@
     <?php else: ?>
         <span class="disabled">Next &gt;</span> |
     <?php endif; ?>
- 
+
     <!-- Last page link -->
     <?php if (isset($this->next)): ?>
         <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->last) . $extraParams ?>">
