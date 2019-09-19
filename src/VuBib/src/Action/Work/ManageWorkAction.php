@@ -32,6 +32,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\Driver\Mysqli\Connection;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
@@ -222,24 +223,24 @@ class ManageWorkAction implements MiddlewareInterface
                 }
 
                 //map work to citation(work_workattribute)
-                $wkat_id = [];
+                $workWorkAttr_id = [];
                 foreach ($post as $key => $value) {
                     if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key))
                         && ($value != null)
                     ) {
                         $keys = preg_split("/[a-z]+\,/", $key);
-                        $wkat_id[] = $keys[1];
-                        $wkopt_id[] = $keys[2];
+                        $workWorkAttr_id[] = $keys[1];
+                        $workWorkAttr_value[] = $keys[2];
                     }
                     if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                        $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key)
+                        $workWorkAttr_id[] = preg_replace("/^[a-z]+\,/", '', $key)
                            . '<br />';
-                        $wkopt_id[] = $value;
+                        $workWorkAttr_value[] = $value;
                     }
                 }
-                if (count($wkat_id) > 0) {
+                if (count($workWorkAttr_id) > 0) {
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-                    $table->insertRecords($wk_id, $wkat_id, $wkopt_id);
+                    $table->insertRecords($wk_id, $workWorkAttr_id, $workWorkAttr_value);
                 }
             }
         }
@@ -262,7 +263,10 @@ class ManageWorkAction implements MiddlewareInterface
                 } else {
                     $pr_workid = -1;
                 }
+                // Safety against errors
+                $connection = new Connection();
                 //update General(work)
+                $connection->beginTransaction();
                 $table = new \VuBib\Db\Table\Work($this->adapter);
                 $table->updateRecords(
                     $pr_workid, $post['id'], $post['work_type'],
@@ -271,12 +275,11 @@ class ManageWorkAction implements MiddlewareInterface
                     date('Y-m-d H:i:s'), $post['user'],
                     $post['work_status'], $post['pub_yrFrom']
                 );
+                $connection->commit();
 
                 // update classifications
-                //delete all workfolders
-                $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
-                $table->deleteRecordByWorkId($post['id']);
                 //extract classification rows
+                $folder = [];
                 if (isset($post['classification_row'])) {
                     foreach ($post['classification_row'] as $row) {
                         $fl[] = explode(',', trim($row, ','));
@@ -286,15 +289,21 @@ class ManageWorkAction implements MiddlewareInterface
                         $folder[$i] = $fl[$i][count($fl[$i]) - 1];
                     }
 
-                    //update classification(work_folder)
-                    if ($folder[0] != null) {
-                        //insert all workfolders again
-                        $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
-                        $table->insertWorkFolderRecords($post['id'], $folder);
-                    }
                 }
+                $connection->beginTransaction();
+                //delete all workfolders
+                $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
+                $table->deleteRecordByWorkId($post['id']);
+                //update classification(work_folder)
+                if ($folder[0] != null) {
+                    //insert all workfolders again
+                    $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
+                    $table->insertWorkFolderRecords($post['id'], $folder);
+                }
+                $connection->commit();
 
                 //update Publisher(work_publisher)
+                $connection->beginTransaction();
                 //delete all publishers
                 $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
                 $table->deleteRecordByWorkId($post['id']);
@@ -309,8 +318,10 @@ class ManageWorkAction implements MiddlewareInterface
                     //$table->insertRecords($post['id'], $post['pub_id'],
                     //$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
                 }
+                $connection->commit();
 
                 //update Agent(work_agent)
+                $connection->beginTransaction();
                 //delete all agents
                 $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
                 $table->deleteRecordByWorkId($post['id']);
@@ -319,37 +330,43 @@ class ManageWorkAction implements MiddlewareInterface
                     $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
                     $table->insertRecords($post['id'], $post['agent_id'], $post['agent_type']); //this
                 }
+                $connection->commit();
 
+                // update workattributes
                 //map work to citation(work_workattribute)
-                $wkat_id = [];
+                $workWorkAttr_id = [];
                 foreach ($post as $key => $value) {
                     if ((preg_match("/^[a-z]+\,\d+([a-z]+\,\d+)+$/", $key))
                         && ($value != null)
                     ) {
                         $keys = preg_split("/[a-z]+\,/", $key);
-                        $wkat_id[] = $keys[1];
+                        $workWorkAttr_id[] = $keys[1];
                         if (count($keys) == 4) {
-                            $wkopt_id[] = $keys[3];
+                            $workWorkAttr_value[] = $keys[3];
                         } else {
-                            $wkopt_id[] = $keys[2];
+                            $workWorkAttr_value[] = $keys[2];
                         }
                     }
                     if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                        $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key)
-                           . '<br />';
-                        $wkopt_id[] = $value;
+                        $workWorkAttr_id[] = preg_replace("/^[a-z]+\,/", '', $key);
+                        $workWorkAttr_value[] = $value;
                     }
                 }
 
-                // update workattributes
+                $connection->beginTransaction();
                 //delete workattribute records
                 $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                 $table->deleteRecordByWorkId($post['id']);
                 //insert workattributes again
-                if (!empty($wkat_id) && $wkat_id[0] != null) {
+                if (!empty($workWorkAttr_id) && $workWorkAttr_id[0] != null) {
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-                    $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
+                    $table->insertRecords(
+                        $post['id'],
+                        $workWorkAttr_id,
+                        $workWorkAttr_value
+                    );
                 }
+                $connection->commit();
             }
         }
     }
