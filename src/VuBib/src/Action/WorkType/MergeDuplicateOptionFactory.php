@@ -61,7 +61,7 @@ class MergeDuplicateOptionFactory
         $adapter = $container->get(Adapter::class);
         //return new MergeDuplicateOptionAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::merge_duplicate_option', $router,
+            'vubib::worktype/merge_duplicate_option', $router,
             $template, $adapter
         );
     }

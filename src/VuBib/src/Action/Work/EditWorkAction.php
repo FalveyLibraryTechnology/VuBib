@@ -234,12 +234,24 @@ class EditWorkAction implements MiddlewareInterface
         $itemsCount = $citationTypes->getTotalItemCount();
         $citationTypes->setItemCountPerPage($itemsCount);
         $viewData['citationTypes'] = $citationTypes;
+        $get_type_title = [];
+        foreach($citationTypes as $type) {
+            if ($type['type'] == 'Select') {
+                $get_type_title[$type['id']] = $type['field'];
+            }
+        }
 
         $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+        $optionTable = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $citations = $table->findRecordByWorkId($workId);
         $citationMap = [];
         foreach ($citations as $cite) {
-            $citationMap[$cite['workattribute_id']] = $cite['value'];
+            if (isset($get_type_title[$cite['workattribute_id']])) {
+                $option = $optionTable->findRecordById($cite['value']);
+                error_log(print_r($option, true));
+                $cite['title'] = $option['title'];
+            }
+            $citationMap[$cite['workattribute_id']] = $cite;
         }
         $viewData['citations'] = $citationMap;
 

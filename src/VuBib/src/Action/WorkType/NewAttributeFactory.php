@@ -61,7 +61,7 @@ class NewAttributeFactory
         $adapter = $container->get(Adapter::class);
         //return new NewAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::new_attribute', $router,
+            'vubib::worktype/new_attribute', $router,
             $template, $adapter
         );
     }

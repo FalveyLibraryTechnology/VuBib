@@ -61,7 +61,7 @@ class SearchOptionFactory
         $adapter = $container->get(Adapter::class);
         //return new SearchWorkAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::search_attribute_option', $router,
+            'vubib::worktype/search_attribute_option', $router,
             $template, $adapter
         );
     }

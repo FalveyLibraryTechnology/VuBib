@@ -214,7 +214,7 @@ class ManagePublisherLocationAction implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::manage_publisherlocation', $this->router,
+            'vubib::publisher/manage_location', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -224,7 +224,7 @@ class ManagePublisherLocationAction implements MiddlewareInterface
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::manage_publisherlocation', $this->router,
+            'vubib::publisher/manage_location', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

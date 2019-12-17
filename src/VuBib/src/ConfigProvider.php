@@ -34,8 +34,8 @@ use VuBib\Middleware\AuthenticationMiddlewareFactory;
 use VuBib\Repository\UserAuthenticationFactory;
 use VuBib\Repository\UserAuthenticationInterface;
 use VuBib\Repository\UserTableAuthentication;
-use VuBib\View\Helper\IsUser;
-use VuBib\View\Helper\IsUserFactory;
+use VuBib\View\Helper;
+use Zend\ServiceManager\Factory\InvokableFactory;
 
 /**
  * Class Definition for ConfigProvider.
@@ -73,10 +73,11 @@ class ConfigProvider
             ],
             'view_helpers' => [
                 'aliases' => [
-                    'isUser' => IsUser::class,
+                    'isUser' => Helper\IsUser::class,
+                    'sanitizeHtml' => Helper\SanitizeHtml::class,
                 ],
                 'factories' => [
-                    IsUser::class => IsUserFactory::class,
+                    SanitizeHtml::class => InvokableFactory::class,
                 ],
             ],
 
@@ -93,6 +94,15 @@ class ConfigProvider
         return [
             'authentication' => [
                 'default_redirect_to' => '/',
+            ],
+            'view_helpers' => [
+                'aliases' => [
+                    'isUser' => Helper\IsUser::class,
+                    'sanitizeHtml' => Helper\SanitizeHtml::class,
+                ],
+                'factories' => [
+                    SanitizeHtml::class => InvokableFactory::class,
+                ],
             ],
         ];
     }
@@ -138,6 +148,7 @@ class ConfigProvider
                      UserAuthenticationFactory::class,
                 Middleware\WhoopsErrorResponseGenerator::class =>
                     Container\WhoopsErrorResponseGeneratorFactory::class,
+                SanitizeHtml::class => InvokableFactory::class,
                 /*
                  * Register a class that will handle the user authentication.
                  * The one registered here provides only a

@@ -474,7 +474,7 @@ class AttributeManageOptionsAction
         }
         return new HtmlResponse(
             $this->template->render(
-                'vubib::worktype::manage_attribute_options',
+                'vubib::worktype/manage_attribute_options',
                 [
                 'rows' => $paginator,
                 'previous' => $previous,

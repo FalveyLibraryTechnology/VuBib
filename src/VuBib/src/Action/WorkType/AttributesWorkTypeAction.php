@@ -297,7 +297,7 @@ class AttributesWorkTypeAction
         ResponseInterface $response, callable $next = null
     ) {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::attributes_worktype', $this->router,
+            'vubib::worktype/attributes_worktype', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -307,7 +307,7 @@ class AttributesWorkTypeAction
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::attributes_worktype', $this->router,
+            'vubib::worktype/attributes_worktype', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
@@ -318,7 +318,7 @@ class AttributesWorkTypeAction
             $searchParams[] = urlencode($post['attr_id']);
             return new HtmlResponse(
                 $this->template->render(
-                    'vubib::worktype::subattribute',
+                    'vubib::worktype/subattribute',
                     [
                         'request' => $request,
                         'adapter' => $this->adapter,
@@ -329,7 +329,7 @@ class AttributesWorkTypeAction
         } else {
             return new HtmlResponse(
                 $this->template->render(
-                    'vubib::worktype::attributes_worktype',
+                    'vubib::worktype/attributes_worktype',
                     [
                         'rows' => $paginator,
                         'previous' => $pgs['prev'],

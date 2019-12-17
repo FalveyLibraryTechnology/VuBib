@@ -61,7 +61,7 @@ class DeleteSubAttributeFactory
         $adapter = $container->get(Adapter::class);
         //return new DeleteSubAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::delete_subattribute', $router,
+            'vubib::worktype/delete_subattribute', $router,
             $template, $adapter
         );
     }

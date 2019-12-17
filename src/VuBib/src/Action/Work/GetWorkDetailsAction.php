@@ -137,9 +137,11 @@ class GetWorkDetailsAction implements MiddlewareInterface
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
         }
+        /*
         usort($pub_loc_rows, function($a, $b) {
             return strcmp($a['label'], $b['label']);
         });
+        */
         return ['publocs' => $pub_loc_rows];
     }
 

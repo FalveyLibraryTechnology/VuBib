@@ -61,7 +61,7 @@ class NewWorkTypeFactory
         $adapter = $container->get(Adapter::class);
         //return new NewWorkTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::new_worktype', $router,
+            'vubib::worktype/new_worktype', $router,
             $template, $adapter
         );
     }

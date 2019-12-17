@@ -61,7 +61,7 @@ class EditSubAttributeFactory
         $adapter = $container->get(Adapter::class);
         //return new EditSubAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::edit_subattribute', $router,
+            'vubib::worktype/edit_subattribute', $router,
             $template, $adapter
         );
     }

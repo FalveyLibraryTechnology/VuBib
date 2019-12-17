@@ -61,7 +61,7 @@ class NewOptionFactory
         $adapter = $container->get(Adapter::class);
         //return new NewOptionAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::new_option', $router,
+            'vubib::worktype/new_option', $router,
             $template, $adapter
         );
     }

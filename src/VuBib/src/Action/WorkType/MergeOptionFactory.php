@@ -61,7 +61,7 @@ class MergeOptionFactory
         $adapter = $container->get(Adapter::class);
         //return new DeleteAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::merge_options', $router,
+            'vubib::worktype/merge_options', $router,
             $template, $adapter
         );
     }

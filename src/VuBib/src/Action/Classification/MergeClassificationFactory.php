@@ -61,7 +61,7 @@ class MergeClassificationFactory
         $adapter = $container->get(Adapter::class);
         //return new MergeClassificationAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::classification::merge_classification', $router,
+            'vubib::classification/merge', $router,
             $template, $adapter
         );
     }

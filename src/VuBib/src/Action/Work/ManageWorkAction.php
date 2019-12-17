@@ -563,7 +563,7 @@ class ManageWorkAction implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::work::manage_work', $this->router,
+            'vubib::work/manage', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);

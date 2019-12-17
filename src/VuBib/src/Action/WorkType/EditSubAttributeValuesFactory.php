@@ -62,7 +62,7 @@ class EditSubAttributeValuesFactory
 
         //return new EditSubAttributeValuesAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::edit_subattribute_values', $router,
+            'vubib::worktype/edit_subattribute_values', $router,
             $template, $adapter
         );
     }

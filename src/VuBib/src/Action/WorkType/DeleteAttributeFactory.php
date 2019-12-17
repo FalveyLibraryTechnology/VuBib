@@ -61,7 +61,7 @@ class DeleteAttributeFactory
         $adapter = $container->get(Adapter::class);
         //return new DeleteAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::delete_attribute', $router,
+            'vubib::worktype/delete_attribute', $router,
             $template, $adapter
         );
     }

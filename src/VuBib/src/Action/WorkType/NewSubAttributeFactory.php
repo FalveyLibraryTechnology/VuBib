@@ -61,7 +61,7 @@ class NewSubAttributeFactory
         $adapter = $container->get(Adapter::class);
         //return new NewSubAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::new_subattribute', $router,
+            'vubib::worktype/new_subattribute', $router,
             $template, $adapter
         );
     }

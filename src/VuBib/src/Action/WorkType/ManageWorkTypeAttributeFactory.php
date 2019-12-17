@@ -61,7 +61,7 @@ class ManageWorkTypeAttributeFactory
         $adapter = $container->get(Adapter::class);
         //return new ManageWorkTypeAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::manage_worktypeattribute', $router,
+            'vubib::worktype/manage', $router,
             $template, $adapter
         );
     }

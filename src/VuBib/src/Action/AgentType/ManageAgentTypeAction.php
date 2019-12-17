@@ -176,7 +176,7 @@ class ManageAgentTypeAction implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::agenttype::manage_agenttype', $this->router,
+            'vubib::agenttype/manage', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -186,7 +186,7 @@ class ManageAgentTypeAction implements MiddlewareInterface
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::agenttype::manage_agenttype', $this->router,
+            'vubib::agenttype/manage', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

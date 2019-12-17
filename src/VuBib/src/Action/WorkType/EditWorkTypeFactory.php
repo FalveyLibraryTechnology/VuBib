@@ -61,7 +61,7 @@ class EditWorkTypeFactory
         $adapter = $container->get(Adapter::class);
         //return new EditWorkTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::edit_worktype', $router,
+            'vubib::worktype/edit', $router,
             $template, $adapter
         );
     }

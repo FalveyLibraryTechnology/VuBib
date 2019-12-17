@@ -63,7 +63,7 @@ class ClassifyWorkFactory
         //$helper = $container->get(ServerUrlHelper::class);
         //return new ClassifyWorkAction($router, $template, $adapter, $helper);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::work::classify_work', $router,
+            'vubib::work/classify', $router,
             $template, $adapter
         );
     }

@@ -175,7 +175,7 @@ class ManageLanguageAction implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::language::manage_language', $this->router,
+            'vubib::language/manage', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -184,7 +184,7 @@ class ManageLanguageAction implements MiddlewareInterface
         $paginator->setDefaultItemCountPerPage(10);
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::language::manage_language', $this->router,
+            'vubib::language/manage', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

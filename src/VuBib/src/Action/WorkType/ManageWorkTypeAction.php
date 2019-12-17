@@ -29,6 +29,8 @@ namespace VuBib\Action\WorkType;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -45,7 +47,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class ManageWorkTypeAction
+class ManageWorkTypeAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -281,11 +283,12 @@ class ManageWorkTypeAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::manage_worktype', $this->router,
+            'vubib::worktype/manage', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -295,7 +298,7 @@ class ManageWorkTypeAction
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::manage_worktype', $this->router,
+            'vubib::worktype/manage', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
@@ -307,7 +310,7 @@ class ManageWorkTypeAction
         ) {
             return new HtmlResponse(
                 $this->template->render(
-                    'vubib::worktype::manage_worktypeattribute',
+                    'vubib::worktype/manage_attributes',
                     [
                         'rows' => $paginator,
                         'previous' => $pgs['prev'],
@@ -322,7 +325,7 @@ class ManageWorkTypeAction
         } else {
             return new HtmlResponse(
                 $this->template->render(
-                    'vubib::worktype::manage_worktype',
+                    'vubib::worktype/manage',
                     [
                     'rows' => $paginator,
                     'previous' => $pgs['prev'],

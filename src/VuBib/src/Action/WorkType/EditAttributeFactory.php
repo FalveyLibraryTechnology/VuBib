@@ -61,7 +61,7 @@ class EditAttributeFactory
         $adapter = $container->get(Adapter::class);
         //return new EditAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::edit_attribute', $router,
+            'vubib::worktype/edit_attribute', $router,
             $template, $adapter
         );
     }

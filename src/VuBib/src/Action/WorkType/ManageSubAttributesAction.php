@@ -267,7 +267,7 @@ class ManageSubAttributesAction
 
         return new HtmlResponse(
             $this->template->render(
-                'vubib::worktype::manage_subattributes',
+                'vubib::worktype/manage_subattributes',
                 [
                 'rows' => $subattrs,
                 'wkat_id' => $wkat_id,

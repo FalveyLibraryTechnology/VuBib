@@ -61,7 +61,7 @@ class DeleteWorkTypeFactory
         $adapter = $container->get(Adapter::class);
         //return new DeleteWorkTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::delete_worktype', $router,
+            'vubib::worktype/delete', $router,
             $template, $adapter
         );
     }

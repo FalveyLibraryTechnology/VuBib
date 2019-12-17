@@ -61,7 +61,7 @@ class EditOptionFactory
         $adapter = $container->get(Adapter::class);
         //return new EditOptionAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::edit_option', $router,
+            'vubib::worktype/edit_option', $router,
             $template, $adapter
         );
     }
