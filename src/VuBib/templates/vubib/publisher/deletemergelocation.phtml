@@ -49,11 +49,15 @@ if ($request->getqueryParams('id') !== null) {
     </div>
 <?php } ?>
 <?php if ($_POST['submitt'] == 'Merge') { ?>
-    <div class="col-xs-4">
-        <form method="post" action="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $params['id'] . '&count=0' ?>">
-            <p>Are you sure you want to merge these?</p>
-            <ul>
-                <li>
+    <form method="post" action="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $params['id'] . '&count=0' ?>">
+        <input type="hidden" name="id" value="<?= $id ?>">
+        <input type="hidden" name="action" value="<?= 'merge' ?>">
+
+        <p>Are you sure you want to merge these?</p>
+        <div class="row">
+            <div class="col-xs-4">
+                <p><b>From:</b></p>
+                <ul>
                     <?php
                     $source_locs;
                     $dest_loc;
@@ -65,19 +69,19 @@ if ($request->getqueryParams('id') !== null) {
                         ?>
                         <input type="hidden" name="sourceids[]" value="<?= $source_locs['id'] ?>">
                         <?php
-                        echo $source_locs['location'] . "<br />";
+                        echo '<li>' . $source_locs['location'] . '</li>';
                     }
-                    $dest_loc = unserialize($_POST['selectdest']);
-                    //var_dump($dest_loc[0]['location']);
-                    echo "To " . $dest_loc[0]['location'];
                     ?>
-                </li>
-                <input type="hidden" name="id" value="<?= $id ?>">
-                <input type="hidden" name="action" value="<?= 'merge' ?>">
+                </ul>
+            </div>
+            <div class="col-xs-4">
+                <?php $dest_loc = unserialize($_POST['selectdest']); ?>
+                <p><b>To:</b></p>
+                <p><?=$dest_loc[0]['location']; ?></p>
                 <input type="hidden" name="destid" value="<?= $dest_loc[0]['id'] ?>">
-            </ul>
-            <input type="submit" name="submitt" value="Merge">
-            <input type="submit" name="submitt" value="Cancel">
-        </form>
-    </div>
+            </div>
+        </div>
+        <input type="submit" name="submitt" value="Merge">
+        <input type="submit" name="submitt" value="Cancel">
+    </form>
 <?php } ?>
