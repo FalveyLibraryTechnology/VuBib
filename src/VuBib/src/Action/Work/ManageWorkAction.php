@@ -151,6 +151,7 @@ class ManageWorkAction implements MiddlewareInterface
 
             return $paginator;
         }
+
         //Display works which are to be classified under folders
         if ($params['action'] == 'classify') {
             $table = new \VuBib\Db\Table\Work($this->adapter);
@@ -158,6 +159,10 @@ class ManageWorkAction implements MiddlewareInterface
 
             return $paginator;
         }
+
+        // default: blank/missing search
+        $table = new \VuBib\Db\Table\Work($this->adapter);
+        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
     /**
@@ -179,19 +184,21 @@ class ManageWorkAction implements MiddlewareInterface
                 //insert General(work)
                 $table = new \VuBib\Db\Table\Work($this->adapter);
                 $wk_id = $table->insertRecords(
-                    $pr_workid, $post['work_type'], $post['new_worktitle'],
-                    $post['new_worksubtitle'], $post['new_workparalleltitle'],
+                    $pr_workid, $post['work_type'], $post['work_title'],
+                    $post['work_subtitle'], $post['work_paralleltitle'],
                     $post['description'], date('Y-m-d H:i:s'),
-                    $post['user'], $post['select_workstatus'],
-                    $post['pub_yrFrom']
+                    $post['user'], $post['work_status'],
+                    min(array_filter($post['pub_yrFrom'])) ?? null
                 );
 
                 //extract classification rows
-                foreach ($post['arr'] as $row) {
+                $fl = [];
+                foreach ($post['classification_row'] as $row) {
                     $fl[] = explode(',', trim($row, ','));
                 }
 
                 //extract folder ids for each row
+                $folder = [];
                 for ($i = 0; $i < count($fl); ++$i) {
                     $folder[$i] = $fl[$i][count($fl[$i]) - 1];
                 }
@@ -233,8 +240,7 @@ class ManageWorkAction implements MiddlewareInterface
                         $workWorkAttr_value[] = $keys[2];
                     }
                     if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                        $workWorkAttr_id[] = preg_replace("/^[a-z]+\,/", '', $key)
-                           . '<br />';
+                        $workWorkAttr_id[] = preg_replace("/^[a-z]+\,/", '', $key);
                         $workWorkAttr_value[] = $value;
                     }
                 }
@@ -465,23 +471,26 @@ class ManageWorkAction implements MiddlewareInterface
         if (!empty($params['find_worktitle'])) {
             return $this->findWork($params);
         }
-        if (!empty($params['action'])) {
-            return $this->workReviewClassify($params, $order);
-        }
-        if (!empty($post['action'])) {
-            //add edit delete work
-            $this->doAction($post);
-        }
 
         //Cancel edit\delete
-        if (isset($post['submit_cancel'])) {
-            if ($post['submit_cancel'] == 'Cancel') {
+        if (
+            isset($post['submit_cancel']) ||
+            isset($post['submitt'])
+        ) {
+            if (
+                (isset($post['submit_cancel']) && $post['submit_cancel'] == 'Cancel') ||
+                (isset($post['submitt']) && $post['submitt'] == 'Cancel')
+            ) {
                 $table = new \VuBib\Db\Table\Work($this->adapter);
-
                 return new Paginator(
                     new \Zend\Paginator\Adapter\DbTableGateway($table)
                 );
             }
+        }
+
+        // Do action
+        if (!empty($params['action'])) {
+            return $this->workReviewClassify($params, $order);
         }
 
         //order by columns
@@ -552,11 +561,10 @@ class ManageWorkAction implements MiddlewareInterface
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request  server-side request.
+     * @param RequestHandlerInterface $handler  response to client side.
      *
-     * @return HtmlResponse
+     * @return ResponseInterface
      */
     public function process(
         ServerRequestInterface $request,

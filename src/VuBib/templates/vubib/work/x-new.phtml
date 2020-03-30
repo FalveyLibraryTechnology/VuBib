@@ -116,7 +116,7 @@ $(document).ready(function() {
     $("#outer_fl_table").find('#fl_remove').on('click', removeByName("removeFolder"));
 
     $('table[name="source_fl_table"]').on('change', ".select_source_fl", function() {
-        mergeClassification(this, document, workURL, 'source');
+        bindClassification(this, document, workURL, 'source');
         return false;
     });
 

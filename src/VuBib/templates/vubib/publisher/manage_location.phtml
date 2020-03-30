@@ -20,7 +20,7 @@
         $name = $row['name'];
         echo '<b>Publisher: </b>' . $name . '<br/>';
         ?>
-        <a href="<?= $this->url('add_publisher_location') ?><?= '?id=' . $id . '&action=new' ?>"><b style="text-decoration: underline;">Add Location</b></a>
+        <a class="add-location-link" href="<?= $this->url('add_publisher_location') ?><?= '?id=' . $id . '&action=new' ?>"><b style="text-decoration: underline;">Add Location</b></a>
     <?php } ?>
     <form class="form-horizontal" method="post" action="<?= $this->url('delete_merge_publisher_location') ?><?= '?id=' . $id ?>">
         <table class="table table-striped table-condensed" style="font-size:10pt;">
@@ -57,7 +57,7 @@
                                 ?>
                                 <label><input type="checkbox" id='select' name="selectsource[]" value=<?= serialize($row1); ?>></label>
                             </div>
-                        </td> 
+                        </td>
                         <td>
                             <div class="radio">
                                 <label><input type="radio" id='select' name="selectdest"  value=<?= serialize([$row1]); ?>></label>

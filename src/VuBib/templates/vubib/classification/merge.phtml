@@ -35,11 +35,11 @@ _select = '';
 $(document).ready(function () {
     //source classification
     $(".select_source_fl").on('change', function () {
-        mergeClassification(this, document, workURL, 'source');
+        bindClassification(this, workURL, 'source');
     });
     //destination classification
     $(".select_dest_fl").on('change', function () {
-        mergeClassification(this, document, workURL, 'dest');
+        bindClassification(this, workURL, 'dest');
     });
     //click save
     $("#submit_save").click(function () {
@@ -144,7 +144,7 @@ $(document).ready(function () {
                 <tbody>
                     <tr name="source_fl_row">
                 <b>Source Classification</b><br>
-                <td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">
+                <td class="source_fl_col" data-source-col="0">
                     <select class="form-control select_source_fl" name="select_source_fl[]">
                         <option value=""></option>
                         <?php
@@ -165,7 +165,7 @@ $(document).ready(function () {
                 <tbody>
                     <tr name="dest_fl_row">
                 <b>Destination Classification</b><br>
-                <td class="dest_fl_col" name="dest_fl_col" id="dest_fl_col" style="border-spacing: 10px;">
+                <td class="dest_fl_col" data-dest-col="0">
                     <select class="form-control select_dest_fl" name="select_dest_fl[]">
                         <option value=""></option>
                         <?php

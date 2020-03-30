@@ -83,15 +83,15 @@ if ($request->getqueryParams() != null) {
         </tr>
         </thead>
         <tbody>
-        <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+        <?php $sanitize = new \VuBib\View\Helper\SanitizeHtml(); ?>
         <?php foreach($this->rows as $row) :
         ?>
-        <tr>
+        <tr id="work-<?=$row['id']?>">
         <td>
             <input type="checkbox" id="selWork" name="selectWork[]" value=<?=$row['id']?>>
         </td>
         <td class="title">
-            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id']?>"><?php echo $escaper->escapeHtml($row['title']); ?></a>
+            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id']?>"><?=$sanitize($row['title']); ?></a>
         </td>
         <td class="type">
             <?php
@@ -99,7 +99,7 @@ if ($request->getqueryParams() != null) {
                 $table = new \VuBib\Db\Table\WorkType($adapter);
                 $work_type = $table->findRecordById($row['type_id']);
                 $type = $work_type['type'];
-                echo $escaper->escapeHtml($type);
+                echo $sanitize($type);
             ?>
         </td>
         <td>

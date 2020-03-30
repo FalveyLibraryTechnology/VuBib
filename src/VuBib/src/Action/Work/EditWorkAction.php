@@ -135,11 +135,10 @@ class EditWorkAction implements MiddlewareInterface
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request  server-side request.
+     * @param RequestHandlerInterface $handler  response to client side.
      *
-     * @return HtmlResponse
+     * @return ResponseInterface
      */
     public function process(
         ServerRequestInterface $request,
@@ -148,7 +147,10 @@ class EditWorkAction implements MiddlewareInterface
         $params = $request->getqueryParams();
         $workId = $params['id'] ?? 'NEW';
 
-        $viewData = ['formAction' => $workId == 'NEW' ? 'work_new' : 'work_edit'];
+        $viewData = [
+            'action' => $params['action'],
+            'formAction' => $workId == 'NEW' ? 'work_new' : 'work_edit'
+        ];
 
         // default classifications
         $table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -248,7 +250,6 @@ class EditWorkAction implements MiddlewareInterface
         foreach ($citations as $cite) {
             if (isset($get_type_title[$cite['workattribute_id']])) {
                 $option = $optionTable->findRecordById($cite['value']);
-                error_log(print_r($option, true));
                 $cite['title'] = $option['title'];
             }
             $citationMap[$cite['workattribute_id']] = $cite;

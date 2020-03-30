@@ -109,9 +109,9 @@ if ($request->getqueryParams() != null) {
            ?>
         </td>
         <td class="actions">
-            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id'] . '&action=edit'?>">Edit</a>
+            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id'] . '&action=classify'?>">Edit</a>
             |
-            <a href="<?=$this->url('delete_work')?><?='?id=' . $row['id'] . '&action=delete'?>">Delete</a>
+            <a href="<?=$this->url('delete_work')?><?='?id=' . $row['id'] . '&action=classify'?>">Delete</a>
         </td>
         </tr>
         <?php endforeach; ?>

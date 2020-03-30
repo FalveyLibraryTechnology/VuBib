@@ -221,6 +221,9 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
     public function insertWorkFolderRecords($wk_id, $folder)
     {
         for ($i = 0; $i < count($folder); ++$i) {
+            if (empty($folder[$i]) && $folder[$i] !== '0') {
+                continue;
+            }
             $this->insert(
                 [
                     'work_id' => $wk_id,

@@ -2,7 +2,7 @@
 <?php
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '">Work</a> &gt; View';
     $this->layout()->page = "Work/View";
-    $escaper = new Zend\Escaper\Escaper('utf-8'); // TODO: Remove
+    $sanitize = new \VuBib\View\Helper\SanitizeHtml();
 ?>
 <ul class="nav nav-tabs">
     <li class="active">
@@ -26,26 +26,26 @@
         <table class="table table-striped table-condensed">
             <tr>
                 <th>Title:</th>
-                <td><?=$this->work['title'] ?? '' ?></td>
+                <td><?=$sanitize($this->work['title'] ?? '') ?></td>
             </tr>
             <tr>
                 <th>Sub Title:</th>
-                <td><?=$this->work['subtitle'] ?? '' ?></td>
+                <td><?=$sanitize($this->work['subtitle'] ?? '') ?></td>
             </tr>
             <tr>
                 <th>Parallel Title:</th>
-                <td><?=$this->work['paralleltitle'] ?? '' ?></td>
+                <td><?=$sanitize($this->work['paralleltitle'] ?? '') ?></td>
             </tr>
             <tr>
                 <th>Description:</th>
-                <td><?=$this->work['description'] ?? '' ?></td>
+                <td><?=$sanitize($this->work['description'] ?? '') ?></td>
             </tr>
             <tr>
                 <th>Type:</th>
                 <td>
                     <?php foreach ($this->workTypes as $workType): ?>
                         <?php if($workType['id'] == $this->work['type_id']) {
-                            echo $workType['type'];
+                            echo $sanitize($workType['type']);
                             break;
                         } ?>
                     <?php endforeach; ?>
@@ -53,7 +53,7 @@
             </tr>
             <tr>
                 <th>Parent Work:</th>
-                <td><?=$this->work['parent']['title'] ?? '' ?></td>
+                <td><?=$sanitize($this->work['parent']['title'] ?? '') ?></td>
             </tr>
             <tr>
                 <th>Status:</th>
@@ -75,7 +75,7 @@
                         <td>
                             <?php foreach($folderSiblings as $folder) {
                                 if (isset($folder['selected'])) {
-                                    echo $folder['text_en'];
+                                    echo $sanitize($folder['text_fr']);
                                     break;
                                 }
                             } ?>
@@ -96,11 +96,11 @@
             <tbody>
                 <?php foreach ($this->publishers as $publisher): ?>
                     <tr>
-                        <td><?=$publisher['name'] ?? ''?></td>
+                        <td><?=$sanitize($publisher['name'] ?? '')?></td>
                         <td>
                             <?php foreach($publisher['locations'] as $location) {
                                 if ($location['id'] == $publisher['location_id']) {
-                                    echo $location['location'];
+                                    echo $sanitize($location['location']);
                                     break;
                                 }
                             } ?>
@@ -132,15 +132,15 @@
                         <td>
                             <?php foreach ($this->agentTypes as $agentType) {
                                 if ($agent['agenttype_id'] == $agentType['id']) {
-                                    echo $agentType['type'];
+                                    echo $sanitize($agentType['type']);
                                     break;
                                 }
                             } ?>
                         </td>
-                        <td><?=$agent['lname'] ?? '' ?></td>
-                        <td><?=$agent['fname'] ?? '' ?></td>
-                        <td><?=$agent['alternate_name'] ?? '' ?></td>
-                        <td><?=$agent['organization_name'] ?? '' ?></td>
+                        <td><?=$sanitize($agent['lname'] ?? '') ?></td>
+                        <td><?=$sanitize($agent['fname'] ?? '') ?></td>
+                        <td><?=$sanitize($agent['alternate_name'] ?? '') ?></td>
+                        <td><?=$sanitize($agent['organization_name'] ?? '') ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -152,8 +152,8 @@
         <table class="table table-striped table-condensed">
             <?php foreach ($this->citationTypes as $type): ?>
                 <tr>
-                    <th><?=$type['field']; ?></th>
-                    <td><?=$this->citations[$type['id']] ?? '' ?></td>
+                    <th><?=$sanitize($type['field']); ?></th>
+                    <td><?=$sanitize($this->citations[$type['id']] ?? '') ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>

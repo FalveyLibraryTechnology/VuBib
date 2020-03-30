@@ -1,36 +1,31 @@
-/* https://github.com/vufind-org/autocomplete.js (v2.1.2) */
+/* https://github.com/vufind-org/autocomplete.js (v2.1.3) */
 function Autocomplete(_settings) {
   const _DEFAULTS = {
     delay: 250,
     limit: 20,
     loadingString: "Loading...",
     minInputLength: 3,
-    rtl: false
+    rtl: false,
   };
 
   if (typeof _settings === "undefined") {
     _settings = {};
   }
-  const settings = Object.assign(_DEFAULTS, _settings);
+  const settings = Object.assign({}, _DEFAULTS, _settings);
   let list;
   let _currentItems;
   let _currentListEls;
   let _currentIndex = -1;
 
-  function _debounce(func, delay, passFirst) {
-    let timeout = null;
-
-    if (typeof passFirst === "undefined") {
-      passFirst = [];
-    }
+  function _debounce(func, delay) {
+    let timeout;
 
     return function debounced() {
       const context = this;
-      const args = passFirst.concat([].slice.call(arguments));
+      const args = [].slice.call(arguments);
 
       clearTimeout(timeout);
       timeout = setTimeout(function() {
-        timeout = null;
         func.apply(context, args);
       }, delay);
     };
@@ -39,22 +34,16 @@ function Autocomplete(_settings) {
   function _align(input) {
     const inputBox = input.getBoundingClientRect();
     list.style.minWidth = inputBox.width + "px";
-    list.style.top = inputBox.bottom + "px";
-    list.style.left = "auto"; // fixes width estimation
-    let anchorRight = settings.rtl;
-    if (!anchorRight && (
-      inputBox.left + list.offsetWidth >=
-      document.documentElement.offsetWidth
-    )) {
-      anchorRight = true;
-    }
+    list.style.top = inputBox.bottom + window.scrollY + "px";
+    let anchorRight =
+      settings.rtl ||
+      (inputBox.left + list.offsetWidth >=
+        document.documentElement.offsetWidth &&
+        inputBox.right - list.offsetWidth > 0);
     if (anchorRight) {
-      if (inputBox.right - list.offsetWidth <= 0) {
-        anchorRight = false;
-      }
-    }
-    if (anchorRight) {
-      const posFromRight = document.documentElement.offsetWidth - inputBox.right;
+      const posFromRight =
+        document.documentElement.offsetWidth - inputBox.right;
+      list.style.left = "auto"; // fixes width estimation
       list.style.right = posFromRight + "px";
     } else {
       list.style.right = "auto";
@@ -142,13 +131,26 @@ function Autocomplete(_settings) {
   }
 
   function _searchCallback(items, input) {
+    // Render
     if (items.length > settings.limit) {
       items = items.slice(0, settings.limit);
     }
-    _currentItems = items.slice();
-    _currentListEls = items.map(item => _renderItem(item, input));
+    const listEls = items.map(item => _renderItem(item, input));
     list.innerHTML = "";
-    _currentListEls.map(el => list.appendChild(el));
+    listEls.map(el => list.appendChild(el));
+
+    // Setup keyboard information
+    _currentItems = items.slice().filter(item => {
+      return (
+        typeof item._header === "undefined" &&
+        typeof item._disabled === "undefined"
+      );
+    });
+    _currentListEls = listEls.filter(
+      el =>
+        !el.classList.contains("ac-header") &&
+        !el.classList.contains("ac-disabled")
+    );
     _currentIndex = -1;
   }
 
@@ -162,54 +164,18 @@ function Autocomplete(_settings) {
     list.innerHTML = loadingEl.outerHTML;
     _show(input);
     _align(input);
-    let thisCB = new Date().getTime();
+    let thisCB = Date.now();
     lastCB = thisCB;
     handler(input.value, function callback(items) {
-      if (
-        thisCB !== lastCB ||
-        items === false ||
-        items.length === 0
-      ) {
-        _hide();
+      if (thisCB !== lastCB) {
         return;
+      }
+      if (items === false || items.length === 0) {
+        items = [{ text: "no results", _disabled: true }];
       }
       _searchCallback(items, input);
       _align(input);
     });
-  }
-
-  function _keyup(handler, input, event) {
-    // Ignore navigation keys
-    // - Ignore control functions
-    if (event.ctrlKey || event.which === 17) {
-      return;
-    }
-    // - Function keys (F1 - F15)
-    if (112 <= event.which && event.which <= 126) {
-      return;
-    }
-    switch (event.which) {
-      case 9: // tab
-      case 13: // enter
-      case 16: // shift
-      case 20: // caps lock
-      case 27: // esc
-      case 33: // page up
-      case 34: // page down
-      case 35: // end
-      case 36: // home
-      case 37: // arrows
-      case 38:
-      case 39:
-      case 40:
-      case 45: // insert
-      case 144: // num lock
-      case 145: // scroll lock
-      case 19: // pause/break
-        return;
-      default:
-        _search(handler, input);
-    }
   }
 
   function _keydown(handler, input, event) {
@@ -224,12 +190,12 @@ function Autocomplete(_settings) {
         if (_currentIndex === -1) {
           return;
         }
-        _currentListEls[_currentIndex].classList.remove("selected");
+        _currentListEls[_currentIndex].classList.remove("is-selected");
         _currentIndex -= 1;
         if (_currentIndex === -1) {
           return;
         }
-        _currentListEls[_currentIndex].classList.add("selected");
+        _currentListEls[_currentIndex].classList.add("is-selected");
         break;
       case 40: // down key
         event.preventDefault();
@@ -241,10 +207,10 @@ function Autocomplete(_settings) {
           return;
         }
         if (_currentIndex > -1) {
-          _currentListEls[_currentIndex].classList.remove("selected");
+          _currentListEls[_currentIndex].classList.remove("is-selected");
         }
         _currentIndex += 1;
-        _currentListEls[_currentIndex].classList.add("selected");
+        _currentListEls[_currentIndex].classList.add("is-selected");
         break;
       // enter to nav or populate
       case 9:
@@ -290,17 +256,33 @@ function Autocomplete(_settings) {
           false
         );
       }
+      document.addEventListener("click", event => {
+        if (!list.contains(event.target) && !event.target.acInput) {
+          _hide();
+        }
+      }, false);
     }
 
+    const debounceSearch = _debounce(_search, settings.delay);
+
     // Activation / De-activation
+    input.acInput = true;
     input.setAttribute("autocomplete", "off");
     input.addEventListener("focus", () => _search(handler, input), false);
-    input.addEventListener("blur", _hide, false);
 
     // Input typing
     input.addEventListener(
-      "keyup",
-      _debounce(_keyup, settings.delay, [handler, input]),
+      "input",
+      event => {
+        if (
+          event.inputType === "insertFromPaste" ||
+          event.inputType === "insertFromDrop"
+        ) {
+          _search(handler, input);
+        } else {
+          debounceSearch(handler, input);
+        }
+      },
       false
     );
 

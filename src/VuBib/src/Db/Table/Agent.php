@@ -243,24 +243,114 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     }
 
     /**
+     * Remove duplicate objects from an array by key
+     */
+    protected function unique_by_key($arr, $key = 'id') {
+        $seen = [];
+        $unique = [];
+        foreach ($arr as $val) {
+            if (in_array($val[$key], $seen)) {
+                continue;
+            }
+            $seen[] = $val[$key];
+            $unique[] = $val;
+        }
+        return $unique;
+    }
+
+    /**
      * Agent records with last name like given string.
      *
      * @param string $name part of last name of agent
      *
      * @return Array $rows agent records as array
      */
-    public function getLikeRecords($name)
+    public function getSuggestions($query)
     {
-        $callback = function ($select) use ($name) {
+        // Split on comma
+        $lname = preg_split('/\s*,\s*/', $query)[0];
+
+        // Simple last name search
+        $prefixLastName = function ($select) use ($lname) {
             $select->where->like(
                 new Expression('LOWER(lname)'),
-                mb_strtolower($name) . '%'
+                mb_strtolower($lname) . '%'
             );
-            //$select->where->expression('LOWER(lname) LIKE ?',
-               //'%'.mb_strtolower($this->_escaper->escapeHtml($name)).'%');
         };
-        $rows = $this->select($callback)->toArray();
 
+        // Like last name search
+        $likeLastName = function ($select) use ($lname) {
+            $select->where->like(
+                new Expression('LOWER(lname)'),
+                '%' . mb_strtolower($lname) . '%'
+            );
+        };
+
+        // Split by space, drop first
+        $space_lname = implode(' ', array_slice(preg_split('/\s+/', $query), 1));
+
+        // Simple last name search
+        $spacePrefixLastName = function ($select) use ($space_lname) {
+            $select->where->like(
+                new Expression('LOWER(lname)'),
+                mb_strtolower($space_lname) . '%'
+            );
+        };
+
+        // Like last name search
+        $spaceLikeLastName = function ($select) use ($space_lname) {
+            $select->where->like(
+                new Expression('LOWER(lname)'),
+                '%' . mb_strtolower($space_lname) . '%'
+            );
+        };
+
+
+
+        $ret = $this->select($likeLastName)->toArray();
+        if (count($ret) < 5) {
+            // $rows = $this->select($likeLastName)->toArray();
+            // $ret = $this->unique_by_key(array_merge($ret, $rows));
+        }
+        if (count($ret) < 5) {
+            // $rows = $this->select($spacePrefixLastName)->toArray();
+            // $ret = $this->unique_by_key(array_merge($ret, $rows));
+        }
+        if (count($ret) < 5) {
+            // $rows = $this->select($spaceLikeLastName)->toArray();
+            // $ret = $this->unique_by_key(array_merge($ret, $rows));
+        }
+        return array_slice($ret, 0, 20); // limit results
+
+        $parts = preg_split("/[\s,]+/", $query);
+        $first = $parts[0];
+        $c = count($parts);
+        $last = ($c > 1) ? $parts[$c - 1] : false;
+        $callback = function ($select) use ($first, $last) {
+            $nest = $select->where->NEST;
+            $nest->like(
+                new Expression('LOWER(lname)'),
+                mb_strtolower($first) . '%'
+            )->OR->like(
+                new Expression('LOWER(fname)'),
+                mb_strtolower($first) . '%'
+            );
+            if (intval($first) > 0) {
+                $nest->OR->equalTo('id', intval($first));
+            }
+            $nest->UNNEST;
+            if ($last) {
+                $select->where->AND->NEST->like(
+                    new Expression('LOWER(fname)'),
+                    mb_strtolower($last) . '%'
+                )->OR->like(
+                    new Expression('LOWER(lname)'),
+                    mb_strtolower($last) . '%'
+                )->UNNEST;
+            }
+            $select->order(array('lname', 'fname'));
+        };
+        return $this->select($callback)->toArray();
         return $rows;
     }
 

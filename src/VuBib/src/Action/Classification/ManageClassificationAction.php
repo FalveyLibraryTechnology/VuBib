@@ -36,6 +36,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Paginator\Paginator;
+use Zend\Session;
 
 /**
  * Class Definition for ManageClassificationAction.
@@ -116,7 +117,6 @@ class ManageClassificationAction implements MiddlewareInterface
         if ($post['action'] == 'edit') {
             if ($post['submit'] == 'Save') {
                 if (null !== $post['id']) {
-                    //echo "<pre>";print_r($post);echo "</pre>"; die();
                     $table = new \VuBib\Db\Table\Folder($this->adapter);
                     $table->updateRecord(
                         $post['id'], $post['edit_texten'], $post['edit_textfr'],
@@ -221,6 +221,11 @@ class ManageClassificationAction implements MiddlewareInterface
      */
     protected function getPaginator($query, $post)
     {
+        if (!empty($post['action'])) {
+            //add edit move merge folder
+            $this->doAction($post);
+        }
+
         if (!empty($query['action'])) {
             //manage classification hierarchy
             if ($query['action'] == 'get_children') {
@@ -232,27 +237,8 @@ class ManageClassificationAction implements MiddlewareInterface
 
                 return $paginator;
             }
-            //view link click
-            if ($query['action'] == 'get_siblings') {
-                $table = new \VuBib\Db\Table\Folder($this->adapter);
-                $rows = $table->findParent();
-                return $rows;
-            }
         }
-        if (!empty($post['action'])) {
-            //add edit move merge folder
-            $this->doAction($post);
 
-            //Cancel
-            if (isset($post['submit'])) {
-                if ($post['submit'] == 'Cancel') {
-                    $table = new \VuBib\Db\Table\Folder($this->adapter);
-                    $paginator = $table->findParent();
-
-                    return $paginator;
-                }
-            }
-        }
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\Folder($this->adapter);
         $paginator = $table->findParent();
@@ -313,13 +299,19 @@ class ManageClassificationAction implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
+        $session = new Session\Container('manageClassifications');
+
         $query = $request->getqueryParams();
         $post = [];
         if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
+            $query = $session->prevQuery;
         }
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(15);
+
+        $session->prevQuery = $query;
+
+        $paginator->setDefaultItemCountPerPage(1000);
         $countPages = $paginator->count();
 
         $currentPage = $query['page'] ?? 1;

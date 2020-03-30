@@ -209,6 +209,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
      */
     public function getLikeRecords($name)
     {
+        throw new \Error('Publisher::getLikeRecords');
         $callback = function ($select) use ($name) {
             $select->where->like(
                 new Expression('LOWER(name)'),
@@ -219,6 +220,34 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
         };
         $rows = $this->select($callback)->toArray();
 
+        return $rows;
+    }
+
+    /**
+     * AC suggestions from GetWorkDetailsAction
+     *
+     * @param string $query search query from
+     *
+     * @return Array $rows folder records
+     */
+    public function getSuggestions($query)
+    {
+        $callback = function ($select) use ($query) {
+            $select->where->like(
+                new Expression('LOWER(name)'),
+                mb_strtolower($query) . '%'
+            );
+            //$select->where->like('name', '%'.$name.'%');
+            $select->order('name');
+        };
+        $rows = $this->select($callback)->toArray();
+
+        return $rows;
+        foreach ($rows as $i => $row) {
+            $rows[$i]['value'] = $row['name'];
+            $rows[$i]['label'] = $row['name'];
+            $rows[$i]['id'] = $row['id'];
+        }
         return $rows;
     }
 }

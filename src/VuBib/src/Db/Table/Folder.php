@@ -420,4 +420,21 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 
         return $rows;
     }
+
+    /**
+     * AC suggestions from GetWorkDetailsAction
+     *
+     * @param string $query search query from
+     *
+     * @return Array $rows folder records
+     */
+    public function getSuggestions($query) {
+        list($type, $id) = explode(':', $query);
+        if ($type == 'children') {
+            return $this->getChild($id);
+        }
+        if ($type == 'parents') {
+            return $this->getParentChain($id);
+        }
+    }
 }

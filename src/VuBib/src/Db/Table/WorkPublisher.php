@@ -141,6 +141,9 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
     public function insertRecords($wk_id, $pub_id, $pub_locid, $pub_yr, $pub_yrEnd)
     {
         for ($i = 0; $i < count($pub_id); ++$i) {
+            if (empty($pub_id[$i]) && $pub_id[$i] != '0') {
+                continue;
+            }
             if (empty($pub_locid[$i])) {
                 $pub_locid[$i] = null;
             }

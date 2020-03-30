@@ -18,8 +18,8 @@
                     //fetch name based on id
                     $table = new \VuBib\Db\Table\TranslateLanguage($adapter);
                     $row = $table->findRecordById($id);
-                    $name_en = $row['text_en'];
-                    echo $name_en;
+                    $name = $row['text_fr'];
+                    echo $name;
                 }
                 ?>
             </li>
@@ -30,4 +30,3 @@
         <input type="submit" name="submitt" value="Cancel">
     </form>
 </div>
-

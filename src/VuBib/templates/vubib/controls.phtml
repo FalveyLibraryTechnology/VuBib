@@ -1,50 +1,30 @@
 <?php $extraParams = empty($this->extraParams) ? '' : $this->escapeHtml('&' . $this->extraParams); ?>
 
-<?php if ($this->pageCount): ?>
-    <!-- First page link -->
-    <?php if (isset($this->previous)): ?>
-        <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->first) . $extraParams ?>">
-        First
-        </a> |
-    <?php else: ?>
-        <span class="disabled">First</span> |
-    <?php endif; ?>
-
-    <!-- Previous page link -->
-    <?php if (isset($this->previous)): ?>
-        <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->previous) . $extraParams ?>">
-        &lt; Previous
-        </a> |
-    <?php else: ?>
-        <span class="disabled">&lt; Previous</span> |
-    <?php endif; ?>
-
-    <!-- Range numbers -->
-    <?php if (count($this->pagesInRange) > 1): ?>
-      <?php foreach ($this->pagesInRange as $page): ?>
-        <?php if ($page != $this->current): ?>
-          <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($page) . $extraParams ?>"><?=$page?></a>
-        <?php else: ?>
-          <span><?=$page?></span>
+<div class="pagination">
+    <?php if ($this->pageCount): ?>
+        <?php if (isset($this->previous)): ?>
+            <!-- First page link -->
+            <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->first) . $extraParams ?>">[1]</a>
+            <!-- Previous page link -->
+            <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->previous) . $extraParams ?>">&lt;&lt;</a> |
         <?php endif; ?>
-      <?php endforeach; ?> |
-    <?php endif; ?>
 
-    <!-- Next page link -->
-    <?php if (isset($this->next)): ?>
-        <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->next) . $extraParams ?>">
-        Next &gt;
-        </a> |
-    <?php else: ?>
-        <span class="disabled">Next &gt;</span> |
-    <?php endif; ?>
+        <!-- Range numbers -->
+        <?php if (count($this->pagesInRange) > 1): ?>
+          <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($page != $this->current): ?>
+              <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($page) . $extraParams ?>"><?=$page?></a>
+            <?php else: ?>
+              <span><?=$page?></span>
+            <?php endif; ?>
+            |
+          <?php endforeach; ?>
+        <?php endif; ?>
 
-    <!-- Last page link -->
-    <?php if (isset($this->next)): ?>
-        <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->last) . $extraParams ?>">
-        Last
-        </a>
-    <?php else: ?>
-        <span class="disabled">Last</span>
+        <!-- Next page link -->
+        <?php if (isset($this->next)): ?>
+            <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->next) . $extraParams ?>">&gt;&gt;</a>
+            <a href="<?php echo $this->url($this->route) . '?page=' . urlencode($this->last) . $extraParams ?>">[<?=$this->last ?>]</a>
+        <?php endif; ?>
     <?php endif; ?>
-<?php endif; ?>
+</div>

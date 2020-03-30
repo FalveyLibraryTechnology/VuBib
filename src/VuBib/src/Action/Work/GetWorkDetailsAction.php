@@ -232,8 +232,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
     protected function option($post)
     {
         $opt_title = $post['option'];
-        $wkat_id = preg_replace("/^\w+:/", '', $post['attribute_Id']);
-        //$wkat_id = $_POST['attribute_Id'];
+        $wkat_id = preg_replace("/^[ \w]+:/", '', $post['attribute_Id']);
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $rows = $table->getAttributeOptions($opt_title, $wkat_id);
         return ['attribute_options' => $rows];
@@ -295,25 +294,6 @@ class GetWorkDetailsAction implements MiddlewareInterface
     }
 
     /**
-     * Fetches work title
-     *
-     * @param Array $post contains posted elements of form
-     *
-     * @return string $output
-     */
-    public function getParentLookup($lookup_title)
-    {
-        $table = new \VuBib\Db\Table\Work($this->adapter);
-        $rows = $table->fetchParentLookup($lookup_title);
-        foreach ($rows as $i => $row) {
-            $rows[$i]['id'] = $row['id'];
-            $rows[$i]['label'] = $row['title'];
-            $rows[$i]['type'] = $row['type'];
-        }
-        return ['prnt_lookup' => $rows];
-    }
-
-    /**
      * Autosuggest
      *
      * @param Array $autofor     entity for which autosuggest is required
@@ -323,35 +303,13 @@ class GetWorkDetailsAction implements MiddlewareInterface
      */
     protected function getAutoSuggest($autofor, $search_term)
     {
-        if ($autofor == 'publisher') {
-            $table = new \VuBib\Db\Table\Publisher($this->adapter);
-            $rows = $table->getLikeRecords($search_term);
-            foreach ($rows as $i => $row) {
-                $rows[$i]['value'] = $row['name'];
-                $rows[$i]['label'] = $row['name'];
-                $rows[$i]['id'] = $row['id'];
-            }
-            return $rows;
-        }
-        if ($autofor == 'agent') {
-            $table = new \VuBib\Db\Table\Agent($this->adapter);
-            $rows = $table->getLikeRecords($search_term);
-            foreach ($rows as $i => $row) {
-                $rows[$i]['id'] = $row['id'];
-                $rows[$i]['label'] = $row['lname'];
-                $rows[$i]['fname'] = $row['fname'];
-                $rows[$i]['lname'] = $row['lname'];
-                $rows[$i]['alternate_name'] = $row['alternate_name'];
-                $rows[$i]['organization_name'] = $row['organization_name'];
-            }
-            return $rows;
-        }
-        if ($autofor == 'lookup_title') {
-            return $this->getParentLookup($search_term);
-        }
         if ($autofor == 'publisher_loc') {
             return $this->publisherIdLocs($search_term);
         }
+        // Catch all
+        $class = '\\VuBib\\Db\\Table\\' . ucfirst($autofor);
+        $table = new $class($this->adapter);
+        return $table->getSuggestions($search_term);
     }
 
     /**
@@ -595,13 +553,17 @@ class GetWorkDetailsAction implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        if (isset($_GET['autofor'])) {
-            $autofor = $_GET['autofor'];
-            if (isset($_GET['term'])) {
-                $search_term = $_GET['term'];
+        if ($request->getMethod() == 'GET') {
+            $get = $request->getQueryParams();
+            if (
+                isset($get['autofor']) &&
+                isset($get['term'])
+            ) {
+                $autofor = $get['autofor'];
+                $search_term = $get['term'];
                 $rows = $this->getAutoSuggest($autofor, $search_term);
+                return new JsonResponse($rows);
             }
-            return new JsonResponse($rows);
         }
 
         $post = [];

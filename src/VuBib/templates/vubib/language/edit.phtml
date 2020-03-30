@@ -12,7 +12,7 @@ if ($request->getqueryParams('id') !== null) {
     //fetch name based on id
     $table = new \VuBib\Db\Table\TranslateLanguage($adapter);
     $row = $table->findRecordById($id);
-    $name = $row['text_en'];
+    $name = $row['text_fr'];
 }
 ?>
 <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
@@ -64,4 +64,3 @@ if ($request->getqueryParams('id') !== null) {
         </div>
     </form>
 </div>
-

@@ -9,16 +9,16 @@ $.fn.textWidth = function(text, font) {
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/closest
 if (window.Element && !Element.prototype.closest) {
   Element.prototype.closest =
-  function(s) {
-    var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-        i,
-        el = this;
-    do {
-      i = matches.length;
-      while (--i >= 0 && matches.item(i) !== el) {};
-    } while ((i < 0) && (el = el.parentElement));
-    return el;
-  };
+    function(s) {
+      var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+          i,
+          el = this;
+      do {
+        i = matches.length;
+        while (--i >= 0 && matches.item(i) !== el) {};
+      } while ((i < 0) && (el = el.parentElement));
+      return el;
+    };
 }
 
 //Publisher autocomplete and location fetch
@@ -37,14 +37,20 @@ function bindPublisherAutocomplete() {
         // TODO: Add new
         callback($.map(data, function (item) {
           return {
-            text: item.label,
-            value: item.value,
+            text: item.name,
             id:    item.id
           }
         }));
       }
     }
   ).forEach(function bindLocationSelect(cell) {
+    // Add new publisher if necessary
+    cell.addEventListener("acs-set", function() {
+      if ($("#Publisher .acs-editing").length === 0) {
+        $("#pub_add").click();
+      }
+    }, false);
+
     cell.classList.remove("acs-unset");
     var row = cell.closest("tr");
     row.querySelector(".acs-clear").addEventListener("click", function (e) {
@@ -155,7 +161,7 @@ function bindAgentAutocomplete() {
       } else {
         // TODO: Add new
         callback($.map(data, function (item) {
-          item.text = item.lname + " (" + item.fname + ")";
+          item.text = item.lname + ", " + item.fname;
           item.value = item.lname;
           return item;
         }));
@@ -273,7 +279,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                     val.type == 'Text'
                 ) {
                     $('<div class="form-group required">' +
-                          '<label class="col-sm-2">' + val.field + '</label>' +
+                          '<label class="control-label col-sm-2">' + val.field + ':</label>' +
                           '<div class="col-sm-10">' +
                               '<input class="form-control" type="text" name="wkatid,' + val.id + '" id="' + val.field + '" value="' + setValue + '" size="50"/>' +
                           '</div>' +
@@ -281,7 +287,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                 }
                 if (val.type == 'RadioButton') {
                     $('<div class="form-group required">' +
-                          '<label class="col-sm-2">' + val.field + '</label>' +
+                          '<label class="control-label col-sm-2">' + val.field + ':</label>' +
                           '<div class="col-sm-10">' +
                               '<input class="form-control" type="radio" name="wkatid,' + val.id + '" value="true" /> True<br>' +
                               '<input class="form-control" type="radio" name="wkatid,' + val.id + '" value="false" /> False<br>' +
@@ -290,16 +296,57 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                 }
                 if (val.type == 'Select') { // Autocomplete
                     $('<div class="form-group required">' +
-                          '<label class="col-sm-2">'+val.field+'</label>' +
+                          '<label class="control-label col-sm-2">' + val.field + ':</label>' +
                           '<div class="col-sm-10">' +
-                            '<input class="form-control option-ac" placeholder="Type to search" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" value="' + setValue + '" size="50"/>' +
+                            '<div class="attribute-ac">' +
+                              '<input class="acs-hidden" type="hidden" name="wkatid,' + val.id + '" value="' + setValue + '"/>' +
+                              '<input class="form-control acs-input" id="' + val.field + ':' + val.id + '" type="text" value="' + (valEl ? valEl.title : "") + '" placeholder="Type to search"/>' +
+                            '</div>' +
                             '<a class="addNewAttrOptionLink"' +
                             ' data-attribute-id="'+ val.field + ':' + val.id +'"' +
                             ' href="#' + val.field + ':' + val.id +'">Add New</a>' +
                           '</div>' +
                       '</div>').appendTo("#Citation");
                 }
-            })
+            });
+
+            setupACS(
+              ".attribute-ac",
+              input => ({ option: input.value, "attribute_Id": input.id }),
+              acsStandardResults("attribute_options", item => ({ text: item.title, id: item.id })),
+              "POST"
+            );
+            $(".addNewAttrOptionLink").on("click",function() {
+              addNewOption(this.dataset.attributeId);
+              return false;
+            });
+            /*
+            // Autocomplete test
+            const AC = new Autocomplete({ minInputLength: 1 });
+            const citationInputs = $(".option-ac");
+            for (let i = 0; i < citationInputs.length; i++) {
+              const input = citationInputs[i];
+              AC(input, function periodicalAC(query, callback) {
+                $.ajax({
+                  method: "POST",
+                  url: URL + "/Work/get_work_details",
+                  data: { option: query, "attribute_Id": input.id }
+                })
+                  .done(function(data) {
+                    callback(data.attribute_options.map(x => x.title));
+                    if (data.attribute_options.length === 0) {
+                      input.classList.add("ac-no-results");
+                    } else {
+                      input.classList.remove("ac-no-results");
+                    }
+                  });
+              });
+            }
+            $(".addNewAttrOptionLink").on("click",function() {
+              addNewOption(this.dataset.attributeId);
+              return false;
+            });
+
             $(".optionLookupBtn").on('click', function(e) {
                 // show Modal
                 var lookupBtn = this;
@@ -391,32 +438,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                 });
                 return false;
             });
-
-            // Autocomplete test
-            const AC = new Autocomplete({ minInputLength: 1 });
-            const citationInputs = $(".option-ac");
-            for (let i = 0; i < citationInputs.length; i++) {
-              const input = citationInputs[i];
-              AC(input, function periodicalAC(query, callback) {
-                $.ajax({
-                  method: "POST",
-                  url: URL + "/Work/get_work_details",
-                  data: { option: query, "attribute_Id": input.id }
-                })
-                  .done(function(data) {
-                    callback(data.attribute_options.map(x => x.title));
-                    if (data.attribute_options.length === 0) {
-                      input.classList.add("ac-no-results");
-                    } else {
-                      input.classList.remove("ac-no-results");
-                    }
-                  });
-              });
-            }
-            $(".addNewAttrOptionLink").on("click",function() {
-              addNewOption(this.dataset.attributeId);
-              return false;
-            });
+            */
         },
         error: function(data) {
             $("#Citation", context).html('<p>No Options</p>');
@@ -462,88 +484,94 @@ function addNewOption(attributeId) {
 }
 
 //Add classification hierarchy
+
 _select = '';
-function bindClassification(that, context, workURL, for_str) {
-    var to_add_row = $(that).closest("tr");
-    //to_add_row.children('td', context).children('select', context).eq(0).css('background-color', '#8ec252');
+function bindClassification(select, workURL, for_str) {
+    console.log("bindClassification");
 
-    //folder id of selected option
-    fl_changed = $(that).val();
-
-    //To set select dropdown width to the length of option selected
-    fl_selected_text = "";
-    fl_selected_text = $("option:selected", that).text();
-    fl_len = fl_selected_text.length + 5;
-    $(that).css('width', fl_len + 'ch');
-    //
-    var no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl', context).length;
-    for (var i = 0; i < no_of_fl_parent; i++) {
-        if (to_add_row.find('.select_' + for_str + '_fl', context).eq(i).val() === fl_changed) {
-            change_idx = i;
-            folder_Id = to_add_row.find('.select_' + for_str + '_fl', context).eq(i).val();
-            break;
-        }
+    // Add new row if necessary
+    let needNew = !!$("#fl_add").length;
+    $('[data-source-col="0"] select').each((i, select) => {
+      if (!needNew) {
+        return;
+      }
+      if (!$(select).val()) {
+        needNew = false;
+      }
+    });
+    if (needNew) {
+      $("#fl_add").click();
     }
 
-    if (folder_Id === "") {
-        to_add_row.find('.' + for_str + '_fl_col', context).eq(0).nextAll('.' + for_str + '_fl_col', context).remove();
-        to_add_row.find('.select_' + for_str + '_fl', context).eq(0).val('');
-    } else {
-        to_add_row.find('.' + for_str + '_fl_col', context).eq(change_idx).nextAll('.' + for_str + '_fl_col', context).remove();
-    }
+    var $targetRow = $(select).closest("tr");
+    var selectedId = $(select).val();
+    var dataCol = for_str + "-col";
 
-    //no_of_fl_parent = $('.select_source_fl',context).length;
-    no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl', context).length;
-
-    $.ajax({
-        method: 'post',
-        url: ur + workURL,
-        data: {
-            folder_Id: folder_Id
-        },
-        dataType: "json",
-        cache: false,
-        success: function(data) {
-            if (data.folder_children.length > 0) {
-                to_add_row.find('.' + for_str + '_fl_col', context).eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' +
-                                                                                                  'name="' + for_str + '_fl_col" ' +
-                                                                                                  'id="' + for_str + '_fl_col" ');
-
-                _select = $('<select class="form-control select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
-                to_append = $('<option value=""></option>');
-                $.each(data.folder_children, function(key, val) {
-                    to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
-                });
-                _select.append($('<option />'));
-                _select.append(to_append);
-
-                to_add_row.find('.' + for_str + '_fl_col', context).eq(no_of_fl_parent).append(_select);
-                to_add_row.find('.' + for_str + '_fl_col', context).eq(no_of_fl_parent).append('</select>');
-
-                _select.on('change', function() {
-                    bindClassification(this, document, workURL, for_str);
-                    return false;
-                });
-            }
-        },
-        error: function(data) {
-            //$("#Classification", context).html('<p>No Options</p>');
+    // Remove later selects
+    var changedIndex = $(select).closest("td").data(for_str + "-col");
+    $targetRow.find("td").each(function(_, cell) {
+        var $cell = $(cell);
+        if ($cell.data(dataCol) > changedIndex) {
+            $cell.remove();
         }
     });
+
+    // Set width
+    // $(select).css(
+    //     "width",
+    //     ($(select).find("option:selected").text().length + 5) + 'ch'
+    // );
+
+    if (selectedId) {
+        $.ajax({
+            url: workURL,
+            data: {
+                autofor: "folder",
+                term: "children:" + selectedId
+            },
+            dataType: "json",
+            success: function(folder_children) {
+                // Make new select
+                if (folder_children.length > 0) {
+                    var $newSelect = $('<select class="form-control select_' + for_str + '_fl">');
+                    $newSelect.attr("name", "select_" + for_str + "_fl[]");
+                    $newSelect.append('<option value=""></option>');
+                    for (var folder of folder_children) {
+                        $newSelect.append(
+                            '<option value="' + folder.id + '">' + folder.text_fr + '</option>'
+                        );
+                    }
+                    $newSelect.on('change', function() {
+                        bindClassification(this, workURL, for_str);
+                        return false;
+                    });
+                    $newCell = $("<td>")
+                        .attr("class", for_str + "_fl_col")
+                        .attr("data-" + dataCol, changedIndex + 1)
+                        .append($newSelect);
+                    $targetRow.append($newCell);
+                }
+            },
+            error: function(data) {
+                console.error(data);
+            }
+        });
+    }
     return false;
 }
 
 //Parent lookup
 function bindParentWorkAutocomplete() {
+  console.log("bindParentWorkAutocomplete");
   setupACS(
     "#parent-work-lookup",
     function parentWorkACData(input) {
-      return { autofor: "lookup_title", term: input.value }
+      return { autofor: "work", term: input.value }
     },
-    function parentWorkACSuccess(data, callback, input) {
+    function parentWorkACSuccess(prnt_lookup, callback, input) {
       input.classList.remove("ac-no-results");
       callback(
-        data.prnt_lookup.slice(0, 20).map(x => ({
+        prnt_lookup.slice(0, 20).map(x => ({
           id: x.id,
           text: x.title,
           sub: x.type
@@ -552,125 +580,65 @@ function bindParentWorkAutocomplete() {
     },
   );
 }
+
+/*
 function bindParentWork(context,workURL)
 {
+  console.log("bindParentWork");
     $('.pr_work_results').html('');
     $('#parent_title',context).focus();
 
-       $('.parent_lookup_search',context).off('click').on('click', function(e) {
-           var lookup_title = $('#parent_title',context).val();
-           if (lookup_title != "") {
-               $.ajax({
-                   method: 'post',
-                   url: ur + workURL,
-                   data: {
-                       lookup_title: lookup_title
-                   },
-                   dataType: "json",
-                   cache: false,
-                   success: function(data) {
-                       if ((data.prnt_lookup.length) > 0) {
-                           $('#parent_title').val('');
-                           var prworks_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="prworks_result_table">' +
-                                                      '<tr><th>Work Title</th><th>Type</th></tr>';
-                           $.each(data.prnt_lookup, function (key, val) {
-                               prworks_result_table += '<tr><input type="hidden" name="parent_work_id" id="parent_work_id" value="">' +
-                                                       '<td><a name="' + val.id + '" href="" class="prwork_link" value="' + val.title + '">' +
-                                                       val.title + '</a></td><td>' + val.type + '</td></tr>';
-                           });
-                           prworks_result_table += '</table>';
-                           $('.pr_work_results').append(prworks_result_table);
-                       } else {
-                             $('#parent_title',context).val('');
-                             $('.pr_work_results').append('<p>No records found</p>');
-                       }
-
-                   },
-                   error: function(data) {
-                      alert("No results");
+   $('.parent_lookup_search',context).off('click').on('click', function(e) {
+       var lookup_title = $('#parent_title',context).val();
+       if (lookup_title != "") {
+           $.ajax({
+               url: ur + workURL,
+               data: {
+                  autofor: "work",
+                  term: lookup_title
+               },
+               dataType: "json",
+               success: function(data) {
+                   if ((data.prnt_lookup.length) > 0) {
+                       $('#parent_title').val('');
+                       var prworks_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="prworks_result_table">' +
+                                                  '<tr><th>Work Title</th><th>Type</th></tr>';
+                       $.each(data.prnt_lookup, function (key, val) {
+                           prworks_result_table += '<tr><input type="hidden" name="parent_work_id" id="parent_work_id" value="">' +
+                                                   '<td><a name="' + val.id + '" href="" class="prwork_link" value="' + val.title + '">' +
+                                                   val.title + '</a></td><td>' + val.type + '</td></tr>';
+                       });
+                       prworks_result_table += '</table>';
+                       $('.pr_work_results').append(prworks_result_table);
+                   } else {
+                         $('#parent_title',context).val('');
+                         $('.pr_work_results').append('<p>No records found</p>');
                    }
-               });
-               //$(context).off('click', '.prwork_link');
-               $(context).on("click", ".prwork_link", function(e) {
-                   var pr_linkval = $(this).attr('name');
-                   var pr_labelval = $(this).attr('value');
-                   $('.pr_work_div', context).text(pr_labelval);
-                   $('#pr_work_lookup_id',context).val(pr_linkval);
-                   $('.pr_work_div', context).append('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-xs parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn" ' +
-                                                     'data-toggle="modal" data-target="#parentLookup_modal">Change</button>')
-                   $('.pr_work_div', context).append('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-xs parent_Rmv_Btn" name="parent_removeBtn" ' +
-                                                      'id="parent_removeBtn">Remove</button>')
-                   $('.pr_work_results').html('');
-                   $('.option_lookup_close').trigger('click');
-                       return false;
-               });
-           }
-           return false;
-       });
+
+               },
+               error: function(data) {
+                  alert("No results");
+               }
+           });
+           //$(context).off('click', '.prwork_link');
+           $(context).on("click", ".prwork_link", function(e) {
+               var pr_linkval = $(this).attr('name');
+               var pr_labelval = $(this).attr('value');
+               $('.pr_work_div', context).text(pr_labelval);
+               $('#pr_work_lookup_id',context).val(pr_linkval);
+               $('.pr_work_div', context).append('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-xs parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn" ' +
+                                                 'data-toggle="modal" data-target="#parentLookup_modal">Change</button>')
+               $('.pr_work_div', context).append('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-xs parent_Rmv_Btn" name="parent_removeBtn" ' +
+                                                  'id="parent_removeBtn">Remove</button>')
+               $('.pr_work_results').html('');
+               $('.option_lookup_close').trigger('click');
+                   return false;
+           });
+       }
        return false;
-}
-
-function mergeClassification(that, context, workURL, for_str)
-{
-    var to_add_row = $(that).closest("tr");
-    if ($(that).val() == "") {
-        to_add_row.find('.' + for_str + '_fl_col').eq(0).nextAll('.' + for_str + '_fl_col').remove();
-        to_add_row.find('.' + for_str + '_fl_col').eq(0).val('');
-        //return false;
-    } else {
-        fl_changed = $(that).val();
-
-        var no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl').length;
-        for (var i = 0; i < no_of_fl_parent; i++) {
-            if (to_add_row.find('.select_' + for_str + '_fl').eq(i).val() === fl_changed) {
-                change_idx = i;
-                folder_Id = to_add_row.find('.select_' + for_str + '_fl').eq(i).val();
-                break;
-            }
-        }
-        to_add_row.find('.' + for_str + '_fl_col').eq(change_idx).nextAll('.' + for_str + '_fl_col').remove();
-
-        no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl').length;
-
-        $.ajax({
-            method: 'post',
-            //url: 'http://localhost<?= $this->url('get_work_details') ?>',
-            url: ur + workURL,
-            data: {
-                folder_Id: folder_Id
-            },
-            dataType: "json",
-            cache: false,
-            success: function(data) {
-                to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' +
-                                                                                              'name="' + for_str + '_fl_col" ' +
-                                                                                              'id="' + for_str + '_fl_col" ' +
-                                                                                              '/>');
-
-                _select = $('<select class="form-control select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
-                to_append = $('<option value=""></option>');
-                $.each(data.folder_children, function(key, val) {
-                    to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
-                });
-                _select.append($('<option />'));
-                _select.append(to_append);
-
-                to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent).append(_select);
-                to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent).append('</select>');
-
-                _select.on('change', function() {
-                    bindClassification(this, document, workURL, for_str);
-                    return false;
-                });
-            },
-            error: function(data) {
-                $("#Classification", context).html('<p>No Options</p>');
-            }
-        });
-        //return false;
-    }
-    return false;
-}
+   });
+   return false;
+}*/
 
 //Add merge buutton on Publisher > Merge
 function addMergeButton(context, for_str) {
@@ -973,3 +941,67 @@ function findAttrOptions(workURL, for_str, wkat_id) {
     });
     return false;
 }
+
+/*
+function mergeClassification(that, context, workURL, for_str)
+{
+    var to_add_row = $(that).closest("tr");
+    if ($(that).val() == "") {
+        to_add_row.find('.' + for_str + '_fl_col').eq(0).nextAll('.' + for_str + '_fl_col').remove();
+        to_add_row.find('.' + for_str + '_fl_col').eq(0).val('');
+        //return false;
+    } else {
+        fl_changed = $(that).val();
+
+        var no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl').length;
+        for (var i = 0; i < no_of_fl_parent; i++) {
+            if (to_add_row.find('.select_' + for_str + '_fl').eq(i).val() === fl_changed) {
+                change_idx = i;
+                folder_Id = to_add_row.find('.select_' + for_str + '_fl').eq(i).val();
+                break;
+            }
+        }
+        to_add_row.find('.' + for_str + '_fl_col').eq(change_idx).nextAll('.' + for_str + '_fl_col').remove();
+
+        no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl').length;
+
+        $.ajax({
+            method: 'post',
+            //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+            url: ur + workURL,
+            data: {
+                folder_Id: folder_Id
+            },
+            dataType: "json",
+            cache: false,
+            success: function(data) {
+                to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' +
+                                                                                              'name="' + for_str + '_fl_col" ' +
+                                                                                              'id="' + for_str + '_fl_col" ' +
+                                                                                              '/>');
+
+                _select = $('<select class="form-control select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
+                to_append = $('<option value=""></option>');
+                $.each(data.folder_children, function(key, val) {
+                    to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
+                });
+                _select.append($('<option />'));
+                _select.append(to_append);
+
+                to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent).append(_select);
+                to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent).append('</select>');
+
+                _select.on('change', function() {
+                    bindClassification(this, document, workURL, for_str);
+                    return false;
+                });
+            },
+            error: function(data) {
+                $("#Classification", context).html('<p>No Options</p>');
+            }
+        });
+        //return false;
+    }
+    return false;
+}
+*/

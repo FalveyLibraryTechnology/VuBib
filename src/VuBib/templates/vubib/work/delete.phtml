@@ -2,21 +2,21 @@
 <?php
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '">Work</a> &gt; Delete';
     $this->layout()->page = "Work/Delete";
+
+    if ($request->getqueryParams('action') !== null)
+    {
+        $params = $request->getqueryParams();
+        $action = $params['action'];
+    }
+
+    if ($request->getMethod() == 'POST') {
+        $post = $request->getParsedBody();
+    }
 ?>
 <div class="col-xs-4">
-       <form method="post" action="<?=$this->url('manage_work')?>">
+    <form method="post" action="<?=$this->url('manage_work')?><?=isset($action) ? '?action=' . $action : '' ?>">
         <p>Are you sure you want to delete this?</p>
         <?php
-            if ($request->getqueryParams('action') !== null)
-            {
-                $params = $request->getqueryParams();
-                $action = $params['action'];
-            }
-
-            if ($request->getMethod() == 'POST') {
-                $post = $request->getParsedBody();
-            }
-
             $wk = [];
             if(count($post['selectWork']) > 0) {
                 foreach($post['selectWork'] as $work):
@@ -36,5 +36,5 @@
             ?>
         <input type="submit" name="submitt" value="Delete">
         <input type="submit" name="submitt" value="Cancel">
-       </form>
+    </form>
 </div>

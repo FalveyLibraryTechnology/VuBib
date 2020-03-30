@@ -32,35 +32,44 @@ $(document).ready(function() {
     }
     // Publisher
     // make template
-    var templatePubRow = $('[name="pub_row[]"]').eq(0).clone(true);
+    var templatePubRow = $('.pub_row').eq(0).clone(true);
     templatePubRow.find("input, select").val("");
     templatePubRow.find(".pub-locations").html("");
     // bind autocomplete
     bindPublisherAutocomplete();
     // add publisher rows
-    $("#pub_add").click(function() {
+    function addPublisherRow() {
         var pub_row = templatePubRow.clone();
         $("#pub_table tbody").append(pub_row);
         bindPublisherAutocomplete();
         return false;
-    });
+    }
+    $("#pub_add").click(addPublisherRow);
+    if ($('.pub_row .acs-editing').length === 0) {
+        addPublisherRow();
+    }
     // remove publisher rows
     $("#pub_remove").on('click', removeByName("removePublisher"));
 
     // Agent
     // make template
     var templateAgentRow = $(".agent-row").eq(0).clone(true);
-    templateAgentRow.find("input, select").val("");
+    templateAgentRow.find("input, select").val("").removeAttr("checked");
+    templateAgentRow.find("option").removeAttr("selected");
     templateAgentRow.find(".agent-fname,.agent-alternate_name,.agent-organization_name").html("");
     // bind autocomplete
     bindAgentAutocomplete();
+
     //add agent rows
-    $("#agent_add").click(function() {
+    function addAgentRow() {
         var agent_row = templateAgentRow.clone();
         $("#agent_table").append(agent_row);
         bindAgentAutocomplete();
         return false;
-    });
+    }
+    $("#agent_add").click(addAgentRow);
+    // addAgentRow();
+
     //remove agent rows
     $("#agent_remove").on('click', removeByName("removeAgent"));
 
@@ -72,18 +81,35 @@ $(document).ready(function() {
     //classification
     //add classification rows
     var templateFolderTemplate = $($("#template-fl-row").html()).clone(true);
-    $("#fl_add").on('click', function() {
+    var classificationRowIndex = 0;
+    function addClassificationRow() {
         var fl_row = templateFolderTemplate.clone();
+        fl_row.data("source-row", classificationRowIndex++);
         $("#source_fl_table").append(fl_row);
+        fl_row
+            .find(".select_source_fl")
+            .on('change', function() {
+                console.log("add bind");
+                bindClassification(this, workURL, 'source');
+                return false;
+            });
         return false;
-    });
+    }
+
+    // Bind existing classifications
+    $('table[name="source_fl_table"]')
+        .find(".select_source_fl")
+        .on('change', function() {
+                console.log("init bind");
+            bindClassification(this, workURL, 'source');
+            return false;
+        });
+
+    $("#fl_add").on('click', addClassificationRow);
+    addClassificationRow();
+
     //remove classification rows
     $('#fl_remove').on('click', removeByName("removeFolder"));
-
-    $('table[name="source_fl_table"]').on('change', ".select_source_fl", function() {
-        mergeClassification(this, document, workURL, 'source');
-        return false;
-    });
 
     //Parent Lookup
     $('#parentLookup_modal').on('shown.bs.modal', function() {
@@ -115,7 +141,7 @@ $(document).ready(function() {
     });
 });
  </script>
-<form id="work-data-form" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?>">
+<form id="work-data-form" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?><?=isset($this->action) ? '?action=' . $this->action : '' ?>">
     <input type="hidden" name="id" value="<?=$this->work['id'] ?? 'NEW' ?>">
     <input type="hidden" name="action" value="<?=$this->formAction ?>">
     <!--<input type="hidden" name="arr[]" id="arrs" value="frm jquery">-->
@@ -190,10 +216,10 @@ $(document).ready(function() {
             <div class="form-group">
                 <label class="col-sm-2 control-label">Status: </label>
                 <div class="col-sm-10 col-md-8">
-                    <label><input type="radio" name="work_status" value="00"<?=($this->work['status'] == '00') ? ' checked' : '' ?>> In Progress</label><br/>
-                    <label><input type="radio" name="work_status" value="0" <?=($this->work['status'] == '0') ? ' checked' : '' ?>> Pending Review</label><br/>
-                    <label><input type="radio" name="work_status" value="2" <?=($this->work['status'] == '2') ? ' checked' : '' ?>> Unseen Source Doc</label><br/>
-                    <label><input type="radio" name="work_status" value="1" <?=($this->work['status'] == '1') ? ' checked' : '' ?>> Complete</label>
+                    <label><input type="radio" name="work_status" value="00"<?=(is_null($this->work['status'])) ? ' checked' : '' ?>> In Progress</label><br/>
+                    <label><input type="radio" name="work_status" value="0" <?=($this->work['status'] == 0) ? ' checked' : '' ?>> Pending Review</label><br/>
+                    <label><input type="radio" name="work_status" value="2" <?=($this->work['status'] == 2) ? ' checked' : '' ?>> Unseen Source Doc</label><br/>
+                    <label><input type="radio" name="work_status" value="1" <?=($this->work['status'] == 1) ? ' checked' : '' ?>> Complete</label>
                 </div>
             </div>
         </div>
@@ -205,13 +231,13 @@ $(document).ready(function() {
             <div id="class_grp">
                 <label class="control-label">Subject Tree: </label>
                 <script type="text/template" id="template-fl-row">
-                    <tr>
+                    <tr class="source_fl_row">
                         <td><input type="checkbox" name="removeFolder[]"></td>
-                        <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
+                        <td class="source_fl_col" data-source-col="0">
                             <select class="form-control select_source_fl" name="select_source_fl[]">
                                 <option value=""></option>
                                 <?php foreach ($this->rootFolders as $folder) : ?>
-                                    <option value="<?=$folder['id'] ?>"><?=$folder['text_en'] ?></option>
+                                    <option value="<?=$folder['id'] ?>"><?=$folder['text_fr'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -226,11 +252,11 @@ $(document).ready(function() {
                     <?php foreach ($this->classifications as $folderChain): ?>
                     <tr name="source_fl_row[]">
                         <td><input type="checkbox" name="removeFolder[]"></td>
-                        <?php foreach ($folderChain as $folderSiblings): ?>
-                        <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
-                            <select class="form-control select_source_fl select2" name="select_source_fl[]">
+                        <?php foreach ($folderChain as $i => $folderSiblings): ?>
+                        <td class="source_fl_col" name="source_fl_col" id="source_fl_col" data-source-col="<?=$i ?>">
+                            <select class="form-control select_source_fl" name="select_source_fl[]">
                                 <?php foreach($folderSiblings as $folder): ?>
-                                    <option value="<?=$folder['id'] ?>"<?=isset($folder['selected']) ? ' selected' : '' ?>><?=$folder['text_en'] ?></option>
+                                    <option value="<?=$folder['id'] ?>"<?=isset($folder['selected']) ? ' selected' : '' ?>><?=$folder['text_fr'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -260,7 +286,7 @@ $(document).ready(function() {
                     }
                 ?>
                 <?php foreach ($this->publishers as $i=>$publisher): ?>
-                    <tr name="pub_row[]">
+                    <tr class="pub_row">
                         <td><input type="checkbox" name="removePublisher[]"></td>
                         <td>
                             <div class="pub-name-acs acs-unset">
@@ -323,7 +349,7 @@ $(document).ready(function() {
                     </td>
                     <td name="agLnCol">
                         <div class="agent-acs acs-unset">
-                            <input class="acs-hidden" type="hidden" name="agent_id[]" id="agentId" value="">
+                            <input class="acs-hidden" type="hidden" name="agent_id[]" id="agentId" value="<?=$agent['agent_id'] ?? ''?>">
                             <input class="acs-input form-control" type="text" placeholder="Type to search agents by last name" value="<?=$agent['lname'] ?? ''?>"/>
                         </div>
                     </td>
@@ -343,7 +369,8 @@ $(document).ready(function() {
         <?php // Pass citations to JS
             foreach ($this->citationTypes as $type) {
                 if (isset($this->citations[$type['id']])): ?>
-                    <input type="hidden" id="work-citation-<?=$type['id'] ?>" value="<?=$this->citations[$type['id']] ?>"/>
+                    <?php $cite = $this->citations[$type['id']]; ?>
+                    <input type="hidden" id="work-citation-<?=$type['id'] ?>" value="<?=$cite['value'] ?>" <?php if (isset($cite['title'])): ?> title="<?=$cite['title'] ?>"<?php endif; ?> />
                 <?php endif;
             }
         ?>

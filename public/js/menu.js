@@ -84,7 +84,7 @@ function acsStandardResults(key, mapFunc) {
     }
   };
 }
-function setupACS(selector, ajaxData, ajaxSuccess) {
+function setupACS(selector, ajaxData, ajaxSuccess, method = "GET") {
   let elements = document.querySelectorAll(selector);
   elements.forEach(function setupACSel(el) {
     // Run setup
@@ -94,9 +94,9 @@ function setupACS(selector, ajaxData, ajaxSuccess) {
       return;
     }
     // Bind autocomplete
-    ascAC(input, function publisherAC(query, callback) {
+    ascAC(input, function ascAutocomplete(_, callback) {
       $.ajax({
-        method: "GET",
+        method: method,
         url: workURL,
         data: ajaxData(input)
       }).done(function(data) {
@@ -139,6 +139,7 @@ function setupACS(selector, ajaxData, ajaxSuccess) {
     input.addEventListener("ac-select", function bindParentHidden(e) {
       titleEl.innerHTML = e.detail.value || e.detail.text;
       el.className = el.className.replace("acs-editing", "acs-set");
+      el.dispatchEvent(new Event("acs-set"));
       if (hiddenEl) {
         hiddenEl.value = e.detail.id;
       }

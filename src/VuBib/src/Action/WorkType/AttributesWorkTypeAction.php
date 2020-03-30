@@ -29,6 +29,8 @@ namespace VuBib\Action\WorkType;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -45,7 +47,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class AttributesWorkTypeAction
+class AttributesWorkTypeAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -293,9 +295,10 @@ class AttributesWorkTypeAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
             'vubib::worktype/attributes_worktype', $this->router,
             $this->template, $this->adapter

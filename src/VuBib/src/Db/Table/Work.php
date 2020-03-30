@@ -339,8 +339,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         if ($status === '00') {
             $status = null;
         }
-        $this->insert(
-            [
+        $this->insert([
             'work_id' => ($pr_workid !== -1) ? $pr_workid : null,
             'type_id' => $type_id,
             'title' => $title,
@@ -349,13 +348,12 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             'description' => $description,
             'create_date' => $create_date,
             'create_user_id' => $create_user_id,
-            'modify_date' => '0000-00-00 00:00:00',
-            'modify_user_id' => null,
+            'modify_date' => $create_date,
+            'modify_user_id' => $create_user_id,
             'status' => $status,
             'publish_month' => null,
             'publish_year' => $pub_yrFrom[0],
-            ]
-        );
+        ]);
         $id = $this->getLastInsertValue();
 
         return $id;
@@ -451,22 +449,6 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         };
         $rows = $this->select($callback)->toArray();
         return $rows;*/
-
-        $callback = function ($select) use ($title) {
-            $select->columns(['*']);
-            $select->join(
-                ['b' => 'worktype'], 'work.type_id = b.id',
-                ['type']
-            );
-            //$select->where->like('title', $title.'%');
-            $select->where->expression(
-                'LOWER(title) LIKE ?',
-                mb_strtolower($title) . '%'
-            );
-        };
-        $rows = $this->select($callback)->toArray();
-
-        return $rows;
     }
 
     /**
@@ -489,5 +471,25 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         $paginator = new Paginator($arrayAdapter);
 
         return $paginator;
+    }
+
+    /**
+     * AC suggestions from GetWorkDetailsAction
+     *
+     * @param string $query search query from
+     *
+     * @return Array $rows folder records
+     */
+    public function getSuggestions($title)
+    {
+        $callback = function ($select) use ($title) {
+            $select->columns(['id', 'title']);
+            $select->join('worktype', 'work.type_id = worktype.id', ['type']);
+            $select->where->expression(
+                'LOWER(title) LIKE ?',
+                mb_strtolower($title) . '%'
+            );
+        };
+        return $this->select($callback)->toArray();
     }
 }
