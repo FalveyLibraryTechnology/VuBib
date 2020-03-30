@@ -281,7 +281,7 @@ $(document).ready(function() {
             </thead>
             <tbody>
                 <?php
-                    if (!isset($this->publishers)) {
+                    if (!isset($this->publishers) || empty($this->publishers)) {
                         $this->publishers = [['locations' => []]]; // One empty publisher
                     }
                 ?>
