@@ -162,7 +162,11 @@ class ManageWorkAction implements MiddlewareInterface
 
         // default: blank/missing search
         $table = new \VuBib\Db\Table\Work($this->adapter);
-        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+        return new Paginator(
+            new \Zend\Paginator\Adapter\DbTableGateway(
+                $table, null, $order, null, null
+            )
+        );
     }
 
     /**
@@ -439,6 +443,11 @@ class ManageWorkAction implements MiddlewareInterface
      */
     protected function getPaginator($params, $post)
     {
+        // Post action
+        if (!empty($post['action'])) {
+            $this->doAction($post);
+        }
+
         $order = "";
         //order by columns
         if (!empty($params['orderBy'])) {
@@ -483,7 +492,9 @@ class ManageWorkAction implements MiddlewareInterface
             ) {
                 $table = new \VuBib\Db\Table\Work($this->adapter);
                 return new Paginator(
-                    new \Zend\Paginator\Adapter\DbTableGateway($table)
+                    new \Zend\Paginator\Adapter\DbTableGateway(
+                        $table, null, $order, null, null
+                    )
                 );
             }
         }
@@ -662,22 +673,23 @@ class ManageWorkAction implements MiddlewareInterface
                     )
                 );
             }
-        } else {
-            return new HtmlResponse(
-                $this->template->render(
-                    'vubib::work/manage',
-                    [
-                    'rows' => $paginator,
-                    'previous' => $pgs['prev'],
-                    'next' => $pgs['nxt'],
-                    'countp' => $pgs['cp'],
-                    'searchParams' => $searchParams,
-                    'carat' => $characs,
-                    'request' => $request,
-                    'adapter' => $this->adapter,
-                    ]
-                )
-            );
         }
+
+        // default
+        return new HtmlResponse(
+            $this->template->render(
+                'vubib::work/manage',
+                [
+                'rows' => $paginator,
+                'previous' => $pgs['prev'],
+                'next' => $pgs['nxt'],
+                'countp' => $pgs['cp'],
+                'searchParams' => $searchParams,
+                'carat' => $characs,
+                'request' => $request,
+                'adapter' => $this->adapter,
+                ]
+            )
+        );
     }
 }
