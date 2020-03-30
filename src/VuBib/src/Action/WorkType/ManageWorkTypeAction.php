@@ -205,7 +205,11 @@ class ManageWorkTypeAction implements MiddlewareInterface
      */
     protected function doAttributeSort($post)
     {
-        if ($post['submitt'] == 'Save') {
+        if (
+            $post['submitt'] == 'Save' &&
+            !empty($post['remove_attr']) &&
+            !empty($post['sort_order'])
+        ) {
             if (!empty($post['remove_attr'])) {
                 $this->removeAttribute($post);
             }
@@ -310,7 +314,7 @@ class ManageWorkTypeAction implements MiddlewareInterface
         ) {
             return new HtmlResponse(
                 $this->template->render(
-                    'vubib::worktype/manage_attributes',
+                    'vubib::worktype/manageattribute',
                     [
                         'rows' => $paginator,
                         'previous' => $pgs['prev'],
