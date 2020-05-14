@@ -233,21 +233,26 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
     public function getSuggestions($query)
     {
         $callback = function ($select) use ($query) {
-            $select->where->like(
-                new Expression('LOWER(name)'),
-                mb_strtolower($query) . '%'
+            $select->columns([
+                'id' => new \Zend\Db\Sql\Expression('MIN(publisher.id)'),
+                'name' => new \Zend\Db\Sql\Expression('MIN(publisher.name)')
+            ])
+                ->where->like(
+                    new Expression('LOWER(name)'),
+                    mb_strtolower($query) . '%'
+                );
+            //*
+            $select->join(
+                'work_publisher',
+                'publisher.id = work_publisher.publisher_id',
+                ['work_count' => new \Zend\Db\Sql\Expression('COUNT(work_id)')]
             );
-            //$select->where->like('name', '%'.$name.'%');
-            $select->order('name');
+            $select->group('publisher.id');
+            $select->order('work_count DESC');
+            //*/
         };
         $rows = $this->select($callback)->toArray();
 
-        return $rows;
-        foreach ($rows as $i => $row) {
-            $rows[$i]['value'] = $row['name'];
-            $rows[$i]['label'] = $row['name'];
-            $rows[$i]['id'] = $row['id'];
-        }
         return $rows;
     }
 }
