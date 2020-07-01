@@ -1,9 +1,9 @@
 {
-    "name": "zendframework/zend-expressive-skeleton",
-    "description": "Zend expressive skeleton. Begin developing PSR-15 middleware applications in seconds!",
+    "name": "vubib/vubib",
+    "description": "VuBib is a bibliography management software, developed with Zend Expressive framewors as a base.",
     "type": "project",
-    "homepage": "https://github.com/zendframework/zend-expressive-skeleton",
-    "license": "BSD-3-Clause",
+    "homepage": "https://github.com/FalveyLibraryTechnology/VuBib",
+    "license": "GPL 2.0",
     "keywords": [
         "skeleton",
         "middleware",
