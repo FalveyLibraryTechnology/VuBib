@@ -141,17 +141,13 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 
     protected function translateCurrent($select): object
     {
-        $currentRow = $select->current();
-        $id = $row['id'];
-        $ret = $currentRow;
-        unset($ret[$id]['t__lang']);
-        unset($ret[$id]['t__text']);
+        $ret = $select->current();
+        $rows = $select->toArray();
         foreach ($rows as $row) {
-            if ($id != $row['id']) {
-                continue;
-            }
             $ret['text_' . $row['t__lang']] = $row['t__text'];
         }
+        unset($ret['t__lang']);
+        unset($ret['t__text']);
         return $ret;
     }
 
@@ -202,7 +198,12 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getParent($child)
     {
-        $rowset = $this->joinTranslations($this->select(['id' => $child]));
+        $callback = function ($select) use ($child) {
+            $select->columns(['*']);
+            $select->where(['folder.id' => $child]);
+            $this->joinTranslations($select);
+        };
+        $rowset = $this->select($callback);
         $row = $this->translateCurrent($rowset);
 
         return $row;
