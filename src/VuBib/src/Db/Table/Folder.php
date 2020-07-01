@@ -32,6 +32,7 @@ namespace VuBib\Db\Table;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
@@ -129,6 +130,47 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         }
     }
 
+    protected function joinTranslations($select): void
+    {
+        $select->join(
+            ['t' => 'translations'], 't.id = folder.id',
+            ['t__lang' => 'lang', 't__text' => 'text']
+        );
+        $select->where("t.`table` = 'folder'");
+    }
+
+    protected function translateCurrent($select): object
+    {
+        $currentRow = $select->current();
+        $id = $row['id'];
+        $ret = $currentRow;
+        unset($ret[$id]['t__lang']);
+        unset($ret[$id]['t__text']);
+        foreach ($rows as $row) {
+            if ($id != $row['id']) {
+                continue;
+            }
+            $ret['text_' . $row['t__lang']] = $row['t__text'];
+        }
+        return $ret;
+    }
+
+    protected function translatedArray($select): Array
+    {
+        $rows = $select->toArray();
+        $ret = [];
+        foreach ($rows as $row) {
+            $id = $row['id'];
+            if (!isset($ret[$id])) {
+                $ret[$id] = $row;
+                unset($ret[$id]['t__lang']);
+                unset($ret[$id]['t__text']);
+            }
+            $ret[$id]['text_' . $row['t__lang']] = $row['t__text'];
+        }
+        return array_values($ret);
+    }
+
     /**
      * Get children of a parent folder.
      *
@@ -141,13 +183,14 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($parent) {
             $select->columns(['*']);
             $select->where->equalTo('parent_id', $parent);
+            $this->joinTranslations($select);
             //$select->order(new Expression('case when sort_order is null
             //then 1 else 0 end, sort_order'),'text_fr');
             $select->order('sort_order');
             $select->order('text_fr');
         };
-        $rows = $this->select($callback)->toArray();
-        return $rows;
+        $rows = $this->select($callback);
+        return $this->translatedArray($rows);
     }
 
     /**
@@ -159,8 +202,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getParent($child)
     {
-        $rowset = $this->select(['id' => $child]);
-        $row = $rowset->current();
+        $rowset = $this->joinTranslations($this->select(['id' => $child]));
+        $row = $this->translateCurrent($rowset);
 
         return $row;
     }
@@ -175,10 +218,10 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) {
             $select->columns(['*']);
             $select->where('parent_id IS NULL');
+            $this->joinTranslations($select);
         };
-        $rows = $this->select($callback)->toArray();
-
-        return $rows;
+        $rows = $this->select($callback);
+        return $this->translatedArray($rows);
     }
 
     /**
@@ -221,9 +264,12 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(['id' => $id]);
-        $row = $rowset->current();
-
+        $callback = function ($select) use ($id) {
+            $select->where(['folder.id' => $id]);
+            $this->joinTranslations($select);
+        };
+        $rowset = $this->select($callback);
+        $row = $this->translateCurrent($rowset);
         return $row;
     }
 
@@ -303,18 +349,30 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     public function insertRecords($parent_id, $text_en, $text_fr, $text_de,
         $text_nl, $text_es, $text_it, $sort_order
     ) {
-        $this->insert(
+        $id = $this->insert(
             [
                 'parent_id' => $parent_id,
-                'text_en' => $text_en,
                 'text_fr' => $text_fr,
-                'text_de' => $text_de,
-                'text_nl' => $text_nl,
-                'text_es' => $text_es,
-                'text_it' => $text_it,
                 'sort_order' => $sort_order,
             ]
         );
+
+        $defaultTrans = '[' . $text_fr . ']';
+        $trans = [
+            'fr' => $text_fr,
+            'en' => $text_en ?? $defaultTrans,
+            'de' => $text_de ?? $defaultTrans,
+            'nl' => $text_nl ?? $defaultTrans,
+            'es' => $text_es ?? $defaultTrans,
+            'it' => $text_it ?? $defaultTrans,
+        ];
+        $transTable = new TableGateway('translations', $this->adapter);
+        foreach($trans as $lang => $text) {
+            $transTable->insert([
+                'id' => $id, 'table' => 'folder',
+                'lang' => $lang, 'text' => $text
+            ]);
+        }
     }
 
     /**
@@ -336,16 +394,29 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     ) {
         $this->update(
             [
-                'text_en' => $text_en,
                 'text_fr' => $text_fr,
-                'text_de' => $text_de,
-                'text_nl' => $text_nl,
-                'text_es' => $text_es,
-                'text_it' => $text_it,
                 'sort_order' => $sort_order,
             ],
             ['id' => $id]
         );
+
+        $defaultTrans = '[' . $text_fr . ']';
+        $trans = [
+            'fr' => $text_fr,
+            'en' => $text_en ?? $defaultTrans,
+            'de' => $text_de ?? $defaultTrans,
+            'nl' => $text_nl ?? $defaultTrans,
+            'es' => $text_es ?? $defaultTrans,
+            'it' => $text_it ?? $defaultTrans,
+        ];
+        error_log(print_r($trans, true));
+        $transTable = new TableGateway('translations', $this->adapter);
+        foreach($trans as $lang => $text) {
+            $transTable->update(
+                ['text' => $text],
+                ['id' => $id, 'table' => 'folder', 'lang' => $lang]
+            );
+        }
     }
 
     /**
@@ -359,9 +430,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     public function moveFolder($id, $parent_id)
     {
         $this->update(
-            [
-                'parent_id' => $parent_id,
-            ],
+            ['parent_id' => $parent_id],
             ['id' => $id]
         );
     }
@@ -377,9 +446,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     public function mergeFolder($sid, $did)
     {
         $this->update(
-            [
-                'parent_id' => $did,
-            ],
+            ['parent_id' => $did],
             ['parent_id' => $sid]
         );
     }
@@ -394,6 +461,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     public function mergeDelete($sid)
     {
         $this->delete(['id' => $sid]);
+        $transTable = new TableGateway('translations', $this->adapter);
+        $transTable->delete(['id' => $sid, 'table' => 'folder']);
     }
 
     /**
@@ -409,16 +478,17 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             $callback = function ($select) {
                 $select->columns(['*']);
                 $select->where('parent_id IS NULL');
+                $this->joinTranslations($select);
             };
         } else {
             $callback = function ($select) use ($pid) {
                 $select->columns(['*']);
                 $select->where->equalTo('parent_id', $pid);
+                $this->joinTranslations($select);
             };
         }
-        $rows = $this->select($callback)->toArray();
-
-        return $rows;
+        $rows = $this->select($callback);
+        return $this->translatedArray($rows);
     }
 
     /**

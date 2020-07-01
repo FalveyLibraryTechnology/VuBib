@@ -79,7 +79,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
             'lname' => $lname,
             'alternate_name' => $altname,
             'organization_name' => $orgname,
-            'email' => $mail,
+            // 'email' => $mail,
             ]
         );
     }
@@ -103,7 +103,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
             'lname' => $lname,
             'alternate_name' => $altname,
             'organization_name' => $orgname,
-            'email' => $mail,
+            // 'email' => $mail,
             ]
         );
         $id = $this->getLastInsertValue();
@@ -130,7 +130,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
                 'lname' => $lname,
                 'alternate_name' => $altname,
                 'organization_name' => $orgname,
-                'email' => $mail,
+                // 'email' => $mail,
             ],
             ['id' => $id]
         );

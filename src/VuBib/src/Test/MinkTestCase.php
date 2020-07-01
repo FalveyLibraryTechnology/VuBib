@@ -26,7 +26,7 @@ class MinkTestCase extends \PHPUnit\Framework\TestCase
      */
     protected function getUrl($path = '')
     {
-        $base = 'http://localhost/panta_rhei_demo';
+        $base = 'http://zeusnew.ops.villanova.edu/panta_rhei_demo';
         return $base . $path;
     }
 
@@ -171,7 +171,7 @@ class MinkTestCase extends \PHPUnit\Framework\TestCase
     protected function findAndAssertLink(Element $page, $text)
     {
         $link = $page->findLink($text);
-        $this->assertTrue(is_object($link));
+        $this->assertTrue(is_object($link), 'link "' . $text . '" not found.');
         return $link;
     }
 

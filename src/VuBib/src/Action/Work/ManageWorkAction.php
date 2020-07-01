@@ -32,7 +32,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\Driver\Mysqli\Connection;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
@@ -274,7 +273,7 @@ class ManageWorkAction implements MiddlewareInterface
                     $pr_workid = -1;
                 }
                 // Safety against errors
-                $connection = new Connection();
+                $connection = $this->adapter->getDriver()->getConnection();
                 //update General(work)
                 $connection->beginTransaction();
                 $table = new \VuBib\Db\Table\Work($this->adapter);
@@ -459,7 +458,7 @@ class ManageWorkAction implements MiddlewareInterface
             } else {
                 $sort_ord = "DESC";
             }*/
-            $sort_ord = $params['sort_ord'];
+            $sort_ord = $params['sort_ord'] ?? 'ASC';
             $ord_by = $params['orderBy'];
 
             if ($ord_by == "type") {
@@ -506,6 +505,17 @@ class ManageWorkAction implements MiddlewareInterface
 
         //order by columns
         if (isset($order) && $order !== '') {
+            if ($params['orderBy'] == 'type') {
+                $sql = new \Zend\Db\Sql\Sql($this->adapter);
+                $ord = $params['sort_ord'] ?? 'ASC';
+                $select = $sql->select('work')
+                    ->join('worktype', 'worktype.id = work.type_id', ['type_name' => 'text_fr'])
+                    ->order('type_name ' . $ord);
+
+                return new Paginator(
+                    new \Zend\Paginator\Adapter\DbSelect($select, $this->adapter)
+                );
+            }
             $table = new \VuBib\Db\Table\Work($this->adapter);
             return new Paginator(
                 new \Zend\Paginator\Adapter\DbTableGateway(

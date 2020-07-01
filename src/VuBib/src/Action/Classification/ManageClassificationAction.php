@@ -32,6 +32,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
@@ -102,14 +103,22 @@ class ManageClassificationAction implements MiddlewareInterface
         if ($post['action'] == 'new') {
             if ($post['submit'] == 'Save') {
                 //echo "<pre>";print_r($post);echo "</pre>"; die();
+                $parentId = !empty($post['parent_id'])
+                    ? $post['parent_id']
+                    : null;
+                $sortorder = !empty($post['new_classif_sortorder'])
+                    ? $post['new_classif_sortorder']
+                    : null;
                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                 $table->insertRecords(
-                    $post['parent_id'], $post['new_classif_engtitle'],
+                    $parentId,
+                    $post['new_classif_engtitle'],
                     $post['new_classif_frenchtitle'],
                     $post['new_classif_germantitle'],
                     $post['new_classif_dutchtitle'],
                     $post['new_classif_spanishtitle'],
-                    $post['new_classif_italiantitle'], $post['new_classif_sortorder']
+                    $post['new_classif_italiantitle'],
+                    $sortorder
                 );
             }
         }
@@ -117,12 +126,15 @@ class ManageClassificationAction implements MiddlewareInterface
         if ($post['action'] == 'edit') {
             if ($post['submit'] == 'Save') {
                 if (null !== $post['id']) {
+                    $sortorder = !empty($post['new_classif_sortorder'])
+                        ? $post['new_classif_sortorder']
+                        : null;
                     $table = new \VuBib\Db\Table\Folder($this->adapter);
                     $table->updateRecord(
                         $post['id'], $post['edit_texten'], $post['edit_textfr'],
                         $post['edit_textde'], $post['edit_textnl'],
                         $post['edit_textes'], $post['edit_textit'],
-                        $post['edit_sortorder']
+                        $sortorder
                     );
                 }
             }

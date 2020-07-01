@@ -264,12 +264,8 @@ class LoginPageAction implements MiddlewareInterface
     {
         if (array_key_exists('logout', $request->getQueryParams())) {
             $reqParams = $request->getServerParams();
-            //$baseUrl = $uri->getScheme() . '://' . $uri->getHost()
-            //. '/' . $uri->getPath();
-            $toUrl = 'http' . '://' . $reqParams['HTTP_HOST']
-                . '/' . $reqParams['REDIRECT_URL'];
-            //return $toUrl.'?redirect_to=/VuBib/public/';
-
+            $toUrl = $reqParams['REQUEST_SCHEME'] . '://' . $reqParams['HTTP_HOST']
+                . $reqParams['REDIRECT_URL'];
             return $toUrl . '?redirect_to=' . $reqParams['REDIRECT_BASE'];
         }
         if (array_key_exists('redirect_to', $request->getQueryParams())) {

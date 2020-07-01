@@ -157,7 +157,10 @@ function bindAgentAutocomplete() {
     },
     function ajaxSuccess(data, callback, input) {
       if(!data.length){
-        callback([{ text: "no matches", _disabled: true }]);
+        callback([
+          { text: "no matches", _disabled: true },
+          { href: "/panta_rhei_demo/Agent/new?action=new", target: "_new", text: "Add New Agent" }
+        ]);
       } else {
         // TODO: Add new
         callback($.map(data, function (item) {
@@ -296,16 +299,18 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                 }
                 if (val.type == 'Select') { // Autocomplete
                     $('<div class="form-group required">' +
-                          '<label class="control-label col-sm-2">' + val.field + ':</label>' +
-                          '<div class="col-sm-10">' +
-                            '<div class="attribute-ac">' +
-                              '<input class="acs-hidden" type="hidden" name="wkatid,' + val.id + '" value="' + setValue + '"/>' +
-                              '<input class="form-control acs-input" id="' + val.field + ':' + val.id + '" type="text" value="' + (valEl ? valEl.title : "") + '" placeholder="Type to search"/>' +
-                            '</div>' +
-                            '<a class="addNewAttrOptionLink"' +
-                            ' data-attribute-id="'+ val.field + ':' + val.id +'"' +
-                            ' href="#' + val.field + ':' + val.id +'">Add New</a>' +
+                        '<div class="col-sm-2 text-right">' +
+                          '<label class="control-label" for="' + val.field + ':' + val.id + '">' + val.field + ':</label><br/>' +
+                          '<a class="addNewAttrOptionLink"' +
+                          ' data-attribute-id="'+ val.field + ':' + val.id +'"' +
+                          ' href="#' + val.field + ':' + val.id +'">Add New</a>' +
+                        '</div>' +
+                        '<div class="col-sm-10">' +
+                          '<div class="attribute-ac">' +
+                            '<input class="acs-hidden" type="hidden" name="wkatid,' + val.id + '" value="' + setValue + '"/>' +
+                            '<input class="form-control acs-input" id="' + val.field + ':' + val.id + '" type="text" value="' + (valEl ? valEl.title : "") + '" placeholder="Type to search"/>' +
                           '</div>' +
+                        '</div>' +
                       '</div>').appendTo("#Citation");
                 }
             });
@@ -656,17 +661,16 @@ function addMergeButton(context, for_str) {
 //For Publisher merge
 function _new_findPublisherLocAjax(publisherID, callback) {
   $.ajax({
-    method: 'post',
     url: workURL,
-    data: { autofor: "publisher_id_locs", term: publisherID },
+    data: { autofor: "publisher_loc", term: publisherID },
     dataType: "json",
     cache: false,
     success: function(data) {
-      if (data.pub_locs.length === 0) {
+      if (data.publocs.length === 0) {
         el.innerHTML = "No locations found. Check the database.";
         return;
       }
-      callback(data);
+      callback(data.publocs);
     }
   });
   // Bind buttons
@@ -676,8 +680,8 @@ function _new_findSourcePublisherLoc(el, publisherID) {
   _new_findPublisherLocAjax(publisherID, function createSourceSelection(data) {
     // Make list with buttons
     let html = "<p>Select an action for each location:</p>";
-    for (let i = 0; i < data.pub_locs.length; i++) {
-      const loc = data.pub_locs[i];
+    for (let i = 0; i < data.length; i++) {
+      const loc = data[i];
       html += '<div class="location-label">' + loc.location +
         '<label class="location-source-control"><input type="radio" name="src_loc[' + loc.id + ']" value="merge"> Merge</label>' +
         '<label class="location-source-control"><input type="radio" name="src_loc[' + loc.id + ']" value="move"> Move</label>' +
@@ -691,8 +695,8 @@ function _new_findDestinationPublisherLoc(el, publisherID) {
   _new_findPublisherLocAjax(publisherID, function createDestinationSelection(data) {
     // Make list with buttons
     let html = "<p>Select which location to merge locations into:</p>";
-    for (let i = 0; i < data.pub_locs.length; i++) {
-      const loc = data.pub_locs[i];
+    for (let i = 0; i < data.length; i++) {
+      const loc = data[i];
       html += '<label class="location-label">' +
         '<input type="radio"] name="dest_loc[' + loc.id + ']" value="merge"/> ' +
         loc.location + '<small>' + loc.works + " works</small></label>";
@@ -703,18 +707,26 @@ function _new_findDestinationPublisherLoc(el, publisherID) {
 function bindFindPublisher(workURL) {
   setupACS(
     ".publisher-acs",
-    acsStandardData("pub_name"),
-    acsStandardResults("pub_row", x => ({
-      id: x.id,
-      text: x.name,
-      sub: x.works + " works",
-      _disabled: document.getElementById("mrg_src_id").value == x.id
-    }))
+    function ajaxData(input) {
+      return { autofor: "publisher", term: input.value };
+    },
+    function(data, callback, input) {
+      let srcVal = document.getElementById("mrg_src_id").value ?? null;
+      callback(
+        data.map(x => ({
+          id: x.id,
+          text: x.name,
+          sub: x.work_count + " works",
+          _disabled: srcVal == x.id
+        }))
+      );
+    }
   );
   // Source publisher locations
   const srcInput = document.getElementById("find_src_pub");
   const srcLocationEl = document.getElementById("src_locations");
   srcInput.addEventListener("ac-select", function findSourceLocs(e) {
+    console.log(srcInput);
     _new_findSourcePublisherLoc(srcLocationEl, e.detail.id);
   }, false);
   document.querySelectorAll("#acs_publisher_merge_src .acs-change, #acs_publisher_merge_src .acs-clear")

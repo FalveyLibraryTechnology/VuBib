@@ -72,7 +72,7 @@ if ($request->getqueryParams() != null) {
                 //fetch work type based on type_id
                 $table = new \VuBib\Db\Table\WorkType($adapter);
                 $work_type = $table->findRecordById($row['type_id']);
-                $type = $work_type['type'];
+                $type = $work_type['text_fr'];
                 echo $escaper->escapeHtml($type);
             ?>
         </td>

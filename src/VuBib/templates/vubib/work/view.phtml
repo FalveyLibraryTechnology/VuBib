@@ -45,7 +45,7 @@
                 <td>
                     <?php foreach ($this->workTypes as $workType): ?>
                         <?php if($workType['id'] == $this->work['type_id']) {
-                            echo $sanitize($workType['type']);
+                            echo $sanitize($workType['text_fr']);
                             break;
                         } ?>
                     <?php endforeach; ?>

@@ -112,12 +112,15 @@ class WorkTest extends \VuBib\Test\MinkTestCase
         // Ajax test
         $this->findCssAndSetValue($page, '[data-source-col="0"] select', '1'); // Bibliography
         sleep(1); // wait for ajax
-        $this->findCssAndSetValue($page, '[data-source-col="1"] select', '23993'); // Test
+        $this->findCssAndSetValue($page, '[data-source-col="1"] select', '2'); // Milieu
         sleep(1); // wait for ajax
-        $this->findCssAndSetValue($page, '[data-source-col="2"] select', '23994'); // Test A
+        $this->findCssAndSetValue($page, '[data-source-col="2"] select', '3'); // Afrique du Nord
+        sleep(1); // wait for ajax
+        $this->findCssAndSetValue($page, '[data-source-col="3"] select', '4'); // Bibliographie
+        sleep(1); // wait for ajax
 
         // Make sure no new column appeared
-        $this->assertNull($page->find('css', '[data-source-col="3"]'));
+        $this->assertNull($page->find('css', '[data-source-col="4"]'));
 
         $this->_testAddRemove($page, '#fl_add', '#fl_remove', 'removeFolder', '.source_fl_row');
     }

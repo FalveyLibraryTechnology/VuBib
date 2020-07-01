@@ -166,7 +166,6 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     public function updateWorkTypeAttributeRank($wkt_id, $wkatids)
     {
         $wkat_ids = explode(',', $wkatids);
-        die(print_r($wkat_ids, true));
         foreach ($wkat_ids as $id) {
             $sort_wkatids[] = (int)preg_replace("/^\w{2,3}_/", '', $id);
         }

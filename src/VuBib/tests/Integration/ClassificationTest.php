@@ -14,20 +14,59 @@ class ClassificationTest extends \VuBib\Test\MinkTestCase
         $this->login('dkatz', 'pr1test');
 
         // Set session
-        $page = $this->goto('/Classification/manage?id=23993&fl=Test&action=get_children');
+        $session = $this->getMinkSession();
+        $page = $this->goto(
+            '/Classification/manage?id=293&fl=Punique&action=get_children',
+            $session
+        );
+        $firstName = $this->findCss($page, '.folder_name')->getText();
+        $testName = '_TestTestTest';
 
         $this->findAndAssertLink($page, 'Edit')->click();
-        $this->assertElementText($page, '#edittexten', 'Test A');
-        $this->findCssAndSetValue($page, '#edittexten', 'Test A!');
+        $this->assertElementText($page, '#edittextfr', $firstName);
+        $this->findCssAndSetValue($page, '#edittextfr', $testName);
+
+        $editedUrl = $session->getCurrentUrl();
+        $this->clickCss($page, '[name="submit"][value="Save"]');
+        $this->checkFor500Error();
+
+        $this->findAndAssertLink($page, $testName);
+
+        $session->visit($editedUrl);
+        $page = $session->getPage();
+        $this->assertElementText($page, '#edittextfr', $testName);
+        $this->findCssAndSetValue($page, '#edittextfr', $firstName);
 
         $this->clickCss($page, '[name="submit"][value="Save"]');
+    }
 
-        $this->assertElementText($page, 'a.folder_name', 'Test A');
+    public function testAddClassification(): void
+    {
+        $this->login('dkatz', 'pr1test');
 
-        $page = $this->goto('/Classification/edit?id=23994&action=edit');
-        $this->assertElementText($page, '#edittexten', 'Test A!');
-        $this->findCssAndSetValue($page, '#edittexten', 'Test A');
-
+        // Make new root folder
+        $page = $this->goto('/Classification/manage');
+        $this->findAndAssertLink($page, 'Add Branch')->click();
+        $this->findCssAndSetValue($page, '#newclassif_frenchtitle', '__DELETEME__');
         $this->clickCss($page, '[name="submit"][value="Save"]');
+        $this->checkFor500Error();
+        $this->findAndAssertLink($page, '__DELETEME__');
+
+        // Make new child folder (fill in all the things)
+        $this->findAndAssertLink($page, 'Biographie');
+        $this->findAndAssertLink($page, 'Add Branch')->click();
+        $this->findCssAndSetValue($page, '#newclassif_sortorder', '999');
+        $this->findCssAndSetValue($page, '#newclassif_engtitle', '__DELETEME__');
+        $this->findCssAndSetValue($page, '#newclassif_frenchtitle', '__DELETEME__');
+        $this->findCssAndSetValue($page, '#newclassif_germantitle', '__DELETEME__');
+        $this->findCssAndSetValue($page, '#newclassif_dutchtitle', '__DELETEME__');
+        $this->findCssAndSetValue($page, '#newclassif_spanishtitle', '__DELETEME__');
+        $this->findCssAndSetValue($page, '#newclassif_italiantitle', '__DELETEME__');
+        $this->clickCss($page, '[name="submit"][value="Save"]');
+        $this->checkFor500Error();
+        $this->findAndAssertLink($page, '__DELETEME__');
+
+        // Teardown (manual for now)
+        // DELETE FROM folder WHERE text_fr = '__DELETEME__';
     }
 }

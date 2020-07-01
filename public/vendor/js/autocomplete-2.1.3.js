@@ -75,21 +75,31 @@ function Autocomplete(_settings) {
     if (typeof item._disabled !== "undefined" && item._disabled) {
       return;
     }
-    // Broadcast
-    var event = document.createEvent("CustomEvent");
-    // CustomEvent: name, canBubble, cancelable, detail
-    event.initCustomEvent("ac-select", true, true, item);
-    input.dispatchEvent(event);
-    // Copy value
-    if (typeof item === "string" || typeof item === "number") {
-      input.value = item;
-    } else if (typeof item.value === "undefined") {
-      input.value = item.text;
-    } else {
-      input.value = item.value;
-    }
+    // Follow links
     if (typeof item.href !== "undefined") {
-      window.location.assign(item.href);
+      if (
+        typeof item.target !== "undefined" &&
+        item.target === "_new"
+      ) {
+        window.open(item.href, "_blank");
+        window.focus();
+      } else {
+        window.location.assign(item.href);
+      }
+    } else {
+      // Broadcast
+      var event = document.createEvent("CustomEvent");
+      // CustomEvent: name, canBubble, cancelable, detail
+      event.initCustomEvent("ac-select", true, true, item);
+      input.dispatchEvent(event);
+      // Copy value
+      if (typeof item === "string" || typeof item === "number") {
+        input.value = item;
+      } else if (typeof item.value === "undefined") {
+        input.value = item.text;
+      } else {
+        input.value = item.value;
+      }
     }
     _hide();
   }

@@ -65,11 +65,7 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
      */
     public function insertRecords($type)
     {
-        $this->insert(
-            [
-            'type' => $type,
-            ]
-        );
+        $this->insert($type);
     }
 
     /**
@@ -97,12 +93,7 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
      */
     public function updateRecord($id, $type)
     {
-        $this->update(
-            [
-                'type' => $type,
-            ],
-            ['id' => $id]
-        );
+        $this->update($type, ['id' => $id]);
     }
 
     /**

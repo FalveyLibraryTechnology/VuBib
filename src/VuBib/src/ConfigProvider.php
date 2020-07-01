@@ -77,7 +77,8 @@ class ConfigProvider
                     'sanitizeHtml' => Helper\SanitizeHtml::class,
                 ],
                 'factories' => [
-                    SanitizeHtml::class => InvokableFactory::class,
+                    Helper\IsUser::class => Helper\IsUserFactory::class,
+                    Helper\SanitizeHtml::class => InvokableFactory::class,
                 ],
             ],
 
@@ -101,7 +102,8 @@ class ConfigProvider
                     'sanitizeHtml' => Helper\SanitizeHtml::class,
                 ],
                 'factories' => [
-                    SanitizeHtml::class => InvokableFactory::class,
+                    Helper\IsUser::class => Helper\IsUserFactory::class,
+                    Helper\SanitizeHtml::class => InvokableFactory::class,
                 ],
             ],
         ];

@@ -29,6 +29,8 @@ namespace VuBib\Action\WorkType;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -44,7 +46,7 @@ use Zend\Expressive\Template;
  *
  * @link https://
  */
-class ManageSubAttributesAction
+class ManageSubAttributesAction implements MiddlewareInterface
 {
     /**
      * Router\RouterInterface
@@ -221,15 +223,15 @@ class ManageSubAttributesAction
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request  server-side request.
+     * @param RequestHandlerInterface $response response to client side.
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request,
-        ResponseInterface $response, callable $next = null
-    ) {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $countPages = 0;
         $query = $request->getqueryParams();
 

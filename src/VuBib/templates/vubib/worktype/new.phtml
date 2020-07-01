@@ -13,13 +13,43 @@
     <form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?>">
         <input type="hidden" name="action" value="<?=$action?>">
         <div class="form-group">
-            <label class="col-xs-2 control-label">Type: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="new_worktype" id="newworktype" />
+            <label class="col-sm-3 control-label">text_en:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="text_en" id="editworktype" maxlength="200" value="">
             </div>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
+            <label class="col-sm-3 control-label">text_fr:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="text_fr" id="editworktype" maxlength="200" value="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">text_de:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="text_de" id="editworktype" maxlength="200" value="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">text_nl:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="text_nl" id="editworktype" maxlength="200" value="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">text_es:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="text_es" id="editworktype" maxlength="200" value="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">text_it:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="text_it" id="editworktype" maxlength="200" value="">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
                 <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
             </div>

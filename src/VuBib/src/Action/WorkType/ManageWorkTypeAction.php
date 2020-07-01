@@ -96,7 +96,14 @@ class ManageWorkTypeAction implements MiddlewareInterface
     {
         if ($post['submitt'] == 'Save') {
             $table = new \VuBib\Db\Table\WorkType($this->adapter);
-            $table->insertRecords($post['new_worktype']);
+            $table->insertRecords([
+                'text_en' => $post['text_en'],
+                'text_fr' => $post['text_fr'],
+                'text_de' => $post['text_de'],
+                'text_es' => $post['text_es'],
+                'text_it' => $post['text_it'],
+                'text_nl' => $post['text_nl']
+            ]);
         }
     }
 
@@ -112,7 +119,14 @@ class ManageWorkTypeAction implements MiddlewareInterface
         if ($post['submitt'] == 'Save') {
             if (null !== $post['id']) {
                 $table = new \VuBib\Db\Table\WorkType($this->adapter);
-                $table->updateRecord($post['id'], $post['edit_worktype']);
+                $table->updateRecord($post['id'], [
+                    'text_en' => $post['text_en'],
+                    'text_fr' => $post['text_fr'],
+                    'text_de' => $post['text_de'],
+                    'text_es' => $post['text_es'],
+                    'text_it' => $post['text_it'],
+                    'text_nl' => $post['text_nl']
+                ]);
             }
         }
     }
@@ -163,9 +177,7 @@ class ManageWorkTypeAction implements MiddlewareInterface
         if (null !== $attrs_to_remove) {
             if (count($attrs_to_remove) != 0) {
                 //remove attributes from a work type
-                $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
-                    $this->adapter
-                );
+                $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
                 $table->deleteAttributeFromWorkType($post['id'], $attrs_to_remove);
             }
         }
@@ -281,9 +293,8 @@ class ManageWorkTypeAction implements MiddlewareInterface
     /**
      * Invokes required template
      *
-     * @param ServerRequestInterface $request  server-side request.
-     * @param ResponseInterface      $response response to client side.
-     * @param callable               $next     CallBack Handler.
+     * @param ServerRequestInterface  $request  server-side request.
+     * @param RequestHandlerInterface $response response to client side.
      *
      * @return HtmlResponse
      */
@@ -331,11 +342,11 @@ class ManageWorkTypeAction implements MiddlewareInterface
                 $this->template->render(
                     'vubib::worktype/manage',
                     [
-                    'rows' => $paginator,
-                    'previous' => $pgs['prev'],
-                    'next' => $pgs['nxt'],
-                    'countp' => $pgs['cp'],
-                    'searchParams' => implode('&', $searchParams),
+                        'rows' => $paginator,
+                        'previous' => $pgs['prev'],
+                        'next' => $pgs['nxt'],
+                        'countp' => $pgs['cp'],
+                        'searchParams' => implode('&', $searchParams),
                     ]
                 )
             );

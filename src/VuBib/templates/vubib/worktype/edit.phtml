@@ -12,26 +12,26 @@ if ($request->getqueryParams('id') !== null) {
     //fetch name based on id
     $table = new \VuBib\Db\Table\WorkType($adapter);
     $row = $table->findRecordById($id);
-    $type = $row['type'];
 }
 ?>
 <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
-<div class="col-md-4">
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?>">
     <input type="hidden" name="action" value="<?=trim($action)?>">
     <input type="hidden" name="id" value="<?=trim($id)?>">
-    <div class="form-group">
-        <label class="col-xs-2 control-label">Type: </label>
-        <div class="col-xs-7">
-            <input type="text" class="form-control" name="edit_worktype" id="editworktype" value="<?=$escaper->escapeHtml(trim($type))?>" />
+    <?php foreach($row as $col => $val): ?>
+        <?php if ($col == 'id' || $col == 'type') continue; ?>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><?=$col ?>:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="<?=$col ?>" maxlength="200" value="<?=$escaper->escapeHtml(trim($val))?>" />
+            </div>
         </div>
-    </div>
+    <?php endforeach; ?>
     <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-primary" name="submitt" value="Save">Save</button>
             <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
         </div>
     </div>
 </form>
-</div>
 
