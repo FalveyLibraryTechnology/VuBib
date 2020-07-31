@@ -45,11 +45,11 @@ return [
             VuBib\Action\WorkType\SearchOptionAction::class => VuBib\Action\SimpleRenderFactory::class,
 
             VuBib\Action\Classification\ManageClassificationAction::class => VuBib\Action\Classification\ManageClassificationFactory::class,
+            VuBib\Action\Classification\MoveClassificationAction::class => VuBib\Action\Classification\MoveClassificationFactory::class,
             VuBib\Action\Classification\NewClassificationAction::class => VuBib\Action\SimpleRenderFactory::class,
             VuBib\Action\Classification\MergeClassificationAction::class => VuBib\Action\SimpleRenderFactory::class,
             VuBib\Action\Classification\ExportListClassificationAction::class => VuBib\Action\SimpleRenderFactory::class,
             VuBib\Action\Classification\EditClassificationAction::class => VuBib\Action\SimpleRenderFactory::class,
-            VuBib\Action\Classification\MoveClassificationAction::class => VuBib\Action\SimpleRenderFactory::class,
 
             VuBib\Action\Agent\ManageAgentAction::class => VuBib\Action\Agent\ManageAgentFactory::class,
             VuBib\Action\Agent\NewAgentAction::class => VuBib\Action\SimpleRenderFactory::class,

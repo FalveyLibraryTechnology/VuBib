@@ -148,7 +148,7 @@ class EditWorkAction implements MiddlewareInterface
         $workId = $params['id'] ?? 'NEW';
 
         $viewData = [
-            'action' => $params['action'],
+            'action' => $params['action'] ?? '',
             'formAction' => $workId == 'NEW' ? 'work_new' : 'work_edit'
         ];
 
@@ -166,8 +166,6 @@ class EditWorkAction implements MiddlewareInterface
         // fetch worktypes
         $table = new \VuBib\Db\Table\WorkType($this->adapter);
         $viewData['workTypes'] = $table->fetchAllWorkTypes();
-        $itemsCount = $viewData['workTypes']->getTotalItemCount();
-        $viewData['workTypes']->setItemCountPerPage($itemsCount);
 
         // - New - //
         if ($workId == 'NEW') {

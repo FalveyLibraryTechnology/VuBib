@@ -189,3 +189,18 @@ tr[name="pub_row[]"] td:first-of-type {
   flex: none;
   padding: .5rem;
 }
+
+#delete-confirm + .dropdown-menu {
+  left: auto;
+  right: 0;
+  margin-bottom: 1rem;
+  padding: 1px 1rem 1rem;
+  white-space: nowrap;
+}
+
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}

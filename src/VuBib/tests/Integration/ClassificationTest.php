@@ -40,7 +40,7 @@ class ClassificationTest extends \VuBib\Test\MinkTestCase
         $this->clickCss($page, '[name="submit"][value="Save"]');
     }
 
-    public function testAddClassification(): void
+    public function testAddClassification(): string
     {
         $this->login('dkatz', 'pr1test');
 
@@ -50,10 +50,11 @@ class ClassificationTest extends \VuBib\Test\MinkTestCase
         $this->findCssAndSetValue($page, '#newclassif_frenchtitle', '__DELETEME__');
         $this->clickCss($page, '[name="submit"][value="Save"]');
         $this->checkFor500Error();
+        $this->findAndAssertLink($page, 'Biographie');
         $this->findAndAssertLink($page, '__DELETEME__');
 
         // Make new child folder (fill in all the things)
-        $this->findAndAssertLink($page, 'Biographie');
+        // $this->findAndAssertLink($page, 'Biographie')->click();
         $this->findAndAssertLink($page, 'Add Branch')->click();
         $this->findCssAndSetValue($page, '#newclassif_sortorder', '999');
         $this->findCssAndSetValue($page, '#newclassif_engtitle', '__DELETEME__');
@@ -64,9 +65,51 @@ class ClassificationTest extends \VuBib\Test\MinkTestCase
         $this->findCssAndSetValue($page, '#newclassif_italiantitle', '__DELETEME__');
         $this->clickCss($page, '[name="submit"][value="Save"]');
         $this->checkFor500Error();
-        $this->findAndAssertLink($page, '__DELETEME__');
+        $link = $this->findAndAssertLink($page, '__DELETEME__');
 
-        // Teardown (manual for now)
-        // DELETE FROM folder WHERE text_fr = '__DELETEME__';
+        preg_match('/id=([^&]+)&/', $link->getAttribute('href'), $matches);
+        return $matches[1];
+    }
+
+    /**
+     * @depends testAddClassification
+     */
+    public function testDeleteClassification($id): void
+    {
+        $this->login('dkatz', 'pr1test');
+
+        // Count __DELETEME__s
+        $page = $this->goto('/Classification/manage');
+        $oldItemCount = count($page->findAll('named', ['content', '__DELETEME__']));
+
+        // Test confirmation menu
+        $page = $this->goto('/Classification/edit?id=' . $id . '&action=edit');
+        $this->checkHidden($page, '[name="submit"][value="Delete"]');
+
+        $this->clickCss($page, '#delete-confirm');
+        $this->findCss($page, '[name="submit"][value="Delete"]');
+
+        $this->clickCss($page, '.delete-cancel');
+        $this->checkHidden($page, '[name="submit"][value="Delete"]');
+
+        // Test delete
+        $this->clickCss($page, '#delete-confirm');
+        $this->clickCss($page, '[name="submit"][value="Delete"]');
+        $this->checkFor500Error();
+
+        $newItemCount = count($page->findAll('named', ['content', '__DELETEME__']));
+        $this->assertTrue($newItemCount < $oldItemCount, '__DELETEME__ not deleted');
+
+        // Delete all __DELETEME__
+        $link = $page->findLink('__DELETEME__');
+        while (is_object($link)) {
+            preg_match('/id=([^&]+)&/', $link->getAttribute('href'), $matches);
+            $page = $this->goto(
+                '/Classification/edit?id=' . $matches[1] . '&action=edit'
+            );
+            $this->clickCss($page, '#delete-confirm');
+            $this->clickCss($page, '[name="submit"][value="Delete"]');
+            $link = $page->findLink('__DELETEME__');
+        }
     }
 }

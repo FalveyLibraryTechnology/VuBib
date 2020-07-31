@@ -46,6 +46,8 @@ use Zend\Paginator\Paginator;
  */
 class WorkType extends \Zend\Db\TableGateway\TableGateway
 {
+    use TranslationTrait;
+
     /**
      * WorkType constructor.
      *
@@ -53,6 +55,7 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
      */
     public function __construct($adapter)
     {
+        $this->setTableName('worktype');
         parent::__construct('worktype', $adapter);
     }
 
@@ -115,9 +118,10 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
      */
     public function fetchAllWorkTypes()
     {
-        $select = $this->sql->select();
-        $paginatorAdapter = new DbSelect($select, $this->adapter);
-
-        return new Paginator($paginatorAdapter);
+        $callback = function ($select) {
+            $this->joinTranslations($select);
+        };
+        $rows = $this->select($callback);
+        return $this->translatedArray($rows);
     }
 }

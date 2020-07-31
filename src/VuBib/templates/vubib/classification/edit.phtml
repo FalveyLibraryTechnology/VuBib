@@ -22,56 +22,55 @@ if ($request->getqueryParams('id') !== null) {
     $text_it = trim($escaper->escapeHtml($row['text_it']));
 }
 ?>
-<div class="col-md-4">
-    <form class="form-horizontal" method="post" action="<?= $this->url('manage_classification') ?>">
+<h2>Editing <?=$text_fr ?></h2>
+<div class="row">
+    <form class="col-sm-12 col-lg-6" method="post" action="<?= $this->url('manage_classification') ?>">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
         <input type="hidden" name="id" value="<?= trim($id) ?>">
         <div class="form-group">
-            <label class="col-xs-4 control-label">Sort Order: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_sortorder" id="editsortorder" value="<?=$sort_order; ?>" />
-            </div>
+            <label class="control-label">English Title: </label>
+            <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?=$text_en; ?>" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">English Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?=$text_en; ?>" />
-            </div>
+            <label class="control-label">French Title: </label>
+            <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?=$text_fr; ?>" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">French Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?=$text_fr; ?>" />
-            </div>
+            <label class="control-label">German Title: </label>
+            <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?=$text_de; ?>" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">German Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?=$text_de; ?>" />
-            </div>
+            <label class="control-label">Dutch Title: </label>
+            <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?=$text_nl; ?>" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">Dutch Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?=$text_nl; ?>" />
-            </div>
+            <label class="control-label">Spanish Title: </label>
+            <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?=$text_es; ?>" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">Spanish Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?=$text_es; ?>" />
-            </div>
+            <label class="control-label">Italian Title: </label>
+            <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?=$text_it; ?>" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">Italian Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?=$text_it; ?>" />
-            </div>
+            <label class="control-label">Sort Order: </label>
+            <input type="text" class="form-control" name="edit_sortorder" id="editsortorder" value="<?=$sort_order; ?>" />
         </div>
-        <div class="form-group">
-            <div class="col-sm-offset-4 col-sm-10">
-                <button type="submit" class="btn btn-primary" name="submit" value="Save">Save</button>
-                <button type="submit" class="btn btn-default" name="submit" value="Cancel">Cancel</button>
+        <div class="row">
+            <div class="col-sm-8">
+                <button type="submit" name="submit" value="Save" class="btn btn-primary">Save</button>
+                <button type="submit" name="submit" value="Cancel" class="btn btn-default">Cancel</button>
+            </div>
+            <div class="col-sm-4 text-right">
+                <div class="dropdown">
+                    <button type="button" id="delete-confirm" class="btn btn-danger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Delete
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="delete-confirm">
+                        <p>Are you sure you want to delete this folder and all of its children?</p>
+                        <button type="submit" name="submit" value="Delete" class="btn btn-danger">Delete</button>
+                        <button type="button" onclick="$('#delete-confirm').dropdown('toggle')" class="btn float-right delete-cancel">Cancel</button>
+                    </div>
+                </div>
             </div>
         </div>
     </form>

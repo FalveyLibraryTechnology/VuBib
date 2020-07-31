@@ -72,9 +72,6 @@ class ManageClassificationAction implements MiddlewareInterface
      */
     protected $adapter;
 
-    //private $dbh;
-    //private $qstmt;
-
     /**
      * ManageClassificationAction constructor.
      *
@@ -124,7 +121,13 @@ class ManageClassificationAction implements MiddlewareInterface
         }
         //edit folder
         if ($post['action'] == 'edit') {
-            if ($post['submit'] == 'Save') {
+            $table = new \VuBib\Db\Table\Folder($this->adapter);
+
+            // Delete
+            if ($post['submit'] == 'Delete') {
+                $table->mergeDelete(['id' => $post['id']]);
+            // Update
+            } elseif ($post['submit'] == 'Save') {
                 if (null !== $post['id']) {
                     $sortorder = !empty($post['new_classif_sortorder'])
                         ? $post['new_classif_sortorder']
@@ -161,17 +164,11 @@ class ManageClassificationAction implements MiddlewareInterface
     protected function doMove($post)
     {
         if ($post['submit_save'] == 'Save') {
-            $lg = count($post['select_fl']);
-            if ($post['select_fl'][$lg - 1] == ''
-                || $post['select_fl'][$lg - 1] == 'none'
-            ) {
-                $fl_to_move = $post['select_fl'][$lg - 2];
-            } else {
-                $fl_to_move = $post['select_fl'][$lg - 1];
-            }
-
+            $newParent = $post['new_parent'] == -1
+                ? NULL
+                : $post['new_parent'];
             $table = new \VuBib\Db\Table\Folder($this->adapter);
-            $table->moveFolder($post['id'], $fl_to_move);
+            $table->moveFolder($post['id'], $newParent);
         }
     }
 

@@ -48,6 +48,8 @@ use Zend\Paginator\Paginator;
  */
 class Folder extends \Zend\Db\TableGateway\TableGateway
 {
+    use TranslationTrait;
+
     /**
      * Folder constructor.
      *
@@ -55,6 +57,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function __construct($adapter)
     {
+        $this->setTableName('folder');
         parent::__construct('folder', $adapter);
     }
 
@@ -130,43 +133,6 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         }
     }
 
-    protected function joinTranslations($select): void
-    {
-        $select->join(
-            ['t' => 'translations'], 't.id = folder.id',
-            ['t__lang' => 'lang', 't__text' => 'text']
-        );
-        $select->where("t.`table` = 'folder'");
-    }
-
-    protected function translateCurrent($select): object
-    {
-        $ret = $select->current();
-        $rows = $select->toArray();
-        foreach ($rows as $row) {
-            $ret['text_' . $row['t__lang']] = $row['t__text'];
-        }
-        unset($ret['t__lang']);
-        unset($ret['t__text']);
-        return $ret;
-    }
-
-    protected function translatedArray($select): Array
-    {
-        $rows = $select->toArray();
-        $ret = [];
-        foreach ($rows as $row) {
-            $id = $row['id'];
-            if (!isset($ret[$id])) {
-                $ret[$id] = $row;
-                unset($ret[$id]['t__lang']);
-                unset($ret[$id]['t__text']);
-            }
-            $ret[$id]['text_' . $row['t__lang']] = $row['t__text'];
-        }
-        return array_values($ret);
-    }
-
     /**
      * Get children of a parent folder.
      *
@@ -176,16 +142,18 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getChild($parent)
     {
+        error_log($parent == null);
         $callback = function ($select) use ($parent) {
             $select->columns(['*']);
             $select->where->equalTo('parent_id', $parent);
-            $this->joinTranslations($select);
+            // $this->joinTranslations($select);
             //$select->order(new Expression('case when sort_order is null
             //then 1 else 0 end, sort_order'),'text_fr');
             $select->order('sort_order');
             $select->order('text_fr');
         };
         $rows = $this->select($callback);
+        error_log(print_r($rows, true));
         return $this->translatedArray($rows);
     }
 
@@ -350,13 +318,11 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     public function insertRecords($parent_id, $text_en, $text_fr, $text_de,
         $text_nl, $text_es, $text_it, $sort_order
     ) {
-        $id = $this->insert(
-            [
-                'parent_id' => $parent_id,
-                'text_fr' => $text_fr,
-                'sort_order' => $sort_order,
-            ]
-        );
+        $this->insert([
+            'parent_id' => $parent_id,
+            'text_fr' => $text_fr,
+            'sort_order' => $sort_order,
+        ]);
 
         $defaultTrans = '[' . $text_fr . ']';
         $trans = [
@@ -370,7 +336,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $transTable = new TableGateway('translations', $this->adapter);
         foreach($trans as $lang => $text) {
             $transTable->insert([
-                'id' => $id, 'table' => 'folder',
+                'id' => $this->lastInsertValue,
+                'table' => 'folder',
                 'lang' => $lang, 'text' => $text
             ]);
         }
@@ -410,9 +377,11 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             'es' => $text_es ?? $defaultTrans,
             'it' => $text_it ?? $defaultTrans,
         ];
-        error_log(print_r($trans, true));
         $transTable = new TableGateway('translations', $this->adapter);
         foreach($trans as $lang => $text) {
+            if (strlen($trans) === 1) {
+                continue;
+            }
             $transTable->update(
                 ['text' => $text],
                 ['id' => $id, 'table' => 'folder', 'lang' => $lang]

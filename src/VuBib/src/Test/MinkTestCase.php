@@ -81,6 +81,22 @@ class MinkTestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test an element for visibility.
+     *
+     * @param Element $element Element to test
+     */
+    protected function checkHidden(Element $page, string $selector, $timeout = 1000)
+    {
+        $session = $this->getMinkSession();
+        $session->wait($timeout, "$('$selector').length > 0");
+        $element = $page->find('css', $selector);
+        $this->assertTrue(
+            !(is_object($element) && $element->isVisible()),
+            'Found element that should have been hidden: ' . $selector
+        );
+    }
+
+    /**
      * Wait for an element to exist, then retrieve it.
      *
      * @param Element $page     Page element
