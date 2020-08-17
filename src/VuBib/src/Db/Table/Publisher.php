@@ -245,7 +245,8 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
             $select->join(
                 'work_publisher',
                 'publisher.id = work_publisher.publisher_id',
-                ['work_count' => new \Zend\Db\Sql\Expression('COUNT(work_id)')]
+                ['work_count' => new \Zend\Db\Sql\Expression('IFNULL(COUNT(work_id),0)')],
+                'left'
             );
             $select->group('publisher.id');
             $select->order('work_count DESC');
