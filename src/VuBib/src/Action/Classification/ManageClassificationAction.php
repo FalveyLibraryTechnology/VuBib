@@ -129,8 +129,8 @@ class ManageClassificationAction implements MiddlewareInterface
             // Update
             } elseif ($post['submit'] == 'Save') {
                 if (null !== $post['id']) {
-                    $sortorder = !empty($post['new_classif_sortorder'])
-                        ? $post['new_classif_sortorder']
+                    $sortorder = !empty($post['edit_sortorder'])
+                        ? $post['edit_sortorder']
                         : null;
                     $table = new \VuBib\Db\Table\Folder($this->adapter);
                     $table->updateRecord(

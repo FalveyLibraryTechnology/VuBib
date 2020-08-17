@@ -68,7 +68,9 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function findParent()
     {
-        $select = $this->sql->select()->where(['parent_id' => null]);
+        $select = $this->sql->select()
+            ->where(['parent_id' => null])
+            ->order('sort_order, text_fr');
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -146,11 +148,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($parent) {
             $select->columns(['*']);
             $select->where->equalTo('parent_id', $parent);
-            // $this->joinTranslations($select);
-            //$select->order(new Expression('case when sort_order is null
-            //then 1 else 0 end, sort_order'),'text_fr');
-            $select->order('sort_order');
-            $select->order('text_fr');
+            $select->order('sort_order, text_fr');
         };
         $rows = $this->select($callback);
         error_log(print_r($rows, true));

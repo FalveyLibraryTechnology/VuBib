@@ -7,103 +7,56 @@
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];
-    if(isset($params['parent_id']) && isset($params['from'])) {
-        $parent_id = $params['parent_id'];
-        $from = $params['from'];
-    } else {
-        $parent_id = -1;
-        $from = "";
-    }
-    if ($from === "manage") {
+    $parent_name = '- dossier racine -';
+    $parent_id = $params['parent_id'] ?? -1;
+    if ($parent_id != -1) {
         $table = new \VuBib\Db\Table\Folder($this->adapter);
         $fl_row = $table->findRecordById($parent_id);
-        if ($parent_id !== -1) {
-            $fl_siblings = $table->getSiblings($fl_row['parent_id']);
-        } else {
-            $fl_siblings = $table->findParent();
-        }
+        $parent_name = $fl_row['text_fr'];
     }
 }
 $escaper = new Zend\Escaper\Escaper('utf-8');
 ?>
-<div class="col-md-4">
-    <form class="form-horizontal" method="post" action="<?= $this->url('manage_classification') ?>">
-        <input type="hidden" name="action" value="<?= $action ?>">
+<h2>Add a Branch</h2>
+<div class="row">
+    <form class="col-sm-12 col-lg-6" method="post" action="<?= $this->url('manage_classification') ?>">
+        <input type="hidden" name="action" value="<?=$action ?>">
+        <input type="hidden" name="parent_id" value="<?=$parent_id ?>">
         <div class="form-group">
-            <label class="col-xs-4 control-label">Sort Order: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="new_classif_sortorder" id="newclassif_sortorder" />
-            </div>
+            <label class="control-label">Parent:</label>
+            <input type="text" class="form-control" value="<?=$parent_name ?>" readonly />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">Parent: </label>
-            <div class="col-xs-7">
-                    <?php if($from === "") { ?>
-                        <select class="form-control" name="parent_id">
-                        <option value=""></option>
-                            <?php
-                            $table = new \VuBib\Db\Table\Folder($this->adapter);
-                            $fl_parents = $table->findParent();
-                            foreach ($fl_parents as $row) :
-                            ?>
-                                <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
-                        <?php endforeach;
-                    } else { ?>
-                        <select class="form-control" name="parent_id">
-                        <option value="<?=$fl_row['id']?>"><?php echo $escaper->escapeHtml($fl_row['text_fr']); ?></option>
-                        <?php
-                        foreach ($fl_siblings as $row) :
-                            if($row['id'] !== $fl_row['id']) {
-                        ?>
-                            <option value="<?=$row['id']?>"><?php echo $escaper->escapeHtml($row['text_fr']); ?></option>
-                        <?php
-                            }
-                        endforeach;
-                  } ?>
-                </select>
-            </div>
+            <label class="control-label" for="newclassif_frenchtitle">French Title: </label>
+            <input type="text" class="form-control" name="new_classif_frenchtitle" id="newclassif_frenchtitle" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">English Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="new_classif_engtitle" id="newclassif_engtitle" />
-            </div>
+            <label class="control-label" for="newclassif_engtitle">English Title: </label>
+            <input type="text" class="form-control" name="new_classif_engtitle" id="newclassif_engtitle" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">French Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="new_classif_frenchtitle" id="newclassif_frenchtitle" />
-            </div>
+            <label class="control-label" for="newclassif_germantitle">German Title: </label>
+            <input type="text" class="form-control" name="new_classif_germantitle" id="newclassif_germantitle" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">German Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="new_classif_germantitle" id="newclassif_germantitle" />
-            </div>
+            <label class="control-label" for="newclassif_dutchtitle">Dutch Title: </label>
+            <input type="text" class="form-control" name="new_classif_dutchtitle" id="newclassif_dutchtitle" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">Dutch Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="new_classif_dutchtitle" id="newclassif_dutchtitle" />
-            </div>
+            <label class="control-label" for="newclassif_spanishtitle">Spanish Title: </label>
+            <input type="text" class="form-control" name="new_classif_spanishtitle" id="newclassif_spanishtitle" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">Spanish Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="new_classif_spanishtitle" id="newclassif_spanishtitle" />
-            </div>
+            <label class="control-label" for="newclassif_italiantitle">Italian Title: </label>
+            <input type="text" class="form-control" name="new_classif_italiantitle" id="newclassif_italiantitle" />
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">Italian Title: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="new_classif_italiantitle" id="newclassif_italiantitle" />
-            </div>
+            <label class="control-label" for="newclassif_sortorder">Sort Order: </label>
+            <input type="text" class="form-control" name="new_classif_sortorder" id="newclassif_sortorder" />
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-4 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submit" value="Save">Save</button>
-                <button type="submit" class="btn btn-default" name="submit" value="Cancel">Cancel</button>
-            </div>
+            <button type="submit" class="btn btn-primary" name="submit" value="Save">Save</button>
+            <button type="submit" class="btn btn-default" name="submit" value="Cancel">Cancel</button>
         </div>
     </form>
 </div>
