@@ -3,6 +3,9 @@
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '">Publisher</a> &gt; Manage Locations';
     $this->layout()->page = "Publisher/Manage Locations";
 ?>
+
+<p><a href="<?=$this->url('manage_publisher') ?>">&lt; Back to Publishers</a></p>
+
 <div class="col-md-9">
     <?php
     $id;
@@ -22,7 +25,11 @@
         ?>
         <a class="add-location-link" href="<?= $this->url('add_publisher_location') ?><?= '?id=' . $id . '&action=new' ?>"><b style="text-decoration: underline;">Add Location</b></a>
     <?php } ?>
-    <form class="form-horizontal" method="post" action="<?= $this->url('delete_merge_publisher_location') ?><?= '?id=' . $id ?>">
+
+    <div class="alert alert-danger" style="display:none" id="missing-delete-selections">Please select which locations you'd like to delete using the checkboxes on the left.</div>
+    <div class="alert alert-danger" style="display:none" id="missing-merge-selections">Please select one or more source locations and one merge destination.</div>
+
+    <form class="form-horizontal" id="locations-form" method="post" action="<?= $this->url('delete_merge_publisher_location') ?><?= '?id=' . $id ?>">
         <table class="table table-striped table-condensed" style="font-size:10pt;">
             <thead>
                 <tr>
@@ -38,42 +45,79 @@
                 //$row1 = [];
                 $row1 = (array)$row;
             ?>
-                <form>
-                    <tr>
-                        <td>
-                            <div class="checkbox">
-                                <label><input type="checkbox" id='select' name="selectchk1[]" value=<?= $escaper->escapeHtml($row['location']) ?>>
-                                <a href="<?= $this->url('edit_publisher_location') ?><?= '?pub_id=' . $id . '&loc_id=' . $row1['id'] . '&action=edit' ?>">
-                                <?php echo $escaper->escapeHtml($row['location']); ?></a>
-                                </label>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="checkbox">
-                                <?php
-                                if(strpos($row1['location'], ' ') !== false) {
-                                    $row1['location'] = str_replace(" ", "**hasSpace**", $row1['location']);
-                                }
-                                ?>
-                                <label><input type="checkbox" id='select' name="selectsource[]" value=<?= serialize($row1); ?>></label>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="radio">
-                                <label><input type="radio" id='select' name="selectdest"  value=<?= serialize([$row1]); ?>></label>
-                            </div>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        <div class="checkbox">
+                            <label><input type="checkbox" id='select' name="selectchk1[]" value=<?= $escaper->escapeHtml($row['location']) ?>>
+                            <a href="<?= $this->url('edit_publisher_location') ?><?= '?pub_id=' . $id . '&loc_id=' . $row1['id'] . '&action=edit' ?>">
+                            <?php echo $escaper->escapeHtml($row['location']); ?></a>
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="checkbox">
+                            <?php
+                            if(strpos($row1['location'], ' ') !== false) {
+                                $row1['location'] = str_replace(" ", "**hasSpace**", $row1['location']);
+                            }
+                            ?>
+                            <label><input type="checkbox" id='select' name="selectsource[]" value=<?= serialize($row1); ?>></label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="radio">
+                            <label><input type="radio" id='select' name="selectdest"  value=<?= serialize([$row1]); ?>></label>
+                        </div>
+                    </td>
+                </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
 
         <div class="form-group">
-            <div class="col-sm-offset-1 col-sm-11">
-                <a class="btn btn-default" href="<?=$this->url('manage_publisher') ?>">&lt; Back to Publishers</a>
-                <input type="submit" class="btn btn-default" style="color: #d43f3a; border-color: #d43f3a" name="submitt" value="Delete"/>
-                <input type="submit" class="btn btn-default"style="color: #337ab7; border-color: #337ab7" name="submitt" value="Merge"/>
+            <div class="col-xs-6 col-md-4">
+                <input type="submit" class="btn btn-danger" name="submitt" value="Delete"/>
+            </div>
+            <div class="col-xs-6 col-md-4">
+                <input type="submit" class="btn btn-primary" name="submitt" value="Merge"/>
             </div>
         </div>
     </form>
 </div>
+
+<script>
+    $('[type="submit"]').click(function requireSelections(e) {
+        $("#missing-delete-selections").hide();
+        $("#missing-merge-selections").hide();
+
+        var action = this.value;
+        var checked = new FormData(document.getElementById("locations-form")).keys();
+        if (action == "Delete") {
+            for (let key of checked) {
+                if (key == "selectchk1[]") {
+                    return true;
+                }
+            }
+            $("#missing-delete-selections").show();
+            e.preventDefault();
+            return false;
+        }
+
+        var hasSource = false;
+        var hasDestination = false;
+        for (let key of checked) {
+            if (key == "selectsource[]") {
+                hasSource = true;
+            }
+            if (key == "selectdest") {
+                hasDestination = true;
+            }
+            if (hasSource && hasDestination) {
+                return true;
+            }
+        }
+        $("#missing-merge-selections").show();
+        e.preventDefault();
+        return false;
+    });
+</script>
