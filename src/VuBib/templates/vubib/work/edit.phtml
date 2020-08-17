@@ -217,7 +217,7 @@ $(document).ready(function() {
                 <label class="col-sm-2 control-label">Status: </label>
                 <div class="col-sm-10 col-md-8">
                     <label><input type="radio" name="work_status" value="00"<?=(is_null($this->work['status'])) ? ' checked' : '' ?>> In Progress</label><br/>
-                    <label><input type="radio" name="work_status" value="0" <?=($this->work['status'] == 0) ? ' checked' : '' ?>> Pending Review</label><br/>
+                    <label><input type="radio" name="work_status" value="0" <?=($this->work['status'] === 0) ? ' checked' : '' ?>> Pending Review</label><br/>
                     <label><input type="radio" name="work_status" value="2" <?=($this->work['status'] == 2) ? ' checked' : '' ?>> Unseen Source Doc</label><br/>
                     <label><input type="radio" name="work_status" value="1" <?=($this->work['status'] == 1) ? ' checked' : '' ?>> Complete</label>
                 </div>
