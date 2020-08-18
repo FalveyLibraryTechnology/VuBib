@@ -480,24 +480,6 @@ class ManageWorkAction implements MiddlewareInterface
             return $this->findWork($params);
         }
 
-        //Cancel edit\delete
-        if (
-            isset($post['submit_cancel']) ||
-            isset($post['submitt'])
-        ) {
-            if (
-                (isset($post['submit_cancel']) && $post['submit_cancel'] == 'Cancel') ||
-                (isset($post['submitt']) && $post['submitt'] == 'Cancel')
-            ) {
-                $table = new \VuBib\Db\Table\Work($this->adapter);
-                return new Paginator(
-                    new \Zend\Paginator\Adapter\DbTableGateway(
-                        $table, null, $order, null, null
-                    )
-                );
-            }
-        }
-
         // Do action
         if (!empty($params['action'])) {
             return $this->workReviewClassify($params, $order);
@@ -597,30 +579,13 @@ class ManageWorkAction implements MiddlewareInterface
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
-        if (isset($query['action'])) {
-            if ($query['action'] == 'review') {
-                $table = new \VuBib\Db\Table\Work($this->adapter);
-                $characs = $table->findInitialLetterReview();
-            } elseif ($query['action'] == 'classify') {
-                $table = new \VuBib\Db\Table\Work($this->adapter);
-                $characs = $table->findInitialLetterClassify();
-            } elseif ($query['action'] == 'alphasearch') {
-                $table = new \VuBib\Db\Table\Work($this->adapter);
-                $characs = $table->findInitialLetter();
-            }
-        } else {
-            $table = new \VuBib\Db\Table\Work($this->adapter);
-            $characs = $table->findInitialLetter();
-        }
+        $table = new \VuBib\Db\Table\Work($this->adapter);
+        $characs = $table->findInitialLetter();
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
 
-        $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::work/manage', $this->router,
-            $this->template, $this->adapter
-        );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = $this->getSearchParams($query);
@@ -653,23 +618,6 @@ class ManageWorkAction implements MiddlewareInterface
                 return new HtmlResponse(
                     $this->template->render(
                         'vubib::work/classify',
-                        [
-                        'rows' => $paginator,
-                        'previous' => $pgs['prev'],
-                        'next' => $pgs['nxt'],
-                        'countp' => $pgs['cp'],
-                        'searchParams' => $searchParams,
-                        'carat' => $characs,
-                        'request' => $request,
-                        'adapter' => $this->adapter,
-                        ]
-                    )
-                );
-            }
-            if ($query['action'] == 'alphasearch') {
-                return new HtmlResponse(
-                    $this->template->render(
-                        'vubib::work/manage',
                         [
                         'rows' => $paginator,
                         'previous' => $pgs['prev'],
