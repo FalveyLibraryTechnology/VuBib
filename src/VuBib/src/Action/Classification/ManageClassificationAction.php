@@ -99,7 +99,6 @@ class ManageClassificationAction implements MiddlewareInterface
         //add folder
         if ($post['action'] == 'new') {
             if ($post['submit'] == 'Save') {
-                //echo "<pre>";print_r($post);echo "</pre>"; die();
                 $parentId = !empty($post['parent_id'])
                     ? $post['parent_id']
                     : null;
@@ -264,17 +263,12 @@ class ManageClassificationAction implements MiddlewareInterface
      */
     protected function getFolderNameForViewLinks($query)
     {
-        $ts = [];
-        //get folder name for bread crumb
+        // get folder name for bread crumb
         if ($query['action'] == 'get_children') {
             $table = new \VuBib\Db\Table\Folder($this->adapter);
-            $r = $table->getTrail($query['id'], '');
-            $r = $query['fl'] . $r;
-
-            $ts = explode(':', $r);
-            $ts = array_reverse($ts);
+            return $table->getTrail($query['id']);
         }
-        return $ts;
+        return [];
     }
 
     /**

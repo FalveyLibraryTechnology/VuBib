@@ -73,11 +73,21 @@ trait TranslationTrait
         $ret = [];
         foreach ($rows as $row) {
             $id = $row['id'];
+
+            // Missing lang keys check
+            if (!isset($row['t__lang']) && !isset($row['t__lang'])) {
+                throw new \Exception(
+                    'Calling translatedArray without joinTranslations'
+                );
+            }
+
+            // First encounter with new id
             if (!isset($ret[$id])) {
                 $ret[$id] = $row;
                 unset($ret[$id]['t__lang']);
                 unset($ret[$id]['t__text']);
             }
+
             $ret[$id]['text_' . $row['t__lang']] = $row['t__text'];
         }
         return array_values($ret);

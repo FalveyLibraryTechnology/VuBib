@@ -148,10 +148,10 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($parent) {
             $select->columns(['*']);
             $select->where->equalTo('parent_id', $parent);
+            $this->joinTranslations($select);
             $select->order('sort_order, text_fr');
         };
         $rows = $this->select($callback);
-        error_log(print_r($rows, true));
         return $this->translatedArray($rows);
     }
 
@@ -194,32 +194,26 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     /**
      * Get the hierarchial trail of a folder.
      *
-     * @param Number $id id of the folder
-     * @param string $r  string to convert array
+     * @param Number $id  id of the folder
+     * @param string $str string to convert array
      *
-     * @return string $r hierarchial trail of folder as a string
+     * @return string $str hierarchial trail of folder as a string
      */
-    public function getTrail($id, $r)
+    public function getTrail($id, $trail = [])
     {
-        $str = '';
-        $str = $r;
-        $fl = new self($this->adapter);
-        $callback = function ($select) use ($id) {
-            $select->columns(['*']);
-            $select->join(
-                ['b' => 'folder'], 'folder.id = b.parent_id',
-                ['parent_id']
-            );
-            $select->where->equalTo('b.id', $id);
-        };
-        $rc = $this->select($callback)->toArray();
-        if (count($rc) == 0) {
-            return $str . ':' . 'Top';
-        } else {
-            $r = $r . ':' . $rc[0]['text_fr'] . '*' . $rc[0]['id'];
-            $r = $fl->getTrail($rc[0]['parent_id'], $r);
-            return $r;
+        // Check for loops
+        foreach ($trail as $parent) {
+            if ($id == $parent['id']) {
+                throw new \Exception('Folder: Circular reference detected - ' . $id);
+            }
         }
+
+        $rc = $this->findRecordById($id);
+
+        $trail[] = $rc;
+        return $rc['parent_id'] == null
+            ? array_reverse($trail)
+            : $this->getTrail($rc['parent_id'], $trail);
     }
 
     /**

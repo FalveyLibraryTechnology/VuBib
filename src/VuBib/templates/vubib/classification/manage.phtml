@@ -10,37 +10,19 @@ if ($request->getqueryParams('id') !== null) {
 }
  ?>
 <div class="col-md-9">
-    <p style="font-weight:bold;" id="view_hierarchy">Viewing:
-        <?php
-        //$this->layout()->instructions = "";
-        if (count($this->trail) > 0) {
-            for ($i = 0; $i <= count($this->trail) - 2; $i++) {
-                //To get top four (Parents null) branch ids
-                if (preg_match('/(?<name>[\s\S]+)\*(?<digit>\d+)/', $this->trail[$i], $matches)) {
-                    $fl_name = $matches['name'];
-                    $fl_id = $matches['digit'];
-                    ?>
-                    <a href="<?= $this->url('manage_classification') ?><?= '?id=' . $fl_id . '&fl=' . $fl_name . '&action=get_children' ?>">
-                    <?php echo $fl_name; ?>
-                    </a>
-                        <?php
-                        echo ' > ';
-                }
-                if (preg_match('/Top/', $this->trail[$i], $matches)) {
-                ?>
-                    <a href="<?= $this->url('manage_classification') ?><?= '?action=get_siblings' ?>">
-                    <?php echo "Top"; ?>
-                    </a>
-                        <?php
-                        echo ' > ';
-                }
-            }
-            echo $this->trail[$i];
-        } else {
-            echo "Top > ";
-        }
-        ?>
-        </a>
+    <p style="font-weight:bold;" id="view_hierarchy">
+        Viewing: <a href="<?= $this->url('manage_classification') ?>">Top</a>
+        <?php $trailLen = count($this->trail); ?>
+        <?php foreach ($this->trail as $i => $parent): ?>
+            &gt;
+            <?php if($i == $trailLen - 1): ?>
+                <?=$this->escapeHtml($parent['text_fr']) ?>
+            <?php else: ?>
+                <a href="<?= $this->url('manage_classification') ?><?= '?id=' . $parent['id'] . '&fl=' . $parent['text_fr'] . '&action=get_children' ?>">
+                    <?=$this->escapeHtml($parent['text_fr']) ?>
+                </a>
+            <?php endif; ?>
+        <?php endforeach; ?>
     </p>
     <a href="<?php echo $this->url('new_classification') ?><?='?action=new' . '&parent_id=' . $parent_id . '&from=manage'?>">
     <b class="addEle" style="float:left; padding-left: 15px; text-decoration: underline;">Add Branch</b></a><br/>
