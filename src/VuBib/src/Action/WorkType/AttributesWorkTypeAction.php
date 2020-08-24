@@ -266,15 +266,6 @@ class AttributesWorkTypeAction implements MiddlewareInterface
         if (!empty($post['action'])) {
             //add edit delete attribute
             $this->doAction($post);
-
-            //Cancel add\edit\delete
-            if ($post['submitt'] == 'Cancel') {
-                $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
-
-                return new Paginator(
-                    new \Zend\Paginator\Adapter\DbTableGateway($table)
-                );
-            }
         }
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
