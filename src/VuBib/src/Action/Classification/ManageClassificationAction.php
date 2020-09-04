@@ -99,7 +99,7 @@ class ManageClassificationAction implements MiddlewareInterface
         //add folder
         if ($post['action'] == 'new') {
             if ($post['submit'] == 'Save') {
-                $parentId = !empty($post['parent_id'])
+                $parentId = !empty($post['parent_id']) && $post['parent_id'] != '-1'
                     ? $post['parent_id']
                     : null;
                 $sortorder = !empty($post['new_classif_sortorder'])

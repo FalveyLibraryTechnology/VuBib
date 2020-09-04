@@ -72,7 +72,7 @@
     function makeSelect(children, index) {
         var options = children
             .map(function (child) {
-                return `<option value="${child['id']}"${child['selected'] ? ' selected' : ''}>${child['text_fr']}</option>`;
+                return `<option value="${child['id']}"${child['selected'] ? ' selected' : ''}${child['id']=="<?=$this->id ?>"? ' disabled' : ''}>${child['text_fr']}</option>`;
             })
             .join("");
         return `<div class="form-group">

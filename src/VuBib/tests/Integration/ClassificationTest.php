@@ -74,6 +74,18 @@ class ClassificationTest extends \VuBib\Test\MinkTestCase
     /**
      * @depends testAddClassification
      */
+    public function testDisabledMoveOption($id)
+    {
+        $this->login('dkatz', 'pr1test');
+
+        // Go to move
+        $page = $this->goto('/Classification/move?id=' . $id . '&action=move');
+        $this->findCss($page, 'option[disabled]');
+    }
+
+    /**
+     * @depends testAddClassification
+     */
     public function testDeleteClassification($id): void
     {
         $this->login('dkatz', 'pr1test');
