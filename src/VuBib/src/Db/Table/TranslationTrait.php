@@ -32,6 +32,7 @@ namespace VuBib\Db\Table;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Select;
+use Zend\Db\TableGateway\TableGateway;
 
 trait TranslationTrait
 {
@@ -40,6 +41,67 @@ trait TranslationTrait
     protected function setTableName($table)
     {
         $this->tableName = $table;
+    }
+
+    protected function separateRowTranslations($row, $cols)
+    {
+        $vals = [];
+        foreach ($cols as $key => $col) {
+            if (is_numeric($key)) {
+                $key = $col;
+            }
+            $vals[$col] = $row[$key];
+        }
+
+        $trans = [];
+        $defaultTrans = '[' . ($row['text_fr'] ?? $row['text_en']) . ']';
+        foreach ($row as $col => $val) {
+            if (substr($col, 0, 5) == 'text_') {
+                $lang = substr($col, 5);
+                $trans[$lang] = $val ?? $defaultTrans;
+            }
+        }
+
+        return ['values' => $vals, 'trans' => $trans];
+    }
+
+    protected function insertTranslated($row, $cols)
+    {
+        $separated = $this->separateRowTranslations($row, $cols);
+
+        $this->insert($separated['values']);
+
+        $transTable = new TableGateway('translations', $this->adapter);
+        foreach($separated['trans'] as $lang => $text) {
+            $transTable->insert([
+                'id' => $this->lastInsertValue,
+                'table' => $this->tableName,
+                'lang' => $lang,
+                'text' => $text
+            ]);
+        }
+    }
+
+    protected function updateTranslated($row, $index, $cols)
+    {
+        if (!isset($row['id'])) {
+            throw \Exception(
+                'Translation of ' . $this->tableName
+                    . ': "id" needed to update translated item'
+            );
+        }
+
+        $separated = $this->separateRowTranslations($row, $cols);
+
+        $this->update($separated['values'], $index);
+
+        $transTable = new TableGateway('translations', $this->adapter);
+        foreach($separated['trans'] as $lang => $text) {
+            $transTable->update(
+                ['text' => $text],
+                ['table' => $this->tableName, 'id' => $row['id'], 'lang' => $lang]
+            );
+        }
     }
 
     protected function joinTranslations(Select $select): Select
