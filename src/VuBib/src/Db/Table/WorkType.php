@@ -68,7 +68,7 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
      */
     public function insertRecords($type)
     {
-        $this->insert($type);
+        $this->insertTranslated($type, ['text_fr' => 'type']);
     }
 
     /**
@@ -80,8 +80,12 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(['id' => $id]);
-        $row = $rowset->current();
+        $callback = function ($select) use ($id) {
+            $select->where(['worktype.id' => $id]);
+            $this->joinTranslations($select);
+        };
+        $rowset = $this->select($callback);
+        $row = $this->translateCurrent($rowset);
 
         return $row;
     }
@@ -96,7 +100,12 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
      */
     public function updateRecord($id, $type)
     {
-        $this->update($type, ['id' => $id]);
+        $type['id'] = $id;
+        $this->updateTranslated(
+            $type,
+            ['id' => $id],
+            ['text_fr' => 'type']
+        );
     }
 
     /**
