@@ -95,22 +95,30 @@ class AttributeManageOptionsAction implements MiddlewareInterface
     {
         if ($post['submitt'] == 'Save') {
             $wkat_id = $post['id'];
-            $subat_id = $post['subattr_id'];
             $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
             $optId = $table->insertOptionAndReturnId(
                 $wkat_id, $post['new_option']
             );
 
-            //Insert option to subattribute table
-            $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
-                $this->adapter
-            );
-            if (!array_filter($post['newsubattr'])) {
-                $table->insertRecord($wkat_id, $optId, $subat_id);
-            } else {
-                foreach ($post['newsubattr'] as $subat) {
-                    if ($subat != "") {
-                        $table->insertRecord($wkat_id, $optId, $subat_id, $subat);
+            if (isset($post['subattr_id'])) {
+                $subat_id = $post['subattr_id'];
+                error_log($subat_id);
+                //Insert option to subattribute table
+                $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
+                    $this->adapter
+                );
+                if (!array_filter($post['newsubattr'])) {
+                    $table->insertRecord($wkat_id, $optId, $subat_id);
+                } else {
+                    foreach ($post['newsubattr'] as $subat) {
+                        if ($subat != "") {
+                            $table->insertRecord(
+                                $wkat_id,
+                                $optId,
+                                $subat_id,
+                                $subat
+                            );
+                        }
                     }
                 }
             }

@@ -129,13 +129,11 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      */
     public function insertOptionAndReturnId($attrId, $title, $val="")
     {
-        $this->insert(
-            [
+        $this->insert([
             'workattribute_id' => $attrId,
             'title' => $title,
             'value' => $val,
-            ]
-        );
+        ]);
 
         $id = $this->getLastInsertValue();
         return $id;
