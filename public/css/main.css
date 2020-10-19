@@ -115,6 +115,13 @@ input[name="pub_yrTo"] {
   width: 100%;
 }
 
+.highlight {
+  background-color: #fff5b1;
+}
+select.highlight option {
+  background-color: #fff;
+}
+
 /* --- WORK --- */
 .parent-edit .parent-work-set,
 .parent-set .parent-work-edit { display: none; }

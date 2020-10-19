@@ -12,7 +12,7 @@
             <input type="hidden" name="action" value="move"/>
             <input type="hidden" name="id" value="<?=$this->id ?>"/>
             <input type="hidden" name="new_parent" id="new_parent_id"/>
-            <label class="control-label">Subject Tree: </label>
+            <label class="control-label">Subject Tree: (Destination <span class="highlight">highlighted in yellow</span>)</label>
 
             <div id="folder-list">
                 <p>Loading...</p>
@@ -76,8 +76,8 @@
             })
             .join("");
         return `<div class="form-group">
-                    <select class="select_fl form-control" name="select_source_fl[]">
-                        <option value="-1">${index === 0 ? "- dossier racine -" : ""}</option>
+                    <select class="select_fl form-control parent-level-${index}" name="select_source_fl[]">
+                        <option value="-1">${index === 0 ? "- dossier racine -" : "- choose subfolder -"}</option>
                         ${options}
                     </select>
                 </div>`;
@@ -90,6 +90,15 @@
         }
         document.getElementById("folder-list").innerHTML = html;
         bindSelect();
+
+        // Highlight destination
+        var atEnd = FOLDERS[FOLDERS.length - 1].reduce(
+            (acc, child) => acc || typeof child['selected'] != "undefined",
+            false
+        );
+        var destIndex = Math.max(0, FOLDERS.length - (atEnd ? 1 : 2));
+        console.log(".parent-level-" + destIndex);
+        document.querySelector(".parent-level-" + destIndex).classList.add("highlight");
     }
 
     // Load children of current folder
