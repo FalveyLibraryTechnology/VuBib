@@ -1,29 +1,19 @@
-<?php $this->headTitle('Delete Option'); ?>
 <?php
-?>
-<?php //$this->layout()->instructions = ""; ?>
-<?php
-if ($request->getqueryParams('id') !== null) {
-    $action = $params['action'];
+    $params = $request->getQueryParams();
+    $post = $request->getParsedBody();
     $wkat_id = $params['wkat_id'];
+    $action = $params['action'];
+
+    $this->headTitle('Delete Option');
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '">Attributes</a> &gt; <a href="' . $this->url('manage_attribute_options', ['id' => $wkat_id]) . '">Attribute Options</a> &gt; Delete';
     $this->layout()->page = "Attributes Options/Delete";
-}
 ?>
 <div class="col-xs-4">
-    <form method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
+    <form method="post" action="<?=$this->url('manage_attribute_options')?>?id=<?=$wkat_id ?>">
+        <input type="hidden" name="action" value="<?=$action?>">
         <p>Are you sure you want to delete this?</p>
-        <?php
-                if ($request->getqueryParams('action') !== null)
-                {
-                    $params = $request->getqueryParams();
-                    $action = $params['action'];
-                }
-
-                if ($request->getMethod() == 'POST') {
-                    $post = $request->getParsedBody();
-                }
-
+        <dl>
+            <?php
                 $wkAttr_Opt = [];
                 if(count($post['selectWorkAttrOpt']) > 0) {
                     foreach($post['selectWorkAttrOpt'] as $workAttrOpt):
@@ -32,22 +22,20 @@ if ($request->getqueryParams('id') !== null) {
                         $table = new \VuBib\Db\Table\WorkAttribute_Option($adapter);
                         $row = $table->findRecordById($wkAttr_Opt['id']);
                         $title = $row['title'];
-                        echo "<p>$title</p>";
                         //fetch no of works associated
                         $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                         $paginator = $table->countRecordsByAttributeOption($wkat_id, $wkAttr_Opt['id']);
                         $cnt = $paginator->getTotalItemCount();
-                        echo "<p><b>There are $cnt works associated with it.</b></p>"; ?>
-                        <ul>
+                        ?>
                         <input type="hidden" name="workattropt_id[]" value="<?=$wkAttr_Opt['id']?>">
-                        <input type="hidden" name="action" value="<?=$action?>">
-                        </ul>
-                        <?php
-                    endforeach;
+                        <dt><?=$title ?></dt>
+                        <dd>There are <?=$cnt ?> works associated with it.</dd>
+                    <?php endforeach;
                 }
             ?>
-        <input type="submit" name="submitt" value="Delete">
-        <input type="submit" name="submitt" value="Cancel">
+        </dl>
+        <input class="btn btn-danger" type="submit" name="submitt" value="Delete">
+        <input class="btn btn-default" type="submit" name="submitt" value="Cancel">
     </form>
 </div>
 
