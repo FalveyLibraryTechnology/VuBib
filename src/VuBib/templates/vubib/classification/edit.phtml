@@ -24,7 +24,7 @@ if ($request->getqueryParams('id') !== null) {
 ?>
 <h2>Editing <?=$text_fr ?></h2>
 <div class="row">
-    <form class="col-sm-12 col-lg-6" method="post" action="<?= $this->url('manage_classification') ?>">
+    <form class="col-sm-12 col-lg-6" method="post" action="<?=$this->url('manage_classification') ?>?id=<?=$row['parent_id'] ?>&action=get_children">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
         <input type="hidden" name="id" value="<?= trim($id) ?>">
         <div class="form-group">

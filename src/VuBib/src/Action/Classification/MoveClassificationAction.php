@@ -106,9 +106,14 @@ class MoveClassificationAction implements MiddlewareInterface
         $classifications = [];
         $folderTable = new \VuBib\Db\Table\Folder($this->adapter);
         $parentChain = $folderTable->getParentChain($id);
+        $parentId = null;
         foreach ($parentChain as $folderId) {
             $siblings = [];
             $folder = $folderTable->findRecordById($folderId);
+            if ($parentId == null) {
+                $parentId = $folder['parent_id'];
+            }
+
             $folderSiblings = $folderTable->getSiblings($folder['parent_id']);
             foreach ($folderSiblings as $sibling) {
                 if ($sibling['id'] == $folderId && $sibling['id'] != $id) {
@@ -124,6 +129,7 @@ class MoveClassificationAction implements MiddlewareInterface
                 'vubib::classification/move',
                 [
                     'id' => $id,
+                    'parent_id' => $parentId,
                     'classifications' => $classifications,
                     'request' => $request,
                     'adapter' => $this->adapter

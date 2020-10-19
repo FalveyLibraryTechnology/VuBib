@@ -19,7 +19,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 ?>
 <h2>Add a Branch</h2>
 <div class="row">
-    <form class="col-sm-12 col-lg-6" method="post" action="<?= $this->url('manage_classification') ?>">
+    <form class="col-sm-12 col-lg-6" method="post" action="<?= $this->url('manage_classification') ?>?id=<?=$parent_id ?>&action=get_children">
         <input type="hidden" name="action" value="<?=$action ?>">
         <input type="hidden" name="parent_id" value="<?=$parent_id ?>">
         <div class="form-group">

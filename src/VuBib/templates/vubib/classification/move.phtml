@@ -8,7 +8,7 @@
     <div class="col-xs-12 col-md-6">
         <p class="moveError alert alert-danger" style="display:none">Cannot move a classification into itself.</p>
 
-        <form id="move-folder-data" name="form_mv_classification" method="POST" action="<?= $this->url('manage_classification') ?>">
+        <form id="move-folder-data" name="form_mv_classification" method="POST" action="<?= $this->url('manage_classification') ?>?id=<?=$this->parent_id ?>&action=get_children">
             <input type="hidden" name="action" value="move"/>
             <input type="hidden" name="id" value="<?=$this->id ?>"/>
             <input type="hidden" name="new_parent" id="new_parent_id"/>
