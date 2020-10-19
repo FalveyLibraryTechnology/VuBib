@@ -96,6 +96,15 @@ class ManageClassificationAction implements MiddlewareInterface
      */
     protected function doAction($post)
     {
+        // bulk delete from Classification/Manage
+        if ($post['action'] == 'bulkdelete') {
+            $table = new \VuBib\Db\Table\Folder($this->adapter);
+            foreach ($post['id'] as $id) {
+                $table->mergeDelete(['id' => $id]);
+            }
+            $this->messages[] = count($post['id']) . ' keywords deleted.';
+        }
+
         //add folder
         if ($post['action'] == 'new') {
             if ($post['submit'] == 'Save') {
@@ -302,6 +311,8 @@ class ManageClassificationAction implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
+        $this->messages = [];
+
         $session = new Session\Container('manageClassifications');
 
         $query = $request->getqueryParams();
@@ -359,6 +370,7 @@ class ManageClassificationAction implements MiddlewareInterface
                     'trail' => $ts,
                     'request' => $request,
                     'searchParams' => $searchParams,
+                    'flashMessages' => $this->messages
                 ]
             )
         );

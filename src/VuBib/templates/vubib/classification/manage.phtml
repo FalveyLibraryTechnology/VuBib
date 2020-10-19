@@ -4,10 +4,17 @@
     $this->layout()->page = "Classification/Manage";
  ?>
  <?php
-if ($request->getqueryParams('id') !== null) {
-    $params = $request->getqueryParams();
-    $parent_id = $params['id'] ?? -1;
-}
+    if ($request->getqueryParams('id') !== null) {
+        $params = $request->getqueryParams();
+        $parent_id = $params['id'] ?? -1;
+    }
+
+    // Flash messages
+    if ($this->flashMessages) {
+        foreach ($this->flashMessages as $msg) {
+            echo '<div class="alert alert-success">' . $msg . '</div>';
+        }
+    }
  ?>
 <div class="col-md-9">
     <p style="font-weight:bold;" id="view_hierarchy">
@@ -18,7 +25,7 @@ if ($request->getqueryParams('id') !== null) {
             <?php if($i == $trailLen - 1): ?>
                 <?=$this->escapeHtml($parent['text_fr']) ?>
             <?php else: ?>
-                <a href="<?= $this->url('manage_classification') ?><?= '?id=' . $parent['id'] . '&fl=' . $parent['text_fr'] . '&action=get_children' ?>">
+                <a href="<?=$this->url('manage_classification') ?><?= '?id=' . $parent['id'] . '&fl=' . $parent['text_fr'] . '&action=get_children' ?>">
                     <?=$this->escapeHtml($parent['text_fr']) ?>
                 </a>
             <?php endif; ?>
@@ -26,37 +33,77 @@ if ($request->getqueryParams('id') !== null) {
     </p>
     <a href="<?php echo $this->url('new_classification') ?><?='?action=new' . '&parent_id=' . $parent_id . '&from=manage'?>">
     <b class="addEle" style="float:left; padding-left: 15px; text-decoration: underline;">Add Branch</b></a><br/>
-    <table class="table table-striped table-condensed" style="font-size:10pt;">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
-<?php foreach ($this->rows as $row) : ?>
+    <form method="post" action="<?=$this->url('manage_classification') ?>?id=<?=$parent_id ?>&action=get_children">
+        <input type="hidden" name="action" value="bulkdelete"/>
+        <table class="table table-striped table-condensed" style="font-size:10pt;">
+            <thead>
                 <tr>
-                    <td><a href="<?= $this->url('manage_classification') ?><?= '?id=' . $row['id'] . '&fl=' . $escaper->escapeHtml($row['text_fr']) . '&action=get_children' ?>" class="folder_name">
-                <?php echo $escaper->escapeHtml($row['text_fr']); ?></a></td>
-                    <td>
-                        <a href="<?= $this->url('edit_classification') ?><?= '?id=' . $row['id'] . '&action=edit' ?>">Edit</a>
-                        |
-                        <a href="<?= $this->url('move_classification') ?><?= '?id=' . $row['id'] . '&action=move' ?>">Move</a>
-                    </td>
+                    <th width="32">&nbsp;</th>
+                    <th>Title</th>
+                    <th>Actions</th>
                 </tr>
-<?php endforeach; ?>
-        </tbody>
-    </table>
-            <?php if ($this->countp > 1) { ?>
+            </thead>
+            <tbody>
+                <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+                <?php foreach ($this->rows as $row) : ?>
+                    <tr>
+                        <td><input class="delete-check" type="checkbox" name="id[]" value="<?=$row['id'] ?>"/></td>
+                        <td><a href="<?= $this->url('manage_classification') ?><?= '?id=' . $row['id'] . '&fl=' . $escaper->escapeHtml($row['text_fr']) . '&action=get_children' ?>" class="folder_name">
+                    <?php echo $escaper->escapeHtml($row['text_fr']); ?></a></td>
+                        <td>
+                            <a href="<?= $this->url('edit_classification') ?><?= '?id=' . $row['id'] . '&action=edit' ?>">Edit</a>
+                            |
+                            <a href="<?= $this->url('move_classification') ?><?= '?id=' . $row['id'] . '&action=move' ?>">Move</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <div class="dropdown">
+            <button disabled type="submit" id="bulk-delete-confirm" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Delete Selected
+            </button>
+            <div class="dropdown-menu" aria-labelledby="bulk-delete-confirm">
+                <p>Are you sure you want to delete these folders and all of their children?</p>
+                <button type="submit" name="submit" value="Delete" class="btn btn-danger">Delete</button>
+                <button type="button" onclick="$('#bulk-delete-confirm').dropdown('toggle')" class="btn float-right delete-cancel">Cancel</button>
+            </div>
+        </div>
+        <script>
+            let inputs = document.querySelectorAll(".delete-check");
+            let deleteBtn = document.getElementById("bulk-delete-confirm");
+
+            function toggleDeleteButton(e) {
+                let atleastOneChecked = false;
+                for (let el of inputs) {
+                    if (el.checked) {
+                        atleastOneChecked = true;
+                        break;
+                    }
+                }
+                if (atleastOneChecked) {
+                    deleteBtn.removeAttribute("disabled");
+                } else {
+                    deleteBtn.setAttribute("disabled", 1);
+                }
+                deleteBtn.classList.toggle("btn-danger", atleastOneChecked);
+                deleteBtn.classList.toggle("btn-default", !atleastOneChecked);
+            }
+
+            inputs.forEach((el) => {
+                el.addEventListener("change", toggleDeleteButton, false);
+            });
+            toggleDeleteButton();
+        </script>
+    </form>
+    <?php if ($this->countp > 1) { ?>
         <form method="get" action="page">
-        <?=
-        $this->paginationControl($this->rows, 'Sliding', 'vubib::controls', [
-            'route' => 'manage_classification',
-            'extraParams' => $searchParams,
-            ]
-        );
-        ?>
+            <?=
+            $this->paginationControl($this->rows, 'Sliding', 'vubib::controls', [
+                'route' => 'manage_classification',
+                'extraParams' => $searchParams,
+            ]);
+            ?>
         </form>
-        <?php } ?>
+    <?php } ?>
 </div>

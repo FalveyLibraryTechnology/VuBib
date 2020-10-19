@@ -1,9 +1,9 @@
-<?php $this->headTitle('Edit Classification'); ?>
+<?php $this->headTitle('Edit Classification') ?>
 <?php
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '">Classification</a> &gt; Edit';
     $this->layout()->page = "Classification/Edit";
  ?>
-<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8') ?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {
@@ -28,28 +28,32 @@ if ($request->getqueryParams('id') !== null) {
         <input type="hidden" name="action" value="<?= trim($action) ?>">
         <input type="hidden" name="id" value="<?= trim($id) ?>">
         <div class="form-group">
+            <label class="control-label">Sort Order: </label>
+            <input type="text" class="form-control" name="edit_sortorder" id="edit_sortorder" value="<?=$sort_order ?>" />
+        </div>
+        <div class="form-group">
             <label class="control-label">French Title: </label>
-            <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?=$text_fr; ?>" />
+            <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?=$text_fr ?>" />
         </div>
         <div class="form-group">
             <label class="control-label">English Title: </label>
-            <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?=$text_en; ?>" />
+            <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?=$text_en ?>" />
         </div>
         <div class="form-group">
             <label class="control-label">German Title: </label>
-            <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?=$text_de; ?>" />
+            <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?=$text_de ?>" />
         </div>
         <div class="form-group">
             <label class="control-label">Dutch Title: </label>
-            <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?=$text_nl; ?>" />
+            <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?=$text_nl ?>" />
         </div>
         <div class="form-group">
             <label class="control-label">Spanish Title: </label>
-            <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?=$text_es; ?>" />
+            <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?=$text_es ?>" />
         </div>
         <div class="form-group">
             <label class="control-label">Italian Title: </label>
-            <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?=$text_it; ?>" />
+            <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?=$text_it ?>" />
         </div>
         <div class="row">
             <div class="col-sm-8">

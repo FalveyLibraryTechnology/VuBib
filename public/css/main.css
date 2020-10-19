@@ -190,12 +190,14 @@ tr[name="pub_row[]"] td:first-of-type {
   padding: .5rem;
 }
 
-#delete-confirm + .dropdown-menu {
-  left: auto;
-  right: 0;
+.dropdown-menu {
   margin-bottom: 1rem;
   padding: 1px 1rem 1rem;
   white-space: nowrap;
+}
+#delete-confirm + .dropdown-menu {
+  left: auto;
+  right: 0;
 }
 
 .float-left {
