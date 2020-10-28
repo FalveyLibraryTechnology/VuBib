@@ -31,9 +31,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Teapot\StatusCode\RFC\RFC7231;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Paginator\Paginator;
@@ -322,6 +324,24 @@ class ManageClassificationAction implements MiddlewareInterface
             $query = $session->prevQuery;
         }
         $paginator = $this->getPaginator($query, $post);
+
+        // redirect to new folder after move
+        if (
+            !empty($post['action']) &&
+            $post['action'] == 'move' &&
+            !empty($post['submit_save']) &&
+            $post['submit_save'] == 'Save'
+        ) {
+            $reqParams = $request->getServerParams();
+            $redirectUrl = $reqParams['REDIRECT_BASE']
+                . $this->router->generateUri('manage_classification');
+            if (!empty($post['new_parent']) && $post['new_parent'] != '-1') {
+                $redirectUrl .= '?id=' . $post['new_parent']
+                    . '&action=get_children';
+            }
+            $redirectUrl = str_replace('//', '/', $redirectUrl);
+            return new RedirectResponse($redirectUrl, RFC7231::FOUND);
+        }
 
         $session->prevQuery = $query;
 

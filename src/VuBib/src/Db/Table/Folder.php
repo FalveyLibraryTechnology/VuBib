@@ -144,7 +144,6 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getChild($parent)
     {
-        error_log($parent == null);
         $callback = function ($select) use ($parent) {
             $select->columns(['*']);
             $select->where->equalTo('parent_id', $parent);

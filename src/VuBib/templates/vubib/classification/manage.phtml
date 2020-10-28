@@ -53,7 +53,7 @@
                         <td>
                             <a href="<?= $this->url('edit_classification') ?><?= '?id=' . $row['id'] . '&action=edit' ?>">Edit</a>
                             |
-                            <a href="<?= $this->url('move_classification') ?><?= '?id=' . $row['id'] . '&action=move' ?>">Move</a>
+                            <a href="<?= $this->url('move_classification') ?><?= '?id=' . $row['id'] . '&parent_id=' . $row['parent_id'] . '&action=move' ?>">Move</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

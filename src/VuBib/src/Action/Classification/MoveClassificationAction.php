@@ -110,9 +110,7 @@ class MoveClassificationAction implements MiddlewareInterface
         foreach ($parentChain as $folderId) {
             $siblings = [];
             $folder = $folderTable->findRecordById($folderId);
-            if ($parentId == null) {
-                $parentId = $folder['parent_id'];
-            }
+            $parentId = $folder['parent_id'];
 
             $folderSiblings = $folderTable->getSiblings($folder['parent_id']);
             foreach ($folderSiblings as $sibling) {
