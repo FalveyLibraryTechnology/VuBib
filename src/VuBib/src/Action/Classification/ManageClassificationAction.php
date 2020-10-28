@@ -75,6 +75,13 @@ class ManageClassificationAction implements MiddlewareInterface
     protected $adapter;
 
     /**
+     * ID to redirect to after an action
+     *
+     * @var $redirectID
+     */
+    protected $redirectID = null;
+
+    /**
      * ManageClassificationAction constructor.
      *
      * @param Router\RouterInterface             $router   for routes
@@ -179,6 +186,7 @@ class ManageClassificationAction implements MiddlewareInterface
                 : $post['new_parent'];
             $table = new \VuBib\Db\Table\Folder($this->adapter);
             $table->moveFolder($post['id'], $newParent);
+            $this->redirectID = $post['new_parent'];
         }
     }
 
@@ -228,6 +236,9 @@ class ManageClassificationAction implements MiddlewareInterface
         // Purge
         $table = new \VuBib\Db\Table\Folder($this->adapter);
         $table->mergeDelete($source_id);
+
+        // Redirect
+        $this->redirectID = $dest_id;
     }
 
     /**
@@ -326,17 +337,13 @@ class ManageClassificationAction implements MiddlewareInterface
         $paginator = $this->getPaginator($query, $post);
 
         // redirect to new folder after move
-        if (
-            !empty($post['action']) &&
-            $post['action'] == 'move' &&
-            !empty($post['submit_save']) &&
-            $post['submit_save'] == 'Save'
-        ) {
+        if (!empty($this->redirectID)) {
             $reqParams = $request->getServerParams();
             $redirectUrl = $reqParams['REDIRECT_BASE']
                 . $this->router->generateUri('manage_classification');
-            if (!empty($post['new_parent']) && $post['new_parent'] != '-1') {
-                $redirectUrl .= '?id=' . $post['new_parent']
+            // Check for home
+            if ($this->redirectID != '-1') {
+                $redirectUrl .= '?id=' . $this->redirectID
                     . '&action=get_children';
             }
             $redirectUrl = str_replace('//', '/', $redirectUrl);
