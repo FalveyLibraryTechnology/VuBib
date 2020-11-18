@@ -26,15 +26,28 @@ if ($request->getqueryParams('action') !== null) {
 }
 ?>
 <?php
-$q_str = "";
-$sort_ord = isset($_GET['sort_ord'])?($_GET['sort_ord'] == "ASC"?"DESC":"ASC"):"ASC";
-if ($request->getqueryParams() != null) {
-    $params = $request->getqueryParams();
-    $q_str = $_SERVER["QUERY_STRING"];
-    if(preg_match('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $q_str, $matches)) {
-        $q_str = preg_replace('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $matches['action'], $q_str);
+  $q_params = $request->getQueryParams();
+
+  // Set url for title sort toggle
+  $nextOrder = 'ASC';
+  if (isset($q_params['sort_ord']) && $q_params['sort_ord'] == 'ASC') {
+    $nextOrder = 'DESC';
+  }
+
+  $newParams = array_merge($q_params, ['sort_ord' => $nextOrder]);
+  $optionSortUrl = $this->url('manage_attribute_options', [], $newParams);
+
+  // Set order parameters for pagination
+  $paginationParamsStr = '';
+  foreach ($q_params as $key=>$val) {
+    if ($key == 'page') {
+      continue;
     }
-}
+    if (strlen($paginationParamsStr) > 0) {
+      $paginationParamsStr .= '&';
+    }
+    $paginationParamsStr .= $key . '=' . $val;
+  }
 ?>
 <script type='text/javascript'>
 $(document).ready(function () {
@@ -61,9 +74,9 @@ $(document).ready(function () {
         <thead>
         <tr>
           <th>&nbsp;&nbsp;</th>
-          <th><a href="<?=$this->url('manage_attribute_options')?><?='?' . $q_str . '&orderBy=title&sort_ord=' . $sort_ord?>">Option</a></th>
+          <th><a href="<?=$optionSortUrl ?>">Option</a></th>
           <?php if (count($subattr) > 0){ ?>
-                <th><?=$subattr['subattribute']?></th>
+            <th><?=$subattr['subattribute']?></th>
           <?php } ?>
         </tr>
         </thead>
@@ -112,7 +125,7 @@ $(document).ready(function () {
                 'vubib::controls',
                 [
                     'route' => 'manage_attribute_options',
-                    'extraParams' => $searchParams,
+                    'extraParams' => $paginationParamsStr,
                 ]
             );?>
         </form>
