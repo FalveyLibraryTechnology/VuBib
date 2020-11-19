@@ -44,7 +44,7 @@ $(document).ready(function () {
             </td>
             <td>
                 <a href="<?=$this->url('edit_attribute')?><?='?id=' . $row['id'] . '&action=edit'?>">
-                <?php echo $escaper->escapeHtml($row['field']); ?></a>
+                <?php echo $escaper->escapeHtml($row['text_fr'] ?? $row['field']); ?></a>
             </td>
             <td>
                 <?php

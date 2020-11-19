@@ -41,7 +41,7 @@ $(document).ready(function () {
         </td>
         <td>
             <a href="<?=$this->url('edit_worktype')?><?='?id=' . $row['id'] . '&action=edit'?>">
-            <?php echo $escaper->escapeHtml($row['type']); ?></a>
+            <?php echo $escaper->escapeHtml($row['text_fr'] ?? $row['type']); ?></a>
         </td>
         <td>
             <a href="<?=$this->url('manage_worktypeattribute')?><?='?id=' . $row['id']?>">Manage Attributes</a>

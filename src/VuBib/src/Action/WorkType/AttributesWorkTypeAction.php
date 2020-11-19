@@ -115,7 +115,7 @@ class AttributesWorkTypeAction implements MiddlewareInterface
         if ($post['submitt'] == 'Save') {
             if (null !== $post['id']) {
                 $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
-                $table->updateRecord($post['id'], $post['edit_attribute']);
+                $table->updateRecord($post);
             }
         }
     }

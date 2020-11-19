@@ -46,6 +46,8 @@ use Zend\Paginator\Paginator;
  */
 class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 {
+    use TranslationTrait;
+
     /**
      * WorkAttribute constructor.
      *
@@ -53,6 +55,7 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function __construct($adapter)
     {
+        $this->setTableName('workattribute');
         parent::__construct('workattribute', $adapter);
     }
 
@@ -100,12 +103,10 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function addAttribute($field, $type)
     {
-        $this->insert(
-            [
+        $this->insert([
             'field' => $field,
             'type' => $type,
-            ]
-        );
+        ]);
     }
 
     /**
@@ -117,9 +118,12 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(['id' => $id]);
-        $row = $rowset->current();
-
+        $callback = function ($select) use ($id) {
+            $select->where(['workattribute.id' => $id]);
+            $this->joinTranslations($select);
+        };
+        $rowset = $this->select($callback);
+        $row = $this->translateCurrent($rowset);
         return $row;
     }
 
@@ -131,13 +135,19 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updateRecord($id, $field)
+    public function updateRecord($record)
     {
-        $this->update(
-            [
-                'field' => $field,
-            ],
-            ['id' => $id]
+        $record['text_en'] = $record['edit_texten'];
+        $record['text_fr'] = $record['edit_textfr'];
+        $record['text_de'] = $record['edit_textde'];
+        $record['text_nl'] = $record['edit_textnl'];
+        $record['text_es'] = $record['edit_textes'];
+        $record['text_it'] = $record['edit_textit'];
+
+        $this->updateTranslated(
+            $record,
+            ['id' => $record['id']],
+            ['edit_attribute' => 'field']
         );
     }
 

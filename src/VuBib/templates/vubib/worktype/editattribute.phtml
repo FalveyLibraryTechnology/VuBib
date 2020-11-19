@@ -4,16 +4,23 @@
     $this->layout()->page = "Worktype/Edit";
 ?>
 <?php
-$id;
-if ($request->getqueryParams('id') !== null) {
-    $params = $request->getqueryParams();
-    $action = $params['action'];
-    $id = $params['id'];
-    //fetch name based on id
-    $table = new \VuBib\Db\Table\WorkAttribute($adapter);
-    $row = $table->findRecordById($id);
-    $field = $row['field'];
-}
+    if ($request->getqueryParams('id') !== null) {
+        $escaper = new Zend\Escaper\Escaper('utf-8');
+        $params = $request->getqueryParams();
+        $action = $params['action'];
+        $id = $params['id'];
+        //fetch name based on id
+        $table = new \VuBib\Db\Table\WorkAttribute($adapter);
+        $row = $table->findRecordById($id);
+
+        $field = $row['field'];
+        $text_fr = trim($escaper->escapeHtml($row['text_fr'] ?? ''));
+        $text_de = trim($escaper->escapeHtml($row['text_de'] ?? ''));
+        $text_en = trim($escaper->escapeHtml($row['text_en'] ?? ''));
+        $text_nl = trim($escaper->escapeHtml($row['text_nl'] ?? ''));
+        $text_es = trim($escaper->escapeHtml($row['text_es'] ?? ''));
+        $text_it = trim($escaper->escapeHtml($row['text_it'] ?? ''));
+    }
 ?>
 <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
@@ -21,16 +28,36 @@ if ($request->getqueryParams('id') !== null) {
     <input type="hidden" name="action" value="<?=trim($action)?>">
     <input type="hidden" name="id" value="<?=trim($id)?>">
     <div class="form-group">
-        <label class="col-xs-3 control-label">Attribute: </label>
-        <div class="col-xs-7">
-            <input type="text" class="form-control" name="edit_attribute" id="editattribute" value="<?=$escaper->escapeHtml(trim($field))?>" />
-        </div>
+        <label class="control-label" for="editattribute">Attribute: </label>
+        <input type="text" class="form-control" name="edit_attribute" id="editattribute" value="<?=$escaper->escapeHtml(trim($field))?>" />
     </div>
     <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
-            <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
-        </div>
+        <label class="control-label" for="edittextfr">French Label: </label>
+        <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?=$text_fr ?>" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="edittexten">English Label: </label>
+        <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?=$text_en ?>" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="edittextde">German Label: </label>
+        <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?=$text_de ?>" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="edittextnl">Dutch Label: </label>
+        <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?=$text_nl ?>" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="edittextes">Spanish Label: </label>
+        <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?=$text_es ?>" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="edittextit">Italian Label: </label>
+        <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?=$text_it ?>" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" name="submitt" value="Save">Save</button>
+        <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
     </div>
 </form>
 </div>

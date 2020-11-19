@@ -31,6 +31,8 @@
 namespace VuBib\Db\Table;
 
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Join;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -97,20 +99,41 @@ trait TranslationTrait
 
         $transTable = new TableGateway('translations', $this->adapter);
         foreach($separated['trans'] as $lang => $text) {
-            $transTable->update(
+            $rowsAffected = $transTable->update(
                 ['text' => $text],
                 ['table' => $this->tableName, 'id' => $row['id'], 'lang' => $lang]
             );
+            // No rows affect? Check for existing entry
+            if ($rowsAffected == 0) {
+                $checkSet = $transTable->select([
+                    'id' => $row['id'],
+                    'table' => $this->tableName,
+                    'lang' => $lang
+                ])->toArray();
+                // insert if absent
+                if (empty($checkSet)) {
+                    $transTable->insert([
+                        'id' => $row['id'],
+                        'text' => $text,
+                        'table' => $this->tableName,
+                        'lang' => $lang
+                    ]);
+                }
+            }
         }
     }
 
     protected function joinTranslations(Select $select): Select
     {
-        $select->join(
-            ['t' => 'translations'], 't.id = ' . $this->tableName . '.id',
-            ['t__lang' => 'lang', 't__text' => 'text']
+        return $select->join(
+            ['t' => 'translations'],
+            new Expression(
+                't.id = ' . $this->tableName . '.id AND '
+                . "t.table = '" . $this->tableName . "'"
+            ),
+            ['t__lang' => 'lang', 't__text' => 'text'],
+            Join::JOIN_LEFT
         );
-        return $select->where("t.`table` = '$this->tableName'");
     }
 
     /**
