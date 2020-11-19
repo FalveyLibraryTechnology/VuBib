@@ -14,12 +14,12 @@ if ($request->getqueryParams('id') !== null) {
     $table = new \VuBib\Db\Table\Folder($adapter);
     $row = $table->findRecordById($id);
     $sort_order = $row['sort_order'];
-    $text_fr = trim($escaper->escapeHtml($row['text_fr']));
-    $text_de = trim($escaper->escapeHtml($row['text_de']));
-    $text_en = trim($escaper->escapeHtml($row['text_en']));
-    $text_nl = trim($escaper->escapeHtml($row['text_nl']));
-    $text_es = trim($escaper->escapeHtml($row['text_es']));
-    $text_it = trim($escaper->escapeHtml($row['text_it']));
+    $text_fr = trim($escaper->escapeHtml($row['text_fr'] ?? ''));
+    $text_de = trim($escaper->escapeHtml($row['text_de'] ?? ''));
+    $text_en = trim($escaper->escapeHtml($row['text_en'] ?? ''));
+    $text_nl = trim($escaper->escapeHtml($row['text_nl'] ?? ''));
+    $text_es = trim($escaper->escapeHtml($row['text_es'] ?? ''));
+    $text_it = trim($escaper->escapeHtml($row['text_it'] ?? ''));
 }
 ?>
 <h2>Editing <?=$text_fr ?></h2>
@@ -28,31 +28,31 @@ if ($request->getqueryParams('id') !== null) {
         <input type="hidden" name="action" value="<?= trim($action) ?>">
         <input type="hidden" name="id" value="<?= trim($id) ?>">
         <div class="form-group">
-            <label class="control-label">Sort Order: </label>
+            <label class="control-label" for="edit_sortorder">Sort Order: </label>
             <input type="text" class="form-control" name="edit_sortorder" id="edit_sortorder" value="<?=$sort_order ?>" />
         </div>
         <div class="form-group">
-            <label class="control-label">French Title: </label>
+            <label class="control-label" for="edittextfr">French Title: </label>
             <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?=$text_fr ?>" />
         </div>
         <div class="form-group">
-            <label class="control-label">English Title: </label>
+            <label class="control-label" for="edit_texten">English Title: </label>
             <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?=$text_en ?>" />
         </div>
         <div class="form-group">
-            <label class="control-label">German Title: </label>
+            <label class="control-label" for="edittextde">German Title: </label>
             <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?=$text_de ?>" />
         </div>
         <div class="form-group">
-            <label class="control-label">Dutch Title: </label>
+            <label class="control-label" for="edittextnl">Dutch Title: </label>
             <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?=$text_nl ?>" />
         </div>
         <div class="form-group">
-            <label class="control-label">Spanish Title: </label>
+            <label class="control-label" for="edittextes">Spanish Title: </label>
             <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?=$text_es ?>" />
         </div>
         <div class="form-group">
-            <label class="control-label">Italian Title: </label>
+            <label class="control-label" for="edittextit">Italian Title: </label>
             <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?=$text_it ?>" />
         </div>
         <div class="row">
