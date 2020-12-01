@@ -31,6 +31,7 @@
 namespace VuBib\Db\Table;
 
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Expression;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
@@ -193,7 +194,22 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function findPublisherLocations($id)
     {
-        $select = $this->sql->select()->where(['publisher_id' => $id]);
+        $countCol = [
+            'workCount' => new Expression(
+                'COUNT(DISTINCT(?))',
+                ['work_publisher.work_id'],
+                [Expression::TYPE_IDENTIFIER]
+            )
+        ];
+        $select = $this->sql
+            ->select()
+            ->join(
+                'work_publisher',
+                'work_publisher.location_id = publisher_location.id',
+                $countCol
+            )
+            ->where(['publisher_location.publisher_id' => $id])
+            ->group(['publisher_location.id']);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
