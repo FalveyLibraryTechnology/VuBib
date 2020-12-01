@@ -9,50 +9,48 @@
         $action = $params['action'];
     }
 ?>
-<div class="col-md-4">
-    <form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?>">
-        <input type="hidden" name="action" value="<?=$action?>">
-        <div class="form-group">
-            <label class="col-sm-3 control-label">text_en:</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="text_en" id="editworktype" maxlength="200" value="">
-            </div>
+<form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?>">
+    <input type="hidden" name="action" value="<?=$action?>">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">English Title:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="text_en" id="editworktype" maxlength="200" value="">
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">text_fr:</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="text_fr" id="editworktype" maxlength="200" value="">
-            </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">French Title:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="text_fr" id="editworktype" maxlength="200" value="">
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">text_de:</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="text_de" id="editworktype" maxlength="200" value="">
-            </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">German Title:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="text_de" id="editworktype" maxlength="200" value="">
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">text_nl:</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="text_nl" id="editworktype" maxlength="200" value="">
-            </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Dutch Title:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="text_nl" id="editworktype" maxlength="200" value="">
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">text_es:</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="text_es" id="editworktype" maxlength="200" value="">
-            </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Spanish Title:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="text_es" id="editworktype" maxlength="200" value="">
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">text_it:</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="text_it" id="editworktype" maxlength="200" value="">
-            </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Italian Title:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="text_it" id="editworktype" maxlength="200" value="">
         </div>
-        <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-                <button type="submit" class="btn btn-primary" name="submitt" value="Save">Save</button>
-                <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
-            </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-primary" name="submitt" value="Save">Save</button>
+            <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
         </div>
-    </form>
-</div>
+    </div>
+</form>

@@ -4,7 +4,6 @@
     $this->layout()->page = "Worktype/Edit";
 ?>
 <?php
-$id;
 if ($request->getqueryParams('id') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];
@@ -13,6 +12,8 @@ if ($request->getqueryParams('id') !== null) {
     $table = new \VuBib\Db\Table\WorkType($adapter);
     $row = $table->findRecordById($id);
 }
+
+$langMap = ['text_en' => 'English', 'text_de' => 'German', 'text_es' => 'Spanish', 'text_fr' => 'French', 'text_it' => 'Italian', 'text_nl' => 'Dutch'];
 ?>
 <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?>">
@@ -22,7 +23,7 @@ if ($request->getqueryParams('id') !== null) {
     <?php foreach($row as $col => $val): ?>
         <?php if ($col == 'id' || $col == 'type') continue; ?>
         <div class="form-group">
-            <label class="col-sm-3 control-label"><?=$col ?>:</label>
+            <label class="col-sm-3 control-label"><?=$langMap[$col] ?> Title:</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" name="<?=$col ?>" maxlength="200" value="<?=$escaper->escapeHtml(trim($val))?>" />
             </div>

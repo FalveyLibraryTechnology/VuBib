@@ -41,6 +41,11 @@ $( function() {
     }).disableSelection();
 } );
 </script>
+
+<?php if ($this->flashMessage): ?>
+    <div class="alert alert-success"><?=$this->flashMessage ?></div>
+<?php endif; ?>
+
 <?php
 $id;
 if ($request->getqueryParams() !== null)
@@ -63,75 +68,76 @@ if ($id !== null)
     <input type="hidden" name="sort_order" id="sort_order" value="">
     <input type="hidden" name="remove_attr" id="remove_attr" value="">
     <p><b>Used Attributes</b>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<b>Unused Attributes</b></p>
-    <?php
-    //check if any attributes are attached to work type
-    $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
-    $rows = $table->findRecordById($id);
 
-    if(count($rows) != 0) {
-    ?>
-        <ul id="sortable1" class="list-group connectedSortable">
+    <div class="form-group clearfix">
         <?php
-        //display attributes attached to a worktype
+        //check if any attributes are attached to work type
         $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
-        $paginator = $table->displayRanks($id);
-        $paginator->setDefaultItemCountPerPage(20);
-        $allItems = $paginator->getTotalItemCount();
-        $escaper = new Zend\Escaper\Escaper('utf-8');
-        //if(count($paginator) >= 1) {
-        foreach($paginator as $row) :
-            $output = (array)$row;
-            $params = implode(', ', $output);
-        ?>
+        $rows = $table->findRecordById($id);
 
-            <li class="list-group-item ui-state-default" predmet-id="id_<?=$row['workattribute_id']?>"><?=$escaper->escapeHtml($row['field'])?></li>
-        <?php endforeach; ?>
-        </ul>
-
-        <ul id="sortable2" class="list-group connectedSortable">
-        <?php
-        $escaper = new Zend\Escaper\Escaper('utf-8');
-        //display attributes not attached to a work type
-        $table = new \VuBib\Db\Table\WorkAttribute($adapter);
-        $rows = $table->displayAttributes1($id);
-        $cnt = count($rows);
-        for($i = 0;$i < $cnt;$i++) {
+        if(count($rows) != 0) {
         ?>
-            <li class="list-group-item ui-state-default" predmet-id="nid_<?=$rows[$i]['id']?>"><?=$escaper->escapeHtml($rows[$i]['field'])?></li>
+            <ul id="sortable1" class="list-group connectedSortable">
+            <?php
+            //display attributes attached to a worktype
+            $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+            $paginator = $table->displayRanks($id);
+            $paginator->setDefaultItemCountPerPage(20);
+            $allItems = $paginator->getTotalItemCount();
+            $escaper = new Zend\Escaper\Escaper('utf-8');
+            //if(count($paginator) >= 1) {
+            foreach($paginator as $row) :
+                $output = (array)$row;
+                $params = implode(', ', $output);
+            ?>
+
+                <li class="list-group-item ui-state-default" predmet-id="id_<?=$row['workattribute_id']?>"><?=$escaper->escapeHtml($row['field'])?></li>
+            <?php endforeach; ?>
+            </ul>
+
+            <ul id="sortable2" class="list-group connectedSortable">
+            <?php
+            $escaper = new Zend\Escaper\Escaper('utf-8');
+            //display attributes not attached to a work type
+            $table = new \VuBib\Db\Table\WorkAttribute($adapter);
+            $rows = $table->displayAttributes1($id);
+            $cnt = count($rows);
+            for($i = 0;$i < $cnt;$i++) {
+            ?>
+                <li class="list-group-item ui-state-default" predmet-id="nid_<?=$rows[$i]['id']?>"><?=$escaper->escapeHtml($rows[$i]['field'])?></li>
+            <?php
+            }
+            ?>
+            </ul>
+            <?php
+        } else {
+        ?>
+            <ul id="sortable1" class="list-group connectedSortable">
+                <!--<li class="list-group-item ui-state-default" predmet-id=""></li>-->
+            </ul>
+
+            <ul id="sortable2" class="list-group connectedSortable">
+                <?php
+                //display attributes not attached to a work type
+                $escaper = new Zend\Escaper\Escaper('utf-8');
+                $table = new \VuBib\Db\Table\WorkAttribute($adapter);
+                $rows = $table->displayAttributes();
+                $rows->setDefaultItemCountPerPage(20);
+                $cnt = $rows->getTotalItemCount();
+                //echo "count is " . $cnt;
+                foreach($rows as $row) :
+                ?>
+                    <li class="list-group-item ui-state-default" predmet-id="nid_<?=$row['id']?>"><?=$escaper->escapeHtml($row['field'])?></li>
+                <?php endforeach; ?>
+            </ul>
         <?php
         }
         ?>
-        </ul>
-        <?php
-    } else {
-    ?>
-        <ul id="sortable1" class="list-group connectedSortable">
-            <!--<li class="list-group-item ui-state-default" predmet-id=""></li>-->
-        </ul>
-
-        <ul id="sortable2" class="list-group connectedSortable">
-            <?php
-            //display attributes not attached to a work type
-            $escaper = new Zend\Escaper\Escaper('utf-8');
-            $table = new \VuBib\Db\Table\WorkAttribute($adapter);
-            $rows = $table->displayAttributes();
-            $rows->setDefaultItemCountPerPage(20);
-            $cnt = $rows->getTotalItemCount();
-            //echo "count is " . $cnt;
-            foreach($rows as $row) :
-            ?>
-                <li class="list-group-item ui-state-default" predmet-id="nid_<?=$row['id']?>"><?=$escaper->escapeHtml($row['field'])?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php
-    }
-    ?>
+    </div>
 
     <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <input type="submit" class="btn btn-primary" id="submit_add" name="submitt" value="Save"/>
-            <input type="submit" class="btn btn-default" id = "submit_cancel" name="submitt" value="Cancel"/>
-        </div>
+        <input type="submit" class="btn btn-primary" id="submit_add" name="submitt" value="Save"/>
+        <input type="submit" class="btn btn-default" id = "submit_cancel" name="submitt" value="Cancel"/>
     </div>
 </form>
 </div>

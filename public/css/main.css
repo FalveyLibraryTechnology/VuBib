@@ -206,6 +206,9 @@ tr[name="pub_row[]"] td:first-of-type {
   left: auto;
   right: 0;
 }
+.navbar-nav>li>.dropdown-menu {
+  padding: 0.25rem 0;
+}
 
 .float-left {
   float: left;

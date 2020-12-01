@@ -71,6 +71,11 @@ class ManageWorkTypeAction implements MiddlewareInterface
     protected $adapter;
 
     /**
+     * string
+     */
+    protected $flashMessage = null;
+
+    /**
      * ManageWorkTypeAction constructor.
      *
      * @param Router\RouterInterface             $router   for routes
@@ -231,6 +236,7 @@ class ManageWorkTypeAction implements MiddlewareInterface
             //after adding attrs to work type, adjust ranks
             $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
             $table->updateWorkTypeAttributeRank($post['id'], $post['sort_order']);
+            $this->flashMessage = 'New order saved.';
         }
     }
 
@@ -334,6 +340,7 @@ class ManageWorkTypeAction implements MiddlewareInterface
                         'request' => $request,
                         'adapter' => $this->adapter,
                         'searchParams' => implode('&', $searchParams),
+                        'flashMessage' => $this->flashMessage,
                     ]
                 )
             );
@@ -347,6 +354,7 @@ class ManageWorkTypeAction implements MiddlewareInterface
                         'next' => $pgs['nxt'],
                         'countp' => $pgs['cp'],
                         'searchParams' => implode('&', $searchParams),
+                        'flashMessage' => $this->flashMessage,
                     ]
                 )
             );
