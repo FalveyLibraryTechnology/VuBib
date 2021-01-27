@@ -435,16 +435,15 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getSiblings($pid)
     {
+        $callback = function ($select) use ($pid) {
+            $select->columns(['*']);
+            $select->where->equalTo('parent_id', $pid);
+            $this->joinTranslations($select);
+        };
         if (null === $pid) {
             $callback = function ($select) {
                 $select->columns(['*']);
                 $select->where('parent_id IS NULL');
-                $this->joinTranslations($select);
-            };
-        } else {
-            $callback = function ($select) use ($pid) {
-                $select->columns(['*']);
-                $select->where->equalTo('parent_id', $pid);
                 $this->joinTranslations($select);
             };
         }
@@ -459,7 +458,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $rows folder records
      */
-    public function getSuggestions($query) {
+    public function getSuggestions($query)
+    {
         list($type, $id) = explode(':', $query);
         if ($type == 'children') {
             return $this->getChild($id);
