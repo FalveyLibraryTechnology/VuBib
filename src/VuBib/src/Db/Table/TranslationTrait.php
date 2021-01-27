@@ -156,14 +156,33 @@ trait TranslationTrait
     {
         $rows = $rowset->toArray();
         $ret = [];
+
         foreach ($rows as $row) {
             $id = $row['id'];
 
             // Missing lang keys check
-            if (!isset($row['t__lang']) && !isset($row['t__lang'])) {
+            if (!array_key_exists('t__lang', $row)) {
                 throw new \Exception(
                     'Calling translatedArray without joinTranslations'
                 );
+            }
+
+            // NULL t__lang, this shouldn't happen
+            if ($row['t__lang'] == NULL) {
+                error_log(
+                    'Empty t__lang (no translations for current row) ' .
+                    print_r($row, true)
+                );
+            }
+
+            // Brackets for borrowed strings
+            if ($row['t__text'] == NULL) {
+                foreach (['fr', 'en', 'it'] as $lang) {
+                    if (isset($row['text_' . $lang])) {
+                        $row['t__text'] = '[' . $row['text_' . $lang] . ']';
+                        break;
+                    }
+                }
             }
 
             // First encounter with new id
