@@ -7,7 +7,7 @@
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];
-    $parent_name = '- dossier racine -';
+    $parent_name = '- root folder -';
     $parent_id = $params['parent_id'] ?? -1;
     if ($parent_id != -1) {
         $table = new \VuBib\Db\Table\Folder($this->adapter);
