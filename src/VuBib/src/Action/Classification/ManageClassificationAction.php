@@ -156,6 +156,8 @@ class ManageClassificationAction implements MiddlewareInterface
                         $post['edit_textes'], $post['edit_textit'],
                         $sortorder
                     );
+                    // Move in case of edit
+                    $this->doMove($post);
                 }
             }
         }
@@ -180,7 +182,7 @@ class ManageClassificationAction implements MiddlewareInterface
      */
     protected function doMove($post)
     {
-        if ($post['submit_save'] == 'Save') {
+        if ($post['submit_save'] == 'Save' || $post['submit'] == 'Save') {
             $newParent = $post['new_parent'] == -1
                 ? NULL
                 : $post['new_parent'];

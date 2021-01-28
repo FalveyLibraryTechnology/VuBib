@@ -224,6 +224,20 @@ class GetWorkDetailsAction implements MiddlewareInterface
     }
 
     /**
+     * Fetches classification parent tree.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
+    protected function getParentTree($post)
+    {
+        $fl_id = $post['getParentTree'];
+        $table = new \VuBib\Db\Table\Folder($this->adapter);
+        return $table->getParentTree($fl_id);
+    }
+
+    /**
      * Fetches Attribute options.
      *
      * @param Array $post contains posted elements of form
@@ -538,6 +552,9 @@ class GetWorkDetailsAction implements MiddlewareInterface
         }
         if (isset($post['subattr'])) {
             return $this->getSubAttr($post);
+        }
+        if (isset($post['getParentTree'])) {
+            return $this->getParentTree($post);
         }
     }
 

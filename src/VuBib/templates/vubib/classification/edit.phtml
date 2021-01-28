@@ -27,6 +27,10 @@ if ($request->getqueryParams('id') !== null) {
     <form class="col-sm-12 col-lg-6" method="post" action="<?=$this->url('manage_classification') ?>?id=<?=$row['parent_id'] ?>&action=get_children">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
         <input type="hidden" name="id" value="<?= trim($id) ?>">
+        <input type="hidden" name="new_parent" value="<?=$parent_id ?>" id="new_parent_id">
+        <div class="form-group">
+            <?=$this->render('vubib::classification/_folder-list', ['parentId' => $row['parent_id']]); ?>
+        </div>
         <div class="form-group">
             <label class="control-label" for="edit_sortorder">Sort Order: </label>
             <input type="text" class="form-control" name="edit_sortorder" id="edit_sortorder" value="<?=$sort_order ?>" />
@@ -57,7 +61,7 @@ if ($request->getqueryParams('id') !== null) {
         </div>
         <div class="row">
             <div class="col-sm-8">
-                <button type="submit" name="submit" value="Save" class="btn btn-primary">Save</button>
+                <button type="submit" name="submit" value="Save" class="btn btn-primary" id="submit_save">Save</button>
                 <button type="submit" name="submit" value="Cancel" class="btn btn-default">Cancel</button>
             </div>
             <div class="col-sm-4 text-right">

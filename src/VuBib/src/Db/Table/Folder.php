@@ -261,6 +261,35 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     }
 
     /**
+     * Get the hierarchial parent chain for a folder with all each parents siblings
+     *
+     * @param Number $id id of the folder
+     *
+     * @return Array family tree of a folder
+     */
+    public function getParentTree($id)
+    {
+        $tree = [];
+        $parentChain = $this->getParentChain($id);
+
+        foreach ($parentChain as $folderId) {
+            $siblings = [];
+            $folder = $this->findRecordById($folderId);
+
+            $folderSiblings = $this->getSiblings($folder['parent_id']);
+            foreach ($folderSiblings as $sibling) {
+                if ($sibling['id'] == $folderId) {
+                    $sibling['selected'] = true;
+                }
+                $siblings[] = $sibling;
+            }
+            $tree[] = $siblings;
+        }
+
+        return $tree;
+    }
+
+    /**
      * Get the hierarchial parent chain record for a folder.
      *
      * @param Number  $id      id of the folder

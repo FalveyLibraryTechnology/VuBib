@@ -103,23 +103,17 @@ class MoveClassificationAction implements MiddlewareInterface
         $id = $query['id'];
 
         //fetch folders
-        $classifications = [];
         $folderTable = new \VuBib\Db\Table\Folder($this->adapter);
-        $parentChain = $folderTable->getParentChain($id);
-        $parentId = null;
-        foreach ($parentChain as $folderId) {
-            $siblings = [];
-            $folder = $folderTable->findRecordById($folderId);
-            $parentId = $folder['parent_id'];
+        $classifications = $folderTable->getParentTree($id);
 
-            $folderSiblings = $folderTable->getSiblings($folder['parent_id']);
-            foreach ($folderSiblings as $sibling) {
-                if ($sibling['id'] == $folderId && $sibling['id'] != $id) {
-                    $sibling['selected'] = true;
-                }
-                $siblings[] = $sibling;
+        // Get direct parent
+        $parentId = null;
+        $aunts = $classifications[count($classifications) - 1];
+        foreach ($aunts as $aunt) {
+            if ($aunt['selected']) {
+                $parentId = $aunt['id'];
+                break;
             }
-            $classifications[] = $siblings;
         }
 
         return new HtmlResponse(

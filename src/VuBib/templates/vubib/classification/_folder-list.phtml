@@ -1,0 +1,131 @@
+<p><b class="control-label">Subject Tree: (Destination <span class="highlight">highlighted in yellow</span>)</b></p>
+
+<div id="folder-list">
+    <p>Loading...</p>
+</div>
+
+<script>
+    var FOLDERS = [];
+
+    function loadChild(folderId) {
+        $.ajax({
+            method: 'post',
+            url: "<?=$this->url('get_work_details')?>",
+            data: { folder_Id: folderId }, // Folder->getChild
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+                if (data.folder_children.length > 0) {
+                    // Add new folder
+                    FOLDERS.push(data.folder_children);
+                }
+                render();
+            }
+        });
+    }
+
+    function bindSelect() {
+        $(".select_fl").each(function bindSelectEach(index, select) {
+            $(select)
+                .off("input")
+                .on("input", function selectInput() {
+                    var newFolder = $(this).val();
+                    if (newFolder === -1) {
+                      FOLDERS = FOLDERS.slice(0, index);
+                      render();
+                      return;
+                    }
+                    // Change selected folder
+                    FOLDERS[index].forEach(function changeSelected(child) {
+                      child.selected = child.id == newFolder;
+                    });
+                    // Drop folders after change
+                    FOLDERS = FOLDERS.slice(0, index + 1);
+                    // AJAX
+                    loadChild(newFolder);
+                });
+        });
+    }
+
+    function makeSelect(children, index) {
+        var options = children
+            .map(function (child) {
+                return `<option value="${child['id']}"${child['selected'] ? ' selected' : ''}${child['id']=="<?=$this->id ?>"? ' disabled' : ''}>${child['text_fr']}</option>`;
+            })
+            .join("");
+        return `<div class="form-group">
+                    <select class="select_fl form-control parent-level-${index}" name="select_source_fl[]">
+                        <option value="-1">${index === 0 ? "- root folder -" : "- choose subfolder -"}</option>
+                        ${options}
+                    </select>
+                </div>`;
+    }
+
+    function render() {
+        var html = "";
+        for (var i = 0; i < FOLDERS.length; i++) {
+            html += makeSelect(FOLDERS[i], i);
+        }
+        document.getElementById("folder-list").innerHTML = html;
+        bindSelect();
+
+        // Highlight destination
+        var atEnd = FOLDERS[FOLDERS.length - 1].reduce(
+            (acc, child) => acc || typeof child['selected'] != "undefined",
+            false
+        );
+        var destIndex = Math.max(0, FOLDERS.length - (atEnd ? 1 : 2));
+        document.querySelector(".parent-level-" + destIndex).classList.add("highlight");
+    }
+
+    // Load children of current folder
+    $.ajax({
+        method: 'post',
+        url: "<?=$this->url('get_work_details')?>",
+        data: { getParentTree: "<?=$this->parentId ?>" },
+        dataType: "json",
+        cache: false,
+        success: function (data) {
+            if (data.length > 0) {
+                FOLDERS = data;
+            }
+
+            var lastFolder = null;
+            for (var i = 0; i < FOLDERS[FOLDERS.length - 1].length; i++) {
+                if (FOLDERS[FOLDERS.length - 1][i].selected) {
+                    lastFolder = FOLDERS[FOLDERS.length - 1][i].id;
+                    break;
+                }
+            }
+            if (lastFolder === null) {
+                render();
+            } else {
+                loadChild(lastFolder);
+            }
+        }
+    });
+
+    $(document).ready(function folderListReady() {
+        $("#submit_save").click(function () {
+            // Get value from last select element
+            var $select = $('.select_fl').eq(($('.select_fl').length) - 1);
+            var new_parent = $select.val();
+
+            // If blank, get the second-to-last value
+            if (new_parent == -1) {
+                $select = $('.select_fl').eq(($('.select_fl').length) - 2);
+                new_parent = $select.val();
+            }
+
+            // Get value from last select element
+            if (new_parent == "<?=$this->id ?>") {
+                $('.moveError').show();
+                return false;
+            }
+
+            $("#new_parent_id").val(new_parent);
+            alert(new_parent);
+            return true;
+        });
+    });
+</script>
