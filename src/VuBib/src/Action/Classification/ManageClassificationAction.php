@@ -338,6 +338,11 @@ class ManageClassificationAction implements MiddlewareInterface
         }
         $paginator = $this->getPaginator($query, $post);
 
+        if (isset($query['merge']) && $query['merge'] == 'success') {
+            error_log('Merge successful!');
+            $this->messages[] = 'Merge successful!';
+        }
+
         // redirect to new folder after move
         if (!empty($this->redirectID)) {
             $reqParams = $request->getServerParams();
@@ -346,7 +351,7 @@ class ManageClassificationAction implements MiddlewareInterface
             // Check for home
             if ($this->redirectID != '-1') {
                 $redirectUrl .= '?id=' . $this->redirectID
-                    . '&action=get_children';
+                    . '&action=get_children&merge=success';
             }
             $redirectUrl = str_replace('//', '/', $redirectUrl);
             return new RedirectResponse($redirectUrl, RFC7231::FOUND);
