@@ -147,6 +147,51 @@ function addNewPublisher(context,workURL,lnk) {
     });
 }
 
+// New Agent Modal
+var lastInput = document;
+function showNewAgentModal(e) {
+    e.preventDefault();
+    var modalEl = document.getElementById("add-new-agent");
+    if (!modalEl) {
+        return false;
+    }
+    $(modalEl).modal("show");
+    var acs = $(lastInput).parent(".agent-acs");
+    $(acs).find(".acs-clear").click();
+    $(acs).find(".acs-input").val("");
+    return false;
+}
+// submit new agent modal
+$(document).ready(function bindAgentModalForm() {
+    $("#new-agent-submit").on("click", function submitNewAgentForm(e) {
+        e.preventDefault();
+        var form = document.getElementById("new-agent-form");
+        var formData = new FormData(form);
+        var postData = Object.assign(
+            { "submitt": "Save" },
+            Object.fromEntries(formData.entries())
+        );
+        $.post(form.getAttribute("action"), postData)
+            .done(function(e) {
+                $("#agent-modal__error").addClass("hidden");
+                $("#agent-modal__success").removeClass("hidden");
+                setTimeout(function() {
+                    $("#add-new-agent").modal("hide");
+                }, 3000);
+            })
+            .fail(function(e) {
+                $("#agent-modal__success").addClass("hidden");
+                $("#agent-modal__error").removeClass("hidden");
+            });
+        return false;
+    });
+    $("#new-agent-cancel").on("click", function cancelNewAgentForm(e) {
+        e.preventDefault();
+        $("#add-new-agent").modal("hide");
+        return false;
+    });
+});
+
 //Agent Autocomplete
 function bindAgentAutocomplete() {
   //Publisher autocomplete
@@ -157,9 +202,18 @@ function bindAgentAutocomplete() {
     },
     function ajaxSuccess(data, callback, input) {
       if(!data.length){
+        lastInput = input;
+        input.addEventListener("ac-select", function clickAddNewAgent(e) {
+          if (
+            typeof e.detail._action != "undefined" &&
+            e.detail._action == "showNewAgentModal"
+          ) {
+            showNewAgentModal(e);
+          }
+        }, { once: true });
         callback([
           { text: "no matches", _disabled: true },
-          { href: "/panta_rhei_demo/Agent/new?action=new", target: "_new", text: "Add New Agent" }
+          { text: "Add New Agent", _action: "showNewAgentModal" }
         ]);
       } else {
         // TODO: Add new
