@@ -3,8 +3,7 @@
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_publisher') . '">Publisher</a> &gt; Add Location';
     $this->layout()->page = "Publisher/Add Location";
 ?>
-<div class="col-md-4">
-    <?php
+<?php
     $id;
     if ($request->getqueryParams('id') !== null) {
         $params = $request->getqueryParams();
@@ -19,20 +18,19 @@
         $name = $row['name'];
         echo '<b>Publisher: </b>' . $name;
     }
-    ?>
-    <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $params['id'] . '&count=1' ?>">
-        <input type="hidden" name="action" value="<?= $action; ?>">
-        <div class="form-group">
-            <label class="col-xs-3 control-label">Location: </label>
-            <div class="col-xs-7">
-                <input type="text" class="form-control" name="add_publisherloc" id="addpublisherloc" />
-            </div>
+?>
+<form class="form-horizontal" method="post" action="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $params['id'] . '&count=1' ?>">
+    <input type="hidden" name="action" value="new"/>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">Location: </label>
+        <div class="col-xs-7">
+            <input type="text" class="form-control" name="add_publisherloc" id="addpublisherloc" />
         </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary" name="submitt" value="Save">Save</button>
-                <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
-            </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary" name="submitt" value="Save">Save</button>
+            <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
         </div>
-    </form>
-</div>
+    </div>
+</form>

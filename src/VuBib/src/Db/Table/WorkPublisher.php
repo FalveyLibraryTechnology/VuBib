@@ -62,7 +62,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updatePublisherLocation($pub_id, $loc_ids)
+    public function removePublisherLocations($pub_id, $loc_ids)
     {
         $callback = function ($select) use ($pub_id, $loc_ids) {
             $select->where->equalTo('publisher_id', $pub_id);

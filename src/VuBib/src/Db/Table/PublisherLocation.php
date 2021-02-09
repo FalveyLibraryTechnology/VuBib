@@ -206,10 +206,11 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
             ->join(
                 'work_publisher',
                 'work_publisher.location_id = publisher_location.id',
-                $countCol
+                $countCol,
+                'LEFT'
             )
             ->where(['publisher_location.publisher_id' => $id])
-            ->group(['publisher_location.id']);
+            ->group(['publisher_location.id', 'work_publisher.work_id']);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);

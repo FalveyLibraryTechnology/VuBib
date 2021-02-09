@@ -96,12 +96,12 @@ class ManagePublisherLocationAction implements MiddlewareInterface
     protected function doDelete($post, $query)
     {
         if ($post['submitt'] == 'Delete') {
-            if (null !== $post['id'] && ((count($post['locs'])) >= 0)) {
+            if (null !== $post['id'] && ((count($post['locids'])) >= 0)) {
                 $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                $table->updatePublisherLocation($query['id'], $post['locids']);
+                $table->removePublisherLocations($query['id'], $post['locids']);
 
                 $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-                $table->deletePublisherRecord($post['id'], $post['locs']);
+                $table->deletePublisherRecordById($post['id'], $post['locids']);
             }
         }
     }
@@ -187,13 +187,8 @@ class ManagePublisherLocationAction implements MiddlewareInterface
         if (!empty($post['action'])) {
             //add delete merge publisher locations
             $this->doAction($post, $query);
-
-            //Cancel
-            if ($post['submitt'] == 'Cancel') {
-                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-                $paginator = $table->findPublisherLocations($query['id']);
-            }
         }
+
         // default: blank/missing search
         $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
         $paginator = $table->findPublisherLocations($query['id']);
@@ -218,6 +213,7 @@ class ManagePublisherLocationAction implements MiddlewareInterface
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
+        error_log(print_r($post, true));
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(15);
