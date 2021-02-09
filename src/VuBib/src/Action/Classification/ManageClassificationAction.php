@@ -339,7 +339,6 @@ class ManageClassificationAction implements MiddlewareInterface
         $paginator = $this->getPaginator($query, $post);
 
         if (isset($query['merge']) && $query['merge'] == 'success') {
-            error_log('Merge successful!');
             $this->messages[] = 'Merge successful!';
         }
 
@@ -350,8 +349,7 @@ class ManageClassificationAction implements MiddlewareInterface
                 . $this->router->generateUri('manage_classification');
             // Check for home
             if ($this->redirectID != '-1') {
-                $redirectUrl .= '?id=' . $this->redirectID
-                    . '&action=get_children&merge=success';
+                $redirectUrl .= '?id=' . $this->redirectID . '&action=get_children';
             }
             $redirectUrl = str_replace('//', '/', $redirectUrl);
             return new RedirectResponse($redirectUrl, RFC7231::FOUND);
