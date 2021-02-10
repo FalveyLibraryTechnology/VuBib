@@ -406,7 +406,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             'modify_user_id' => $modify_user,
             'status' => $status,
             'publish_month' => null,
-            'publish_year' => $pub_yrFrom[0],
+            'publish_year' => is_numeric($pub_yrFrom[0]) ? $pub_yrFrom[0] : null,
             ],
             ['id' => $id]
         );

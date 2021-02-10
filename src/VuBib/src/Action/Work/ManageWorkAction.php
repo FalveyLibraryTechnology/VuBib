@@ -316,16 +316,15 @@ class ManageWorkAction implements MiddlewareInterface
                 //delete all publishers
                 $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
                 $table->deleteRecordByWorkId($post['id']);
+
                 //insert all publishers again
-                if (isset($post['pub_id'])/* && $post['pub_id'][0] != null*/) {
+                if ($post['pub_id'][0] != null) {
                     $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
                     $table->insertRecords(
                         $post['id'], $post['pub_id'],
                         $post['pub_location'], $post['pub_yrFrom'],
                         $post['pub_yrTo']
                     );
-                    //$table->insertRecords($post['id'], $post['pub_id'],
-                    //$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
                 }
                 $connection->commit();
 
