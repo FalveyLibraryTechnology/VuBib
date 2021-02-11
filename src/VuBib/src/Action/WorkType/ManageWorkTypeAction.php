@@ -102,12 +102,12 @@ class ManageWorkTypeAction implements MiddlewareInterface
         if ($post['submitt'] == 'Save') {
             $table = new \VuBib\Db\Table\WorkType($this->adapter);
             $table->insertRecords([
-                'text_en' => $post['text_en'],
                 'text_fr' => $post['text_fr'],
-                'text_de' => $post['text_de'],
-                'text_es' => $post['text_es'],
-                'text_it' => $post['text_it'],
-                'text_nl' => $post['text_nl']
+                'text_en' => $post['text_en'] ?? null,
+                'text_de' => $post['text_de'] ?? null,
+                'text_es' => $post['text_es'] ?? null,
+                'text_it' => $post['text_it'] ?? null,
+                'text_nl' => $post['text_nl'] ?? null
             ]);
         }
     }
@@ -125,12 +125,12 @@ class ManageWorkTypeAction implements MiddlewareInterface
             if (null !== $post['id']) {
                 $table = new \VuBib\Db\Table\WorkType($this->adapter);
                 $table->updateRecord($post['id'], [
-                    'text_en' => $post['text_en'],
                     'text_fr' => $post['text_fr'],
-                    'text_de' => $post['text_de'],
-                    'text_es' => $post['text_es'],
-                    'text_it' => $post['text_it'],
-                    'text_nl' => $post['text_nl']
+                    'text_en' => $post['text_en'] ?? null,
+                    'text_de' => $post['text_de'] ?? null,
+                    'text_es' => $post['text_es'] ?? null,
+                    'text_it' => $post['text_it'] ?? null,
+                    'text_nl' => $post['text_nl'] ?? null
                 ]);
             }
         }

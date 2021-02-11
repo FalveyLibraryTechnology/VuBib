@@ -56,7 +56,7 @@ trait TranslationTrait
         }
 
         $trans = [];
-        $defaultTrans = '[' . ($row['text_fr'] ?? $row['text_en']) . ']';
+        $defaultTrans = '[' . trim($row['text_fr'] ?? $row['text_en'], '[]') . ']';
         foreach ($row as $col => $val) {
             if (substr($col, 0, 5) == 'text_') {
                 $lang = substr($col, 5);

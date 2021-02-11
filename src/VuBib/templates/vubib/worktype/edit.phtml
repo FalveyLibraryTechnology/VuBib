@@ -19,7 +19,6 @@ $langMap = ['text_en' => 'English', 'text_de' => 'German', 'text_es' => 'Spanish
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?>">
     <input type="hidden" name="action" value="<?=trim($action)?>">
     <input type="hidden" name="id" value="<?=trim($id)?>">
-    <? var_dump($row); ?>
     <?php foreach($row as $col => $val): ?>
         <?php if ($col == 'id' || $col == 'type') continue; ?>
         <div class="form-group">
