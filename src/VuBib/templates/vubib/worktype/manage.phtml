@@ -2,6 +2,66 @@
 <?php
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_worktype') . '">Worktype</a> &gt; Manage';
     $this->layout()->page = "Worktype/Manage";
+
+    function collapseParams($params) {
+        $pairs = [];
+        foreach ($params as $key => $val) {
+            $pairs[] = $key . '=' . $val;
+        }
+        return '?' . implode('&', $pairs);
+    }
+
+    function sortParams($col) {
+        // Get parameters
+        $params = [];
+        $parts = explode('&', $_SERVER["QUERY_STRING"]);
+        foreach ($parts as $part) {
+            if (!$part) {
+                continue;
+            }
+            list($key, $val) = explode('=', $part, 2);
+            $params[$key] = $val;
+        }
+
+        // New order
+        if (!isset($_GET['orderBy']) || $col != $_GET['orderBy']) {
+            // Change order
+            $params['orderBy'] = $col;
+            $params['sort'] = 'ASC';
+            return collapseParams($params);
+        }
+
+        // Change order
+        $sortOrder = $_GET['sort'] ?? 'X';
+        $nextSort = [
+            'X' => 'ASC',
+            'ASC' => 'DESC',
+            'DESC' => 'X'
+        ][$sortOrder];
+
+        if ($nextSort == 'X') {
+            // Remove order
+            unset($params['orderBy']);
+            unset($params['sort']);
+        } else {
+            // Change order
+            $params['orderBy'] = $col;
+            $params['sort'] = $nextSort;
+        }
+
+        return collapseParams($params);
+    }
+    function sortIcon($col) {
+        $orderBy = $_GET['orderBy'] ?? null;
+        if ($col != $orderBy) {
+            return '';
+        }
+        $orderDir = $_GET['sort'] ?? 'ASC';
+        if ($orderDir == 'X') {
+            return '';
+        }
+        return $orderDir == 'ASC' ? '↓' : '↑';
+    }
 ?>
 <script type='text/javascript'>
 $(document).ready(function () {
@@ -23,11 +83,11 @@ $(document).ready(function () {
     <form action="<?=$this->url('delete_worktype')?><?='?action=delete'?>" method="post">
     <table class="table table-striped table-condensed" id="workTypeListTable" style="font-size:10pt;">
         <thead>
-        <tr>
-          <th>&nbsp;&nbsp;</th>
-          <th>Work Type</th>
-          <th>Attributes</th>
-        </tr>
+            <tr>
+                <th>&nbsp;&nbsp;</th>
+                <th><a href="<?=$this->url('manage_worktype') ?><?=sortParams('type') ?>">Work Type <?=sortIcon('type') ?></a></th>
+                <th>Attributes</th>
+            </tr>
         </thead>
         <tbody>
         <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>

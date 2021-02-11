@@ -277,23 +277,25 @@ class ManageWorkTypeAction implements MiddlewareInterface
     protected function getPaginator($post)
     {
         //add, edit, delete actions on worktype
-        if (!empty($post['action'])) {
+        if (
+            !empty($post['action']) &&
+            $post['submitt'] == 'Cancel'
+        ) {
             //add edit delete worktypes and manage attributes
             $this->doAction($post);
-
-            //Cancel add\edit\delete
-            if ($post['submitt'] == 'Cancel') {
-                $table = new \VuBib\Db\Table\WorkType($this->adapter);
-
-                return new Paginator(
-                    new \Zend\Paginator\Adapter\DbTableGateway($table)
-                );
-            }
         }
+
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkType($this->adapter);
-
-        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+        $order = null;
+        if (isset($_GET['orderBy'])) {
+            $order = $_GET['orderBy'] . ' ' . ($_GET['sort'] ?? 'ASC');
+        }
+        return new Paginator(
+            new \Zend\Paginator\Adapter\DbTableGateway(
+                $table, null, $order, null, null
+            )
+        );
     }
 
     /**
