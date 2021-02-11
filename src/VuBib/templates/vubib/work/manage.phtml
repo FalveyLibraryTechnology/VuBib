@@ -78,8 +78,8 @@ $(document).ready(function () {
                 <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=title&sort_ord=' . $sort_ord?>">Title <?=sortIcon('title') ?></a></th>
                 <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=type&sort_ord=' . $sort_ord?>">Type <?=sortIcon('type') ?></a></th>
                 <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=status&sort_ord=' . $sort_ord?>">Status <?=sortIcon('status') ?></a></th>
-                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=created&sort_ord=' . $sort_ord?>">Created</th>
-                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=modified&sort_ord=' . $sort_ord?>">Modified</th>
+                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=created&sort_ord=' . $sort_ord?>">Created <?=sortIcon('created') ?></a></th>
+                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=modified&sort_ord=' . $sort_ord?>">Modified <?=sortIcon('modified') ?></a></th>
             <?php } else { ?>
                 <th>&nbsp;&nbsp;</th>
                 <th><a href="<?=$this->url('manage_work')?><?='?orderBy=title&sort_ord=' . $sort_ord?>">Title <?=sortIcon('title') ?></a></th>
