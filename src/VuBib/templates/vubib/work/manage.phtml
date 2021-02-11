@@ -48,16 +48,24 @@ $(document).ready(function () {
     <?php echo ' ' . $value['letter'] . ' '; ?></a><?php echo '|';  ?>
 <?php } ?>
 <?php
-$q_str = "";
-//$sort_ord = isset($_GET['sort_ord'])?!$_GET['sort_ord']:1;
-$sort_ord = isset($_GET['sort_ord'])?($_GET['sort_ord'] == "ASC"?"DESC":"ASC"):"ASC";
-if ($request->getqueryParams() != null) {
-    $params = $request->getqueryParams();
-    $q_str = $_SERVER["QUERY_STRING"];
-    if(preg_match('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $q_str, $matches)) {
-        $q_str = preg_replace('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $matches['action'], $q_str);
+    $q_str = "";
+    $sort_ord = isset($_GET['sort_ord'])?($_GET['sort_ord'] == "ASC"?"DESC":"ASC"):"ASC";
+    if ($request->getqueryParams() != null) {
+        $params = $request->getqueryParams();
+        $q_str = $_SERVER["QUERY_STRING"];
+        if(preg_match('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $q_str, $matches)) {
+            $q_str = preg_replace('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $matches['action'], $q_str);
+        }
     }
-}
+
+    function sortIcon($col) {
+        $orderBy = $_GET['orderBy'] ?? 'title';
+        if ($col != $orderBy) {
+            return "";
+        }
+        $orderDir = $_GET['sort_ord'] ?? 'ASC';
+        return $orderDir == 'ASC' ? '↓' : '↑';
+    }
 ?>
 <br> <a href="<?php echo $this->url('new_work') ?>"><b style="text-decoration: underline;">Add Work</b></a>
 </p>
@@ -65,21 +73,21 @@ if ($request->getqueryParams() != null) {
         <table class="table table-striped table-condensed" id="workListTable" style="font-size:10pt;">
         <thead>
         <tr>
-          <?php if (isset($params['action'])) { ?>
-                    <th>&nbsp;&nbsp;</th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=title&sort_ord=' . $sort_ord?>">Title</a></th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=type&sort_ord=' . $sort_ord?>">Type</a></th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=status&sort_ord=' . $sort_ord?>">Status</a></th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=created&sort_ord=' . $sort_ord?>">Created</th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=modified&sort_ord=' . $sort_ord?>">Modified</th>
-          <?php } else { ?>
-                    <th>&nbsp;&nbsp;</th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?orderBy=title&sort_ord=' . $sort_ord?>">Title</a></th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?orderBy=type&sort_ord=' . $sort_ord ?>">Type</a></th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?orderBy=status&sort_ord=' . $sort_ord ?>">Status</a></th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?orderBy=created&sort_ord=' . $sort_ord?>">Created</a></th>
-                    <th><a href="<?=$this->url('manage_work')?><?='?orderBy=modified&sort_ord=' . $sort_ord?>">Modified</a></th>
-          <?php } ?>
+            <?php if (isset($params['action'])) { ?>
+                <th>&nbsp;&nbsp;</th>
+                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=title&sort_ord=' . $sort_ord?>">Title <?=sortIcon('title') ?></a></th>
+                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=type&sort_ord=' . $sort_ord?>">Type <?=sortIcon('type') ?></a></th>
+                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=status&sort_ord=' . $sort_ord?>">Status <?=sortIcon('status') ?></a></th>
+                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=created&sort_ord=' . $sort_ord?>">Created</th>
+                <th><a href="<?=$this->url('manage_work')?><?='?' . $q_str . '&orderBy=modified&sort_ord=' . $sort_ord?>">Modified</th>
+            <?php } else { ?>
+                <th>&nbsp;&nbsp;</th>
+                <th><a href="<?=$this->url('manage_work')?><?='?orderBy=title&sort_ord=' . $sort_ord?>">Title <?=sortIcon('title') ?></a></th>
+                <th><a href="<?=$this->url('manage_work')?><?='?orderBy=type&sort_ord=' . $sort_ord ?>">Type <?=sortIcon('type') ?></a></th>
+                <th><a href="<?=$this->url('manage_work')?><?='?orderBy=status&sort_ord=' . $sort_ord ?>">Status <?=sortIcon('status') ?></a></th>
+                <th><a href="<?=$this->url('manage_work')?><?='?orderBy=created&sort_ord=' . $sort_ord?>">Created <?=sortIcon('created') ?></a></th>
+                <th><a href="<?=$this->url('manage_work')?><?='?orderBy=modified&sort_ord=' . $sort_ord?>">Modified <?=sortIcon('modified') ?></a></th>
+            <?php } ?>
         </tr>
         </thead>
         <tbody>

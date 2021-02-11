@@ -490,7 +490,9 @@ class ManageWorkAction implements MiddlewareInterface
                 $sql = new \Zend\Db\Sql\Sql($this->adapter);
                 $ord = $params['sort_ord'] ?? 'ASC';
                 $select = $sql->select('work')
-                    ->join('worktype', 'worktype.id = work.type_id', ['type_name' => 'text_fr'])
+                    ->join('translations', 'translations.id = work.type_id', ['type_name' => 'text'])
+                    ->where('translations.table = "worktype"')
+                    ->where('translations.lang = "fr"')
                     ->order('type_name ' . $ord);
 
                 return new Paginator(
