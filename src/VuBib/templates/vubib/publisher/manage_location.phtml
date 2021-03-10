@@ -85,11 +85,19 @@ if ($id !== null) {
                 <button type="button" id="delete-confirm" class="btn btn-danger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Delete
                 </button>
-                <div class="dropdown-menu" aria-labelledby="delete-confirm">
+                <div class="dropdown-menu" aria-labelledby="delete-confirm" id="delete-popup">
                     <p>Are you sure you want to delete the selected works?</p>
                     <button type="submit" name="submitt" value="Delete" class="btn btn-danger">Delete</button>
                     <button type="button" onclick="$('#delete-confirm').dropdown('toggle')" class="btn float-right delete-cancel">Cancel</button>
                 </div>
+                <script>
+                    document.getElementById("delete-confirm")
+                        .addEventListener("click", () => {
+                            requestAnimationFrame(() => {
+                                document.getElementById("delete-popup").scrollIntoView();
+                            });
+                        }, { passive: true });
+                </script>
             </div>
         </div>
         <div class="col-sm-6">
