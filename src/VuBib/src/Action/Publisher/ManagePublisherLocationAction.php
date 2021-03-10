@@ -32,8 +32,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Teapot\StatusCode\RFC\RFC7231;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 
@@ -213,17 +215,19 @@ class ManagePublisherLocationAction implements MiddlewareInterface
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
-        error_log(print_r($post, true));
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(15);
-        //$allItems = $paginator->getTotalItemCount();
-
-        $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher/manage_location', $this->router,
-            $this->template, $this->adapter
-        );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
+
+        //Merge publisher locations
+        if (($post['action'] ?? null) == 'merge') {
+            $reqParams = $request->getServerParams();
+            $redirectUrl = $reqParams['REDIRECT_BASE']
+                . $this->router->generateUri('manage_publisher')
+                . '?merge=success';
+            return new RedirectResponse($redirectUrl, RFC7231::FOUND);
+        }
 
         return new HtmlResponse(
             $this->template->render(

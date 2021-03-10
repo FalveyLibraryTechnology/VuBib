@@ -19,6 +19,12 @@ $(document).ready(function () {
 });
 </script>
 <div class="col-lg-10">
+    <?php if ($_GET['merge'] ?? null == 'success'): ?>
+        <div class="alert alert-success">
+            Merge successful!
+        </div>
+    <?php endif; ?>
+
     <p>
         <?php foreach ($this->carat as $value) { ?>
             <a href="<?= $this->url('manage_publisher') ?><?= '?letter=' . $value['letter'] . '&action=alphasearch' ?>">
@@ -46,12 +52,12 @@ $(document).ready(function () {
                     <a href="<?= $this->url('edit_publisher') ?><?= '?id=' . $row['id'] . '&action=edit' ?>">
                     <?php echo $escaper->escapeHtml($row['name']); ?></a>
                     </td>
-                    <td>            
+                    <td>
                         <?php
                         $output = (array)$row;
                         if (!isset($row['publisher_id'])) {
-                        ?>        
-                            <a href="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $row['id'] ?>">Manage Locations</a>  
+                        ?>
+                            <a href="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $row['id'] ?>">Manage Locations</a>
                         <?php
                         } else {
                         ?>

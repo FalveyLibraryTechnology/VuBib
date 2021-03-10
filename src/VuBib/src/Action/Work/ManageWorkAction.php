@@ -97,13 +97,10 @@ class ManageWorkAction implements MiddlewareInterface
     {
         if (isset($params['action'])) {
             //review records
-            if ($params['action'] == 'review') {
-                $table = new \VuBib\Db\Table\Work($this->adapter);
-
-                return $table->displayReviewRecordsByLetter(
-                    $params['letter'], $order
-                );
-            } elseif ($params['action'] == 'classify') {
+            if (
+                $params['action'] == 'review' ||
+                $params['action'] == 'classify'
+            ) {
                 //classify records
                 $table = new \VuBib\Db\Table\Work($this->adapter);
 
@@ -144,15 +141,10 @@ class ManageWorkAction implements MiddlewareInterface
     protected function workReviewClassify($params, $order)
     {
         //Display works which need review
-        if ($params['action'] == 'review') {
-            $table = new \VuBib\Db\Table\Work($this->adapter);
-            $paginator = $table->fetchReviewRecords($order);
-
-            return $paginator;
-        }
-
-        //Display works which are to be classified under folders
-        if ($params['action'] == 'classify') {
+        if (
+            $params['action'] == 'review' ||
+            $params['action'] == 'classify'
+        ) {
             $table = new \VuBib\Db\Table\Work($this->adapter);
             $paginator = $table->fetchClassifyRecords($order);
 
