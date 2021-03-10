@@ -63,11 +63,19 @@
             <button disabled type="submit" id="bulk-delete-confirm" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Delete Selected
             </button>
-            <div class="dropdown-menu" aria-labelledby="bulk-delete-confirm">
+            <div class="dropdown-menu" aria-labelledby="bulk-delete-confirm" id="bulk-delete-popup">
                 <p>Are you sure you want to delete these folders and all of their children?</p>
                 <button type="submit" name="submit" value="Delete" class="btn btn-danger">Delete</button>
                 <button type="button" onclick="$('#bulk-delete-confirm').dropdown('toggle')" class="btn float-right delete-cancel">Cancel</button>
             </div>
+            <script>
+                document.getElementById("bulk-delete-confirm")
+                    .addEventListener("click", () => {
+                        requestAnimationFrame(() => {
+                            document.getElementById("bulk-delete-popup").scrollIntoView();
+                        });
+                    }, { passive: true });
+            </script>
         </div>
         <script>
             let inputs = document.querySelectorAll(".delete-check");
