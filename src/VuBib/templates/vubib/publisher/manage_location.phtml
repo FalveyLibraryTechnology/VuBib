@@ -66,12 +66,12 @@ if ($id !== null) {
                             $row1['location'] = str_replace(" ", "**hasSpace**", $row1['location']);
                         }
                         ?>
-                        <label><input type="checkbox" id='select' name="selectsource[]" value=<?= serialize($row1); ?>></label>
+                        <label><input type="checkbox" id='select' name="sourceids[]" value=<?=$row1['id'];?>></label>
                     </div>
                 </td>
                 <td>
                     <div class="radio">
-                        <label><input type="radio" id='select' name="selectdest"  value=<?= serialize([$row1]); ?>></label>
+                        <label><input type="radio" id='select' name="destid" value=<?=$row1['id'];?>></label>
                     </div>
                 </td>
             </tr>
@@ -128,10 +128,10 @@ if ($id !== null) {
         var hasSource = false;
         var hasDestination = false;
         for (let key of checked) {
-            if (key == "selectsource[]") {
+            if (key == "sourceids[]") {
                 hasSource = true;
             }
-            if (key == "selectdest") {
+            if (key == "destid") {
                 hasDestination = true;
             }
             if (hasSource && hasDestination) {

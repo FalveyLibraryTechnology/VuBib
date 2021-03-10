@@ -121,7 +121,6 @@ class GetWorkDetailsAction implements MiddlewareInterface
      */
     protected function publisherIdLocs($pub_id)
     {
-        error_log('publisherIdLocs ' . $pub_id);
         $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
         $pub_loc_rows = $table->getPublisherLocations($pub_id);
         foreach ($pub_loc_rows as $i => $row) {
