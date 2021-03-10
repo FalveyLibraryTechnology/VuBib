@@ -55,7 +55,7 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function __construct($adapter)
     {
-        $this->setTableName('workattribute');
+        $this->setTableName('workattribute', 'field');
         parent::__construct('workattribute', $adapter);
     }
 

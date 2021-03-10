@@ -39,10 +39,12 @@ use Zend\Db\TableGateway\TableGateway;
 trait TranslationTrait
 {
     protected $tableName = '';
+    protected $fallbackColumn = '';
 
-    protected function setTableName($table)
+    protected function setTableName($table, $fbCol = 'text_fr')
     {
         $this->tableName = $table;
+        $this->fallbackColumn = $fbCol;
     }
 
     protected function separateRowTranslations($row, $cols)
@@ -173,14 +175,21 @@ trait TranslationTrait
                     'Empty t__lang (no translations for current row) ' .
                     print_r($row, true)
                 );
+                // TODO: DEBUG DO NOT SHIP
+                $row['t__lang'] = 'fr';
+                $row['t__text'] = '[' . $row[$this->fallbackColumn] . ']';
             }
 
             // Brackets for borrowed strings
             if ($row['t__text'] == NULL) {
-                foreach (['fr', 'en', 'it'] as $lang) {
-                    if (isset($row['text_' . $lang])) {
-                        $row['t__text'] = '[' . $row['text_' . $lang] . ']';
-                        break;
+                if ($row[$this->fallbackColumn] != NULL) {
+                    $row['t__text'] = '[' . $row[$this->fallbackColumn] . ']';
+                } else {
+                    foreach (['fr', 'en', 'it'] as $lang) {
+                        if (isset($row['text_' . $lang])) {
+                            $row['t__text'] = '[' . $row['text_' . $lang] . ']';
+                            break;
+                        }
                     }
                 }
             }
