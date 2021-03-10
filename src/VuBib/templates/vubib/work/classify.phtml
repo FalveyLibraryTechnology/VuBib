@@ -63,9 +63,9 @@ if ($request->getqueryParams() != null) {
         <?php foreach($this->rows as $row) : ?>
         <tr>
         <td class="title">
-            <?php
-                    echo $escaper->escapeHtml($row['title']);
-            ?>
+            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id'] . '&action=classify'?>">
+                <?=$escaper->escapeHtml($row['title']);?>
+            </a>
         </td>
         <td class="type">
             <?php
