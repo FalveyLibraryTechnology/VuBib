@@ -195,7 +195,7 @@ $(document).ready(function() {
                     <select class="form-control" name="work_type" id="work_type" required="true">
                         <option value="">Choose Work Type</option>
                         <?php foreach ($this->workTypes as $workType): ?>
-                            <option value="<?=$workType['id'] ?>"<?=($workType['id'] == $this->work['type_id']) ? ' selected' : '' ?>><?=$workType['text_fr'] ?></option>
+                            <option value="<?=$workType['id'] ?>"<?=($workType['id'] == $this->work['type_id']) ? ' selected' : '' ?>><?=$workType['text_fr'] ?? $workType['text_en'] ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (!empty($this->work['type_id'])): ?>
