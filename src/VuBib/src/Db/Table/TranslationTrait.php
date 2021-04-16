@@ -38,12 +38,10 @@ use Zend\Db\TableGateway\TableGateway;
 
 trait TranslationTrait
 {
-    protected $tableName = '';
     protected $fallbackColumn = '';
 
     protected function setTableName($table, $fbCol = 'text_fr')
     {
-        $this->tableName = $table;
         $this->fallbackColumn = $fbCol;
     }
 
@@ -79,7 +77,7 @@ trait TranslationTrait
         foreach($separated['trans'] as $lang => $text) {
             $transTable->insert([
                 'id' => $this->lastInsertValue,
-                'table' => $this->tableName,
+                'table' => $this->getTable(),
                 'lang' => $lang,
                 'text' => $text
             ]);
@@ -90,7 +88,7 @@ trait TranslationTrait
     {
         if (!isset($row['id'])) {
             throw \Exception(
-                'Translation of ' . $this->tableName
+                'Translation of ' . $this->getTable()
                     . ': "id" needed to update translated item'
             );
         }
@@ -103,13 +101,13 @@ trait TranslationTrait
         foreach($separated['trans'] as $lang => $text) {
             $rowsAffected = $transTable->update(
                 ['text' => $text],
-                ['table' => $this->tableName, 'id' => $row['id'], 'lang' => $lang]
+                ['table' => $this->getTable(), 'id' => $row['id'], 'lang' => $lang]
             );
             // No rows affect? Check for existing entry
             if ($rowsAffected == 0) {
                 $checkSet = $transTable->select([
                     'id' => $row['id'],
-                    'table' => $this->tableName,
+                    'table' => $this->getTable(),
                     'lang' => $lang
                 ])->toArray();
                 // insert if absent
@@ -117,7 +115,7 @@ trait TranslationTrait
                     $transTable->insert([
                         'id' => $row['id'],
                         'text' => $text,
-                        'table' => $this->tableName,
+                        'table' => $this->getTable(),
                         'lang' => $lang
                     ]);
                 }
@@ -130,12 +128,57 @@ trait TranslationTrait
         return $select->join(
             ['t' => 'translations'],
             new Expression(
-                't.id = ' . $this->tableName . '.id AND '
-                . "t.table = '" . $this->tableName . "'"
+                't.id = ' . $this->getTable() . '.id AND '
+                . "t.table = '" . $this->getTable() . "'"
             ),
             ['t__lang' => 'lang', 't__text' => 'text'],
             Join::JOIN_LEFT
         );
+    }
+
+    protected function getTranslations($row)
+    {
+        $transTable = new TableGateway('translations', $this->adapter);
+        $rows = $transTable->select([
+                'id' => $row['id'],
+                'table' => $this->getTable(),
+            ])->toArray();
+
+        $trans = [];
+        foreach ($rows as $row) {
+            $trans[$row['lang']] = $row['text'];
+        }
+        return $trans;
+    }
+
+    protected function getTranslation($row, $lang)
+    {
+        $trans = $this->getTranslations($row);
+        return $trans[$lang];
+    }
+
+    private function transformRow($row)
+    {
+        $trans = $this->getTranslations($row);
+        foreach ($this->translatable as $attr) {
+            $row[$attr] = $trans;
+        }
+        return $row;
+    }
+
+    protected function translate($op)
+    {
+        if (!isset($this->translatable) || empty($this->translatable)) {
+            return $op;
+        }
+        if (!is_array($op)) {
+            return $this->transformRow($op);
+        }
+        $rows = [];
+        foreach ($op as $row) {
+            $rows[] = $this->transformRow($row);
+        }
+        return $rows;
     }
 
     /**

@@ -441,14 +441,6 @@ class ManageWorkAction implements MiddlewareInterface
         $order = "";
         //order by columns
         if (!empty($params['orderBy'])) {
-            /*$isAsc = isset($params['sort_ord'])? (bool) $params['sort_ord']: 1;
-            echo "iasAsc is " . $isAsc;
-            //$isAsc = isset($params['sort_ord'])? "ASC":"DESC";
-            if ($isAsc) {
-                $sort_ord = "ASC";
-            } else {
-                $sort_ord = "DESC";
-            }*/
             $sort_ord = $params['sort_ord'] ?? 'ASC';
             $ord_by = $params['orderBy'];
 
@@ -478,19 +470,6 @@ class ManageWorkAction implements MiddlewareInterface
 
         //order by columns
         if (isset($order) && $order !== '') {
-            if ($params['orderBy'] == 'type') {
-                $sql = new \Zend\Db\Sql\Sql($this->adapter);
-                $ord = $params['sort_ord'] ?? 'ASC';
-                $select = $sql->select('work')
-                    ->join('translations', 'translations.id = work.type_id', ['type_name' => 'text'])
-                    ->where('translations.table = "worktype"')
-                    ->where('translations.lang = "fr"')
-                    ->order('type_name ' . $ord);
-
-                return new Paginator(
-                    new \Zend\Paginator\Adapter\DbSelect($select, $this->adapter)
-                );
-            }
             $table = new \VuBib\Db\Table\Work($this->adapter);
             return new Paginator(
                 new \Zend\Paginator\Adapter\DbTableGateway(

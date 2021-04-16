@@ -47,6 +47,7 @@ use Zend\Paginator\Paginator;
 class WorkType extends \Zend\Db\TableGateway\TableGateway
 {
     use TranslationTrait;
+    protected $translatable = ['type'];
 
     /**
      * WorkType constructor.

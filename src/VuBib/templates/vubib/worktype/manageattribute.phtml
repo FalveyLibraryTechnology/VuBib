@@ -25,22 +25,6 @@
     </style>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
-$( function() {
-    $( "#sortable1, #sortable2" ).sortable({
-        connectWith: ".connectedSortable",
-        update : function ()
-        {
-            var sort1 = $('#sortable1').sortable('toArray', { attribute: 'predmet-id' });
-            var sort2 = $('#sortable2').sortable('toArray', { attribute: 'predmet-id' });
-            //alert(sort1);
-            $('#sort_order').val(sort1);
-            $('#remove_attr').val(sort2);
-            console.log(sort1);
-        }
-    }).disableSelection();
-} );
-</script>
 
 <?php if ($this->flashMessage): ?>
     <div class="alert alert-success"><?=$this->flashMessage ?></div>
@@ -140,4 +124,22 @@ if ($id !== null)
         <input type="submit" class="btn btn-default" id = "submit_cancel" name="submitt" value="Cancel"/>
     </div>
 </form>
+
+<script>
+$( function() {
+    $( "#sortable1, #sortable2" ).sortable({
+        connectWith: ".connectedSortable",
+        update : function ()
+        {
+            var sort1 = $('#sortable1').sortable('toArray', { attribute: 'predmet-id' });
+            var sort2 = $('#sortable2').sortable('toArray', { attribute: 'predmet-id' });
+            //alert(sort1);
+            $('#sort_order').val(sort1);
+            $('#remove_attr').val(sort2);
+            console.log(sort1);
+        }
+    }).disableSelection();
+} );
+</script>
+
 </div>

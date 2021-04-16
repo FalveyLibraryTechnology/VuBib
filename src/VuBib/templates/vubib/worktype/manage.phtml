@@ -93,6 +93,7 @@ $(document).ready(function () {
         <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
         <?php foreach($this->rows as $row) :
                 $output = (array)$row;
+                // var_dump($row);
                 $params = implode(', ', $output);
         ?>
         <tr>

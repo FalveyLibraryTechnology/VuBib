@@ -14,6 +14,8 @@ if ($request->getqueryParams('id') !== null)
 ?>
 <div class="col-xs-4">
     <form method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
+        <input type="hidden" name="workattribute_id" value="<?=$wkat_id?>">
+        <input type="hidden" name="action" value="<?=$action?>">
 
     <?php
     $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
@@ -34,10 +36,6 @@ if ($request->getqueryParams('id') !== null)
                 </li>
             </ul>
         <?php endforeach; ?>
-        <ul>
-            <input type="hidden" name="workattribute_id" value="<?=$wkat_id?>">
-            <input type="hidden" name="action" value="<?=$action?>">
-        </ul>
         <input type="submit" name="submitt" class="btn-primary" value="Merge">
     <?php
     } else {
