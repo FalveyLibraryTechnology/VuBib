@@ -202,8 +202,10 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
     public function getDuplicateOptions($wkat_id)
     {
         $select = $this->sql->select();
+        $select->columns(['id' => new Expression('MIN(id)'),'title']);
         $select->where->equalTo('workattribute_id', $wkat_id);
-        $select->group('title');
+        $select->group(['title']);
+        $select->order('title');
         $select->having('count(title) > 1');
 
         $paginatorAdapter = new DbSelect($select, $this->adapter);

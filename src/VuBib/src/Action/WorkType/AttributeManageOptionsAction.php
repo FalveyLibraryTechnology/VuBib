@@ -31,6 +31,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use VuBib\Db\Table\Work_WorkAttribute;
+use VuBib\Db\Table\Attribute_Option_SubAttribute;
+use VuBib\Db\Table\WorkAttribute_Option;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
@@ -242,7 +245,7 @@ class AttributeManageOptionsAction implements MiddlewareInterface
      *
      * @return empty
      */
-    protected function doMerge($post)
+    protected function doMergeDuplicates($post)
     {
         if ($post['submitt'] == 'Merge') {
             if (null !== $post['workattribute_id']) {
@@ -255,27 +258,20 @@ class AttributeManageOptionsAction implements MiddlewareInterface
                         $post['option_id'][$i]
                     );
 
+                    $w_waTable = new Work_WorkAttribute($this->adapter);
+                    $a_o_saTable = new Attribute_Option_SubAttribute($this->adapter);
+                    $wa_table = new WorkAttribute_Option($this->adapter);
                     for ($j = 0; $j < count($rows); ++$j) {
-                        $table = new \VuBib\Db\Table\Work_WorkAttribute(
-                            $this->adapter
-                        );
-                        $table->updateWorkAndWorkAttributeValue(
+                        $w_waTable->updateWorkAndWorkAttributeValue(
                             $post['workattribute_id'], $post['option_id'][$i],
                             $rows[$j]['id']
                         );
-
                         //delete option record from attribute_option_subattribute
-                        $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
-                            $this->adapter
-                        );
-                        $table->deleteRecordByOptionId(
+                        $a_o_saTable->deleteRecordByOptionId(
                             $post['workattribute_id'], $rows[$j]['id']
                         );
 
-                        $table = new \VuBib\Db\Table\WorkAttribute_Option(
-                            $this->adapter
-                        );
-                        $table->deleteOption(
+                        $wa_table->deleteOption(
                             $post['workattribute_id'], $rows[$j]['id']
                         );
                     }
@@ -355,7 +351,7 @@ class AttributeManageOptionsAction implements MiddlewareInterface
         }
         //Merge option
         if ($post['action'] == 'merge') {
-            $this->doMerge($post);
+            $this->doMergeDuplicates($post);
         }
         //Merge option
         if ($post['action'] == 'merge_options') {
@@ -396,14 +392,6 @@ class AttributeManageOptionsAction implements MiddlewareInterface
      */
     protected function getPaginator($query, $post)
     {
-        $order = "";
-        //order by columns
-        if (!empty($query['orderBy'])) {
-            $sort_ord = $query['sort_ord'];
-            $ord_by = $query['orderBy'];
-
-            $order = $ord_by . " " . $sort_ord;
-        }
         //Attribute Option Lookup
         if (!empty($query['action'])) {
             if ($query['action'] == 'search_option') {
@@ -423,6 +411,12 @@ class AttributeManageOptionsAction implements MiddlewareInterface
             }
         }
 
+        $order = '';
+        //order by columns
+        if (!empty($query['sort_ord'])) {
+            $sort_ord = $query['sort_ord'];
+            $order = 'title ' . $sort_ord;
+        }
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $paginator = $table->displayAttributeOptions($query['id'], $order);

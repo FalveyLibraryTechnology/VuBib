@@ -172,6 +172,7 @@ class ManageWorkTypeAction implements MiddlewareInterface
      */
     protected function removeAttribute($post)
     {
+        error_log('removeAttribute');
         $attrs_to_remove = [];
         preg_match_all('/,?id_\d+/', $post['remove_attr'], $matches);
         foreach ($matches[0] as $id) {
@@ -224,8 +225,10 @@ class ManageWorkTypeAction implements MiddlewareInterface
     {
         if (
             $post['submitt'] == 'Save' &&
-            !empty($post['remove_attr']) &&
-            !empty($post['sort_order'])
+            (
+                !empty($post['remove_attr']) ||
+                !empty($post['sort_order'])
+            )
         ) {
             if (!empty($post['remove_attr'])) {
                 $this->removeAttribute($post);
@@ -279,7 +282,7 @@ class ManageWorkTypeAction implements MiddlewareInterface
         //add, edit, delete actions on worktype
         if (
             !empty($post['action']) &&
-            $post['submitt'] == 'Cancel'
+            $post['submitt'] != 'Cancel'
         ) {
             //add edit delete worktypes and manage attributes
             $this->doAction($post);

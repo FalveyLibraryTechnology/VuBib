@@ -26,28 +26,37 @@ if ($request->getqueryParams('action') !== null) {
 }
 ?>
 <?php
-  $q_params = $request->getQueryParams();
+    $q_params = $request->getQueryParams();
 
-  // Set url for title sort toggle
-  $nextOrder = 'ASC';
-  if (isset($q_params['sort_ord']) && $q_params['sort_ord'] == 'ASC') {
-    $nextOrder = 'DESC';
-  }
-
-  $newParams = array_merge($q_params, ['sort_ord' => $nextOrder]);
-  $optionSortUrl = $this->url('manage_attribute_options', [], $newParams);
-
-  // Set order parameters for pagination
-  $paginationParamsStr = '';
-  foreach ($q_params as $key=>$val) {
-    if ($key == 'page') {
-      continue;
+    // Set url for title sort toggle
+    $nextOrder = 'ASC';
+    if (isset($q_params['sort_ord'])) {
+        if ($q_params['sort_ord'] == 'ASC') {
+            $nextOrder = 'DESC';
+        } else if ($q_params['sort_ord'] == 'DESC') {
+            $nextOrder = null;
+        }
     }
-    if (strlen($paginationParamsStr) > 0) {
-      $paginationParamsStr .= '&';
+
+    $newParams = $q_params;
+    if ($nextOrder != null) {
+        $newParams['sort_ord'] = $nextOrder;
+    } else {
+        unset($newParams['sort_ord']);
     }
-    $paginationParamsStr .= $key . '=' . $val;
-  }
+    $optionSortUrl = $this->url('manage_attribute_options', [], $newParams);
+
+    // Set order parameters for pagination
+    $paginationParamsStr = '';
+    foreach ($q_params as $key=>$val) {
+        if ($key == 'page') {
+            continue;
+        }
+        if (strlen($paginationParamsStr) > 0) {
+            $paginationParamsStr .= '&';
+        }
+        $paginationParamsStr .= $key . '=' . $val;
+    }
 ?>
 <script type='text/javascript'>
 $(document).ready(function () {
@@ -65,19 +74,32 @@ $(document).ready(function () {
 });
 </script>
 <div class="col-md-9">
-    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p>
-    <a href="<?=$this->url('new_option')?><?='?id=' . $id . '&action=new'?>"><b style="text-decoration: underline;">Add Option</b></a>
-    &nbsp;&nbsp;&nbsp;
-    <a href="<?=$this->url('merge_options')?><?='?id=' . $id . '&action=merge_options'?>"><b style="text-decoration: underline;">Merge Options</b></a>
+    <p><b>Attribute: <?php echo $attribute; ?></b></p>
+
+    <nav>
+        <a class="btn btn-link" href="<?=$this->url('new_option')?><?='?id=' . $id . '&action=new'?>">
+            Add Option
+        </a>
+        <a class="btn btn-link" href="<?=$this->url('merge_options')?><?='?id=' . $id . '&action=merge_options'?>">
+            Merge Options
+        </a>
+    </nav>
+
     <form action="<?=$this->url('delete_option')?><?='?wkat_id=' . $id . '&action=delete'?>" method="post">
     <table class="table table-striped table-condensed" id="workAttrOptListTable" style="font-size:10pt;">
         <thead>
         <tr>
-          <th>&nbsp;&nbsp;</th>
-          <th><a href="<?=$optionSortUrl ?>">Option</a></th>
-          <?php if (count($subattr) > 0){ ?>
-            <th><?=$subattr['subattribute']?></th>
-          <?php } ?>
+            <th width="48">&nbsp;&nbsp;</th>
+            <th>
+                <a href="<?=$optionSortUrl ?>">
+                    Option
+                    <?php if ($q_params['sort_ord'] == 'ASC'): ?>▼<?php endif; ?>
+                    <?php if ($q_params['sort_ord'] == 'DESC'): ?>▲<?php endif; ?>
+                </a>
+            </th>
+            <?php if ($subattr) { ?>
+                <th><?=$subattr['subattribute']?></th>
+            <?php } ?>
         </tr>
         </thead>
         <tbody>
@@ -97,7 +119,7 @@ $(document).ready(function () {
                     <?php echo $escaper->escapeHtml($row['title']); ?></a>
                 </td>
                 <?php
-                if (count($subattr) > 0){
+                if ($subattr) {
                     $subattr_value = "";
                     //fetch subattribute values for option
                     $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
