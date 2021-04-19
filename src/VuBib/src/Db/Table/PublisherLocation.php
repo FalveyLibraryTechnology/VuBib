@@ -194,23 +194,22 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function findPublisherLocations($id)
     {
-        $countCol = [
-            'workCount' => new Expression(
-                'COUNT(DISTINCT(?))',
-                ['work_publisher.work_id'],
-                [Expression::TYPE_IDENTIFIER]
-            )
-        ];
         $select = $this->sql
             ->select()
+            ->columns([
+                'id',
+                'location',
+                'workCount' => new Expression('COUNT(work_publisher.work_id)')
+            ])
             ->join(
                 'work_publisher',
                 'work_publisher.location_id = publisher_location.id',
-                $countCol,
+                null,
                 'LEFT'
             )
             ->where(['publisher_location.publisher_id' => $id])
-            ->group(['publisher_location.id', 'work_publisher.work_id']);
+            ->group(['publisher_location.id']);
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
