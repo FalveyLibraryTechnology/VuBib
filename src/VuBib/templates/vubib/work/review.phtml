@@ -63,16 +63,16 @@ if ($request->getqueryParams() != null) {
         <?php foreach($this->rows as $row) : ?>
         <tr>
         <td class="title">
-            <?php
-                    echo $escaper->escapeHtml($row['title']);
-            ?>
+            <a href="<?=$this->url('edit_work')?><?='?id=' . $row['id'] . '&action=review'?>">
+                <?=$escaper->escapeHtml($row['title']); ?>
+            </a>
         </td>
         <td class="type">
             <?php
                 //fetch work type based on type_id
                 $table = new \VuBib\Db\Table\WorkType($adapter);
                 $work_type = $table->findRecordById($row['type_id']);
-                $type = $work_type['text_fr'];
+                $type = $work_type['text_fr'] ?? $work_type['text_en'];
                 echo $escaper->escapeHtml($type);
             ?>
         </td>
