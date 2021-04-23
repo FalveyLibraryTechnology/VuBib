@@ -141,10 +141,15 @@ class ManageWorkAction implements MiddlewareInterface
     protected function workReviewClassify($params, $order)
     {
         //Display works which need review
-        if (
-            $params['action'] == 'review' ||
-            $params['action'] == 'classify'
-        ) {
+        if ($params['action'] == 'review') {
+            $table = new \VuBib\Db\Table\Work($this->adapter);
+            $paginator = $table->fetchReviewRecords($order);
+
+            return $paginator;
+        }
+
+        //Display works which need classification
+        if ($params['action'] == 'classify') {
             $table = new \VuBib\Db\Table\Work($this->adapter);
             $paginator = $table->fetchClassifyRecords($order);
 
@@ -438,7 +443,7 @@ class ManageWorkAction implements MiddlewareInterface
             $this->doAction($post);
         }
 
-        $order = "";
+        $order = null;
         //order by columns
         if (!empty($params['orderBy'])) {
             $sort_ord = $params['sort_ord'] ?? 'ASC';
@@ -468,18 +473,12 @@ class ManageWorkAction implements MiddlewareInterface
             return $this->workReviewClassify($params, $order);
         }
 
-        //order by columns
-        if (isset($order) && $order !== '') {
-            $table = new \VuBib\Db\Table\Work($this->adapter);
-            return new Paginator(
-                new \Zend\Paginator\Adapter\DbTableGateway(
-                    $table, null, $order, null, null
-                )
-            );
-        }
-        // default: blank/missing search
         $table = new \VuBib\Db\Table\Work($this->adapter);
-        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+        return new Paginator(
+            new \Zend\Paginator\Adapter\DbTableGateway(
+                $table, null, $order, null, null
+            )
+        );
     }
 
     /**
