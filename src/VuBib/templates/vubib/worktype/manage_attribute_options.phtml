@@ -93,8 +93,8 @@ $(document).ready(function () {
             <th>
                 <a href="<?=$optionSortUrl ?>">
                     Option
-                    <?php if ($q_params['sort_ord'] == 'ASC'): ?>▼<?php endif; ?>
-                    <?php if ($q_params['sort_ord'] == 'DESC'): ?>▲<?php endif; ?>
+                    <?php if ($q_params['sort_ord'] ?? '' == 'ASC'): ?>▼<?php endif; ?>
+                    <?php if ($q_params['sort_ord'] ?? '' == 'DESC'): ?>▲<?php endif; ?>
                 </a>
             </th>
             <?php if ($subattr) { ?>
