@@ -1,11 +1,13 @@
-<?php $this->headTitle('Manage WorkType Attributes'); ?>
+<?php
+    $this->headTitle('Manage WorkType Attributes');
+    $this->headScript()->appendFile($this->basePath('vendor/js/jquery-ui.min.js'));
+    $this->headLink()->appendStylesheet($this->basePath('vendor/css/jquery-ui.min.css'));
+?>
 <?php
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_worktype') . '">Worktype</a> &gt; Manage Attributes';
     $this->layout()->page = "Worktype/Manage Attributes";
 ?>
-<div class="col-md-9">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <style>
+<style>
     #sortable1, #sortable2 {
         border: 1px solid #eee;
         width: 200px;
@@ -22,9 +24,9 @@
         font-size: 1.2em;
         width: 180px;
     }
-    </style>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</style>
+
+<div class="col-md-9">
 
 <?php if ($this->flashMessage): ?>
     <div class="alert alert-success"><?=$this->flashMessage ?></div>

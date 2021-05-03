@@ -18,12 +18,12 @@
       [<a href="logout.php">Log Out</a>]
     </div>
   </div>-->
-  
+
 
      <!--<div class="breadcrumb">
           <li><a href="#">Home /</a></li>
      </div>-->
-  
+
 </div>
 
 <!-- Fixed navbar -->
@@ -49,7 +49,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right pull-left">
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Work<b class="caret"></b></a>              
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Work!!!!<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_work') ?>">New</a></li>
                 <li><a href="<?php echo $this->url('search_work') ?>">Search</a></li>
@@ -59,16 +59,16 @@
                 </ul>
                 </li>
                 <li class="divider-vertical"></li>
-                 <li class="dropdown">           
+                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Work Type<b class="caret"></b></a>
                  <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_worktype') ?><?='?action=new'?>">New</a></li>
                 <li><a href="<?php echo $this->url('manage_worktype') ?>">Manage</a></li>
                 <li><a href="<?php echo $this->url('attributes_worktype') ?>">Attributes</a></li>
               </ul>
-            </li>       
+            </li>
 
-              <li class="dropdown">           
+              <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Classification<b class="caret"></b></a>
                  <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_classification') ?>">New</a></li>
@@ -76,9 +76,9 @@
                 <li><a href="<?php echo $this->url('merge_classification') ?>">Merge</a></li>
                 <li><a href="<?php echo $this->url('manage_classification') ?><?='?action=export_classification'?>">Export List</a></li>
               </ul>
-            </li>              
-            
-            <li class="dropdown">           
+            </li>
+
+            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Agent<b class="caret"></b></a>
                  <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_agent') ?><?='?action=new'?>">New</a></li>
@@ -86,17 +86,17 @@
                 <li><a href="<?php echo $this->url('manage_agent') ?>">Manage</a></li>
                 <li><a href="<?php echo $this->url('merge_agent') ?>">Merge</a></li>
               </ul>
-            </li>  
-            
-            <li class="dropdown">           
+            </li>
+
+            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Agent Type<b class="caret"></b></a>
                  <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_agenttype') ?><?='?action=new'?>">New</a></li>
                 <li><a href="<?php echo $this->url('manage_agenttype') ?>">Manage</a></li>
               </ul>
-            </li> 
-            
-            <li class="dropdown">           
+            </li>
+
+            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Publisher<b class="caret"></b></a>
                  <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_publisher') ?><?='?action=new'?>">New</a></li>
@@ -104,32 +104,32 @@
                 <li><a href="<?php echo $this->url('manage_publisher') ?>">Manage</a></li>
                 <li><a href="<?php echo $this->url('merge_publisher') ?>">Merge</a></li>
               </ul>
-            </li> 
-            
-            <li class="dropdown">           
+            </li>
+
+            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Language<b class="caret"></b></a>
                  <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_language') ?><?='?action=new'?>">New</a></li>
                 <li><a href="<?php echo $this->url('manage_language') ?>">Manage</a></li>
               </ul>
-            </li> 
-            
-            <li class="dropdown">           
+            </li>
+
+            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Users<b class="caret"></b></a>
                  <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_user') ?><?='?action=new'?>">New</a></li>
                 <li><a href="<?php echo $this->url('manage_user') ?>">Manage</a></li>
                 <li><a href="<?php echo $this->url('access_user') ?>">Access</a></li>
               </ul>
-            </li> 
-            
-            <li class="dropdown">           
+            </li>
+
+            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Preferences<b class="caret"></b></a>
                  <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('changepassword_preferences') ?>">Change Password</a></li>
               </ul>
-            </li> 
-            
+            </li>
+
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -137,12 +137,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="<?=$this->url('home')?>vendor/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
  <div class="app-content" width="100%">
  <div style="width: 80%">
             <?php echo $this->content ?>
- </div>  
+ </div>
  <?php
 
             // Page Instructions Content
@@ -160,7 +158,7 @@
           // print_r($instructions);
             $this->layout()->instructions = $instructions[$page] ?? '';
 ?>
-        <main class="container">  
+        <main class="container">
                 <div style="float: right; width: 20%;">
                 <div class="tipbox">
                 <div>Instructions</div>
@@ -170,7 +168,7 @@
                 <input type="submit" name="submit" value="Save">
                 </form>
                 </div>
-               </div>    
+               </div>
         </main>
 </div>
 
