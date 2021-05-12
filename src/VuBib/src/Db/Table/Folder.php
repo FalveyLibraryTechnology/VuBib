@@ -33,6 +33,7 @@ namespace VuBib\Db\Table;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
@@ -155,26 +156,6 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     }
 
     /**
-     * Get parent of a folder.
-     *
-     * @param Number $child id of a folder
-     *
-     * @return Array $row folder parent record
-     */
-    public function getParent($child)
-    {
-        $callback = function ($select) use ($child) {
-            $select->columns(['*']);
-            $select->where(['folder.id' => $child]);
-            $this->joinTranslations($select);
-        };
-        $rowset = $this->select($callback);
-        $row = $this->translateCurrent($rowset);
-
-        return $row;
-    }
-
-    /**
      * Get folders with no parent.
      *
      * @return Array $rows folder records with no parent
@@ -243,13 +224,13 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     public function getParentChain($id)
     {
         $fl = new self($this->adapter);
-        $row = $fl->getParent($id);
+        $row = $fl->findRecordById($id);
 
         $encounteredIds = [$row['id']];
         $current = $row['parent_id'];
 
         while ($current != null && !in_array($current, $encounteredIds)) {
-            $row = $fl->getParent($current);
+            $row = $fl->findRecordById($current);
 
             $encounteredIds[] = $row['id'];
             $current = $row['parent_id'];
@@ -301,13 +282,13 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     {
         $parentList = [];
         $fl = new self($this->adapter);
-        $row = $fl->getParent($id);
+        $row = $fl->findRecordById($id);
 
         $encounteredIds = [$row['id']];
         $current = $row['parent_id'];
 
         while ($current != null && !in_array($current, $encounteredIds)) {
-            $row = $fl->getParent($current);
+            $row = $fl->findRecordById($current);
 
             $encounteredIds[] = $row['id'];
             $parentList[] = $row;
@@ -496,5 +477,27 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         if ($type == 'parents') {
             return $this->getParentChain($id);
         }
+    }
+
+    /**
+     * Find folder records by limit,offset.
+     *
+     * @param integer $limit  limit the number of records to be fectched
+     * @param integer $offset specify the offset to start fetching records
+     *
+     * @return Paginator $paginatorAdapter folder records as paginator
+     */
+    public function getFolderRecordsByLimitOffset($limit, $offset)
+    {
+        $callback = function ($select) use ($limit, $offset) {
+            $select->limit($limit)->offset($offset);
+        };
+        $rows = $this->select($callback)->toArray();
+
+        $arrayAdapter = new ArrayAdapter($rows);
+
+        $paginator = new Paginator($arrayAdapter);
+
+        return $paginator;
     }
 }
