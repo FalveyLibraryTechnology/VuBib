@@ -57,7 +57,6 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function __construct($adapter)
     {
-        $this->setTableName('folder');
         parent::__construct('folder', $adapter);
     }
 
