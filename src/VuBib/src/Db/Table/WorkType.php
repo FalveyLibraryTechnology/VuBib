@@ -56,7 +56,7 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
      */
     public function __construct($adapter)
     {
-        $this->setTableName('worktype', 'type');
+        $this->setDefaultTranslationColumn('type');
         parent::__construct('worktype', $adapter);
     }
 

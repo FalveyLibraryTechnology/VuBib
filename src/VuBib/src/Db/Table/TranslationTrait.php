@@ -40,7 +40,7 @@ trait TranslationTrait
 {
     protected $fallbackColumn = '';
 
-    protected function setTableName($table, $fbCol = 'text_fr')
+    protected function setDefaultTranslationColumn($fbCol = 'text_fr')
     {
         $this->fallbackColumn = $fbCol;
     }
