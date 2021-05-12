@@ -160,6 +160,17 @@ tr[name="pub_row[]"] td:first-of-type {
   min-width: auto;
 }
 
+.ui-sortable-handle {
+  padding-left: 1rem;
+  border: 1px solid #adb5bd;
+  background-color: #ced4da;
+  background-image: linear-gradient(to bottom, #e9ecef, #dee2e6, #ced4da);
+  cursor: pointer;
+}
+.ui-sortable-placeholder {
+  box-shadow: 0 0.25rem 1rem rgba(0,0,0,0.15);
+}
+
 /* Autocomplete selector */
 .ac-item[disabled],
 .ac-item[disabled] small {
