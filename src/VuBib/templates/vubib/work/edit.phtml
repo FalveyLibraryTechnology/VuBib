@@ -10,137 +10,14 @@
     //get user
     $user = $this->isUser()->getUser();
 ?>
+
 <script>
 var ur = "";
 var workURL = '<?=$this->url('get_work_details')?>';
 var sattrURL = '<?=$this->url('edit_subattribute_values')?>';
 // var sattrURL = '<?=$this->url('edit_option')?>';
+</script>
 
-$(document).ready(function() {
-    function removeByName(name) {
-        return function() {
-            if ($('input[name="' + name + '[]"]:checked').length > 0) {
-                $.each($('input[name="' + name + '[]"]:checked'), function () {
-                    $('input[name="' + name + '[]"]:checked').closest("td").parent("tr").remove();
-                });
-                return false;
-            } else {
-                alert("No row(s) selected, Please select row(s) to remove.");
-                return false;
-            }
-        }
-    }
-    // Publisher
-    // make template
-    var templatePubRow = $('.pub_row').eq(0).clone(true);
-    templatePubRow.find("input, select").val("");
-    templatePubRow.find(".pub-locations").html("");
-    // bind autocomplete
-    bindPublisherAutocomplete();
-    // add publisher rows
-    function addPublisherRow() {
-        var pub_row = templatePubRow.clone();
-        $("#pub_table tbody").append(pub_row);
-        bindPublisherAutocomplete();
-        return false;
-    }
-    $("#pub_add").click(addPublisherRow);
-    if ($('.pub_row .acs-editing').length === 0) {
-        addPublisherRow();
-    }
-    // remove publisher rows
-    $("#pub_remove").on('click', removeByName("removePublisher"));
-
-    // Agent
-    // make template
-    var templateAgentRow = $(".agent-row").eq(0).clone(true);
-    templateAgentRow.find("input, select").val("").removeAttr("checked");
-    templateAgentRow.find("option").removeAttr("selected");
-    templateAgentRow.find(".agent-fname,.agent-alternate_name,.agent-organization_name").html("");
-    // bind autocomplete
-    bindAgentAutocomplete();
-
-    //add agent rows
-    function addAgentRow() {
-        var agent_row = templateAgentRow.clone();
-        $("#agent_table").append(agent_row);
-        bindAgentAutocomplete();
-        return false;
-    }
-    $("#agent_add").click(addAgentRow);
-    // addAgentRow();
-
-    //remove agent rows
-    $("#agent_remove").on('click', removeByName("removeAgent"));
-
-    //get attributes for selected worktypes
-    $('#work_type', document).on('change', function() {
-        bindWorkTypeAttributes(document, workURL, sattrURL);
-    });
-
-    //classification
-    //add classification rows
-    var templateFolderTemplate = $($("#template-fl-row").html()).clone(true);
-    var classificationRowIndex = 0;
-    function addClassificationRow() {
-        var fl_row = templateFolderTemplate.clone();
-        fl_row.data("source-row", classificationRowIndex++);
-        $("#source_fl_table").append(fl_row);
-        fl_row
-            .find(".select_source_fl")
-            .on('change', function() {
-                console.log("add bind");
-                bindClassification(this, workURL, 'source');
-                return false;
-            });
-        return false;
-    }
-
-    // Bind existing classifications
-    $('table[name="source_fl_table"]')
-        .find(".select_source_fl")
-        .on('change', function() {
-                console.log("init bind");
-            bindClassification(this, workURL, 'source');
-            return false;
-        });
-
-    $("#fl_add").on('click', addClassificationRow);
-    addClassificationRow();
-
-    //remove classification rows
-    $('#fl_remove').on('click', removeByName("removeFolder"));
-
-    //Parent Lookup
-    $('#parentLookup_modal').on('shown.bs.modal', function() {
-        bindParentWork(document, workURL);
-        return false;
-    });
-
-    $('#submit_save').on('click', function() {
-        $('#General').find('input:required').each(function() {
-            // Find the tab-pane that this element is inside, and get the id
-            var $closest = $(this).closest('.tab-pane');
-            var id = $closest.attr('id');
-            // Find the link that corresponds to the pane and have it show
-            $('.nav a[href="#' + id + '"]').tab('show');
-
-            // Only want to do it once
-            return false;
-        });
-
-        $("tr", "#source_fl_table").each(function() {
-            const values = $('.select_source_fl', this).map(function() {
-                return $(this).val();
-            }).get();
-            var newInput = $('<input type="hidden" name="classification_row[]" value="">');
-            newInput.val(values);
-            $("#work-data-form").append(newInput);
-        });
-        return true;
-    });
-});
- </script>
 <form id="work-data-form" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?><?=isset($this->action) ? '?action=' . $this->action : '' ?>">
     <input type="hidden" name="id" value="<?=$this->work['id'] ?? 'NEW' ?>">
     <input type="hidden" name="action" value="<?=$this->formAction ?>">
@@ -467,3 +344,130 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    function removeByName(name) {
+        return function() {
+            if ($('input[name="' + name + '[]"]:checked').length > 0) {
+                $.each($('input[name="' + name + '[]"]:checked'), function () {
+                    $('input[name="' + name + '[]"]:checked').closest("td").parent("tr").remove();
+                });
+                return false;
+            } else {
+                alert("No row(s) selected, Please select row(s) to remove.");
+                return false;
+            }
+        }
+    }
+    // Publisher
+    // make template
+    var templatePubRow = $('.pub_row').eq(0).clone(true);
+    templatePubRow.find("input, select").val("");
+    templatePubRow.find(".pub-locations").html("");
+    // bind autocomplete
+    bindPublisherAutocomplete();
+    // add publisher rows
+    function addPublisherRow() {
+        var pub_row = templatePubRow.clone();
+        $("#pub_table tbody").append(pub_row);
+        bindPublisherAutocomplete();
+        return false;
+    }
+    $("#pub_add").click(addPublisherRow);
+    if ($('.pub_row .acs-editing').length === 0) {
+        addPublisherRow();
+    }
+    // remove publisher rows
+    $("#pub_remove").on('click', removeByName("removePublisher"));
+
+    // Agent
+    // make template
+    var templateAgentRow = $(".agent-row").eq(0).clone(true);
+    templateAgentRow.find("input, select").val("").removeAttr("checked");
+    templateAgentRow.find("option").removeAttr("selected");
+    templateAgentRow.find(".agent-fname,.agent-alternate_name,.agent-organization_name").html("");
+    // bind autocomplete
+    bindAgentAutocomplete();
+
+    //add agent rows
+    function addAgentRow() {
+        var agent_row = templateAgentRow.clone();
+        $("#agent_table").append(agent_row);
+        bindAgentAutocomplete();
+        return false;
+    }
+    $("#agent_add").click(addAgentRow);
+    // addAgentRow();
+
+    //remove agent rows
+    $("#agent_remove").on('click', removeByName("removeAgent"));
+
+    //get attributes for selected worktypes
+    $('#work_type', document).on('change', function() {
+        bindWorkTypeAttributes(document, workURL, sattrURL);
+    });
+
+    //classification
+    //add classification rows
+    var templateFolderTemplate = $($("#template-fl-row").html()).clone(true);
+    var classificationRowIndex = 0;
+    function addClassificationRow() {
+        var fl_row = templateFolderTemplate.clone();
+        fl_row.data("source-row", classificationRowIndex++);
+        $("#source_fl_table").append(fl_row);
+        fl_row
+            .find(".select_source_fl")
+            .on('change', function() {
+                console.log("add bind");
+                bindClassification(this, workURL, 'source');
+                return false;
+            });
+        return false;
+    }
+
+    // Bind existing classifications
+    $('table[name="source_fl_table"]')
+        .find(".select_source_fl")
+        .on('change', function() {
+                console.log("init bind");
+            bindClassification(this, workURL, 'source');
+            return false;
+        });
+
+    $("#fl_add").on('click', addClassificationRow);
+    addClassificationRow();
+
+    //remove classification rows
+    $('#fl_remove').on('click', removeByName("removeFolder"));
+
+    //Parent Lookup
+    $('#parentLookup_modal').on('shown.bs.modal', function() {
+        bindParentWork(document, workURL);
+        return false;
+    });
+
+    $('#submit_save').on('click', function() {
+        $('#General').find('input:required').each(function() {
+            // Find the tab-pane that this element is inside, and get the id
+            var $closest = $(this).closest('.tab-pane');
+            var id = $closest.attr('id');
+            // Find the link that corresponds to the pane and have it show
+            $('.nav a[href="#' + id + '"]').tab('show');
+
+            // Only want to do it once
+            return false;
+        });
+
+        $("tr", "#source_fl_table").each(function() {
+            const values = $('.select_source_fl', this).map(function() {
+                return $(this).val();
+            }).get();
+            var newInput = $('<input type="hidden" name="classification_row[]" value="">');
+            newInput.val(values);
+            $("#work-data-form").append(newInput);
+        });
+        return true;
+    });
+});
+ </script>
