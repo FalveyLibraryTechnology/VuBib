@@ -75,9 +75,6 @@ var sattrURL = '<?=$this->url('edit_subattribute_values')?>';
                             <option value="<?=$workType['id'] ?>"<?=($workType['id'] == $this->work['type_id']) ? ' selected' : '' ?>><?=$workType['text_fr'] ?? $workType['text_en'] ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if (!empty($this->work['type_id'])): ?>
-                        <script>bindWorkTypeAttributes(document, workURL, sattrURL);</script>
-                    <?php endif; ?>
                 </div>
             </div>
             <div class="form-group">
@@ -238,22 +235,21 @@ var sattrURL = '<?=$this->url('edit_subattribute_values')?>';
             </tbody>
             </table>
         </div>
+        <div class="tab-pane" id="Citation">
+            <p>Select a Work Type under General</p>
+            <?php if (!empty($this->work['type_id'])): ?>
+                <script>bindWorkTypeAttributes(document, workURL, sattrURL);</script>
+            <?php endif; ?>
+        </div>
         <?php
             if (!isset($this->citationTypes) || empty($this->citationTypes)) {
                 $this->citationTypes = [];
             }
         ?>
-        <?php // Pass citations to JS
-            foreach ($this->citationTypes as $type) {
-                if (isset($this->citations[$type['id']])): ?>
-                    <?php $cite = $this->citations[$type['id']]; ?>
-                    <input type="hidden" id="work-citation-<?=$type['id'] ?>" value="<?=$cite['value'] ?>" <?php if (isset($cite['title'])): ?> title="<?=$cite['title'] ?>"<?php endif; ?> />
-                <?php endif;
-            }
-        ?>
-        <div class="tab-pane" id="Citation">
-            <p>Select a Work Type under General</p>
-        </div>
+        <?php // Pass citations to JS ?>
+        <?php foreach ($this->citations as $type => $cite): ?>
+            <input type="hidden" id="work-citation-<?=$type ?>" value="<?=$cite['value'] ?>"<?php if (isset($cite['title'])): ?> title="<?=$cite['title'] ?>"<?php endif; ?> />
+        <?php endforeach; ?>
     </div>
     <!-- Submit buttons -->
     <div class="form-group">
