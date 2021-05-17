@@ -329,16 +329,23 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
             $("#Citation").html("");
             $.each(data.worktype_attribute, function(key, val) {
                 const valEl = document.getElementById("work-citation-" + val.id);
-                const setValue = valEl ? valEl.value : "";
+                const set = valEl
+                    ? (key) => valEl.getAttribute(key)
+                    : (key) => "";
                 // append input control at end of form
-                if (
-                    val.type == 'Textarea' ||
-                    val.type == 'Text'
-                ) {
+                if (val.type == 'Text') {
                     $('<div class="form-group required">' +
                           '<label class="control-label col-sm-2">' + val.field + ':</label>' +
                           '<div class="col-sm-10">' +
-                              '<input class="form-control" type="text" name="wkatid,' + val.id + '" id="' + val.field + '" value="' + setValue + '" size="50"/>' +
+                              '<input class="form-control" type="text" name="wkatid,' + val.id + '" id="' + val.field + '" value="' + set("value") + '" size="50"/>' +
+                          '</div>' +
+                      '</div>').appendTo("#Citation");
+                }
+                if (val.type == 'Textarea') {
+                    $('<div class="form-group required">' +
+                          '<label class="control-label col-sm-2">' + val.field + ':</label>' +
+                          '<div class="col-sm-10">' +
+                              '<textarea class="form-control" name="wkatid,' + val.id + '" id="' + val.field + '" rows="4"/>' + set("value") + "</textarea>" +
                           '</div>' +
                       '</div>').appendTo("#Citation");
                 }
@@ -361,8 +368,8 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                         '</div>' +
                         '<div class="col-sm-10">' +
                           '<div class="attribute-ac">' +
-                            '<input class="acs-hidden" type="hidden" name="wkatid,' + val.id + '" value="' + setValue + '"/>' +
-                            '<input class="form-control acs-input" id="' + val.field + ':' + val.id + '" type="text" value="' + (valEl ? valEl.title : "") + '" placeholder="Type to search"/>' +
+                            '<input class="acs-hidden" type="hidden" name="wkatid,' + val.id + '" value="' + set("value") + '"/>' +
+                            '<input class="form-control acs-input" id="' + val.field + ':' + val.id + '" type="text" value="' + set("title") + '" placeholder="Type to search"/>' +
                           '</div>' +
                         '</div>' +
                       '</div>').appendTo("#Citation");

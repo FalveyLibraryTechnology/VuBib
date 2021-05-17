@@ -246,6 +246,9 @@ class EditWorkAction implements MiddlewareInterface
         $citations = $table->findRecordByWorkId($workId);
         $citationMap = [];
         foreach ($citations as $cite) {
+            if (empty($cite['value'])) {
+                continue;
+            }
             if (isset($get_type_title[$cite['workattribute_id']])) {
                 $option = $optionTable->findRecordById($cite['value']);
                 $cite['title'] = $option['title'];
