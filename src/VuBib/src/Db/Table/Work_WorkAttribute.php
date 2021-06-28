@@ -247,7 +247,7 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $row
      */
-    public function getAttributeValue($wk_id, $attribute)
+    public function getAttributeValue($wk_id, $attribute, $detailed = false)
     {
         $wa = new WorkAttribute($this->adapter);
         $wa_row = $wa->getAttributeRecord($attribute);
@@ -263,10 +263,18 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
             if (isset($wk_wkat_row['value']) && $wk_wkat_row['value'] != '') {
                 $wa_opt = new WorkAttribute_Option($this->adapter);
                 $wa_opt_row = $wa_opt->findRecordById($wk_wkat_row['value']);
-                return $wa_opt_row['title'];
+                if ($detailed) {
+                    $subTable = new Attribute_Option_SubAttribute($this->adapter);
+                    $sub = $subTable->findRecordByOption($wa_opt_row['id'], null, true);
+                    return ['type' => 'Select', 'raw' => $wa_opt_row, 'sub_attribs' => $sub, 'display' => $wa_opt_row['title']];
+                } else {
+                    return  $wa_opt_row['title'];
+                }
             }
         } else {
-            return $wk_wkat_row['value'];
+            return $detailed
+                ? ['type' => $wa_row['type'], 'raw' => $wk_wkat_row, 'sub_attribs' => [], 'display' => $wk_wkat_row['value']]
+                : $wk_wkat_row['value'];
         }
     }
 

@@ -62,12 +62,19 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $row sub atrribute
      */
-    public function findRecordByOption($opt_id, $subattr_id)
+    public function findRecordByOption($opt_id, $subattr_id, $includeNames = false)
     {
-        $rowset = $this->select(
-            ['subattribute_id' => $subattr_id,
-            'option_id' => $opt_id]
-        );
+        $callback = function ($select) use ($opt_id, $subattr_id, $includeNames) {
+            $select->where->equalTo('option_id', $opt_id);
+            if (null !== $subattr_id) {
+                $select->where->equalTo('subattribute_id', $subattr_id);
+            }
+            if ($includeNames) {
+                $select->join(['ws' => 'workattribute_subattribute'], 'ws.id = attribute_option_subattribute.subattribute_id');
+            }
+        };
+
+        $rowset = $this->select($callback);
         //$row = $rowset->current();
 
         //return $row;
