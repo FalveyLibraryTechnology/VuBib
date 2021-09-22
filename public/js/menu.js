@@ -65,7 +65,7 @@ $('.items a').on('click', function() {
 });
 
 // Autocomplete selector
-const ascAC = new Autocomplete();
+const ascAC = new Autocomplete({ limit: false });
 function acsStandardData(key) {
   return function(input) {
     let data = {};
