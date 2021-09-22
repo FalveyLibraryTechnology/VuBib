@@ -142,7 +142,10 @@ function Autocomplete(_settings) {
 
   function _searchCallback(items, input) {
     // Render
-    if (items.length > settings.limit) {
+    if (
+      settings.limit !== false &&
+      items.length > settings.limit
+    ) {
       items = items.slice(0, settings.limit);
     }
     const listEls = items.map(item => _renderItem(item, input));

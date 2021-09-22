@@ -270,6 +270,45 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         // Split on comma
         $lname = preg_split('/\s*,\s*/', $query)[0];
 
+        // Split by space, drop first
+        list($partLast, $partFilter) = preg_split('/\s+/', $query, 2);
+        $partFilter = mb_strtolower($partFilter);
+
+        // Like last name search
+        $likeLastName = function ($select) use ($partLast) {
+            $select->where->like(
+                new Expression('LOWER(lname)'),
+                '%' . mb_strtolower($partLast) . '%'
+            );
+        };
+
+        $ret = $this->select($likeLastName)->toArray();
+
+        if (!empty($partFilter)) {
+            $filteredRet = [];
+            foreach ($ret as $agent) {
+                $fname = mb_strtolower(
+                    $agent['fname'] . ' ' .
+                    $agent['alternate_name'] . ' ' .
+                    $agent['organization_name']
+                );
+                if (empty($fname)) {
+                    $filteredRet[] = $agent;
+                } elseif (strpos($fname, $partFilter) !== false) {
+                    array_unshift($filteredRet, $agent);
+                }
+            }
+            return $filteredRet;
+        }
+
+        return $ret;
+
+        // return array_slice($ret, 0, 20); // limit results
+
+        /**
+         * Unused more specific searches
+         */
+        /*
         // Simple last name search
         $prefixLastName = function ($select) use ($lname) {
             $select->where->like(
@@ -277,17 +316,6 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
                 mb_strtolower($lname) . '%'
             );
         };
-
-        // Like last name search
-        $likeLastName = function ($select) use ($lname) {
-            $select->where->like(
-                new Expression('LOWER(lname)'),
-                '%' . mb_strtolower($lname) . '%'
-            );
-        };
-
-        // Split by space, drop first
-        $space_lname = implode(' ', array_slice(preg_split('/\s+/', $query), 1));
 
         // Simple last name search
         $spacePrefixLastName = function ($select) use ($space_lname) {
@@ -305,23 +333,22 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
             );
         };
 
-
-
-        $ret = $this->select($likeLastName)->toArray();
         if (count($ret) < 5) {
-            // $rows = $this->select($likeLastName)->toArray();
-            // $ret = $this->unique_by_key(array_merge($ret, $rows));
+            $rows = $this->select($likeLastName)->toArray();
+            $ret = $this->unique_by_key(array_merge($ret, $rows));
         }
         if (count($ret) < 5) {
-            // $rows = $this->select($spacePrefixLastName)->toArray();
-            // $ret = $this->unique_by_key(array_merge($ret, $rows));
+            $rows = $this->select($spacePrefixLastName)->toArray();
+            $ret = $this->unique_by_key(array_merge($ret, $rows));
         }
         if (count($ret) < 5) {
-            // $rows = $this->select($spaceLikeLastName)->toArray();
-            // $ret = $this->unique_by_key(array_merge($ret, $rows));
+            $rows = $this->select($spaceLikeLastName)->toArray();
+            $ret = $this->unique_by_key(array_merge($ret, $rows));
         }
-        return array_slice($ret, 0, 20); // limit results
+         */
 
+        /*
+        // Legacy
         $parts = preg_split("/[\s,]+/", $query);
         $first = $parts[0];
         $c = count($parts);
@@ -352,6 +379,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         };
         return $this->select($callback)->toArray();
         return $rows;
+        */
     }
 
     /**

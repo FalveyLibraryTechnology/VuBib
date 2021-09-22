@@ -201,28 +201,27 @@ function bindAgentAutocomplete() {
       return { autofor: "agent", term: input.value };
     },
     function ajaxSuccess(data, callback, input) {
-      if(!data.length){
-        lastInput = input;
-        input.addEventListener("ac-select", function clickAddNewAgent(e) {
-          if (
-            typeof e.detail._action != "undefined" &&
-            e.detail._action == "showNewAgentModal"
-          ) {
-            showNewAgentModal(e);
-          }
-        }, { once: true });
-        callback([
-          { text: "no matches", _disabled: true },
-          { text: "Add New Agent", _action: "showNewAgentModal" }
-        ]);
-      } else {
-        // TODO: Add new
-        callback($.map(data, function (item) {
+      lastInput = input;
+      let results = [{ text: "no matches", _disabled: true }];
+      if (data.length > 0) {
+        results = $.map(data, function (item) {
           item.text = item.lname + ", " + item.fname;
           item.value = item.lname;
           return item;
-        }));
+        });
       }
+
+      results.push({ text: "<i>Add New Agent</i>", value: input.value, _action: "showNewAgentModal" });
+      input.addEventListener("ac-select", function clickAddNewAgent(e) {
+        if (
+          typeof e.detail._action != "undefined" &&
+          e.detail._action == "showNewAgentModal"
+        ) {
+          showNewAgentModal(e);
+        }
+      }, { once: true });
+
+      callback(results);
     }
   ).forEach(function bindLocationSelect(acs) {
     acs.classList.remove("acs-unset");
@@ -637,7 +636,7 @@ function bindParentWorkAutocomplete() {
     function parentWorkACSuccess(prnt_lookup, callback, input) {
       input.classList.remove("ac-no-results");
       callback(
-        prnt_lookup.slice(0, 20).map(x => ({
+        prnt_lookup.map(x => ({
           id: x.id,
           text: x.title,
           sub: x.type
