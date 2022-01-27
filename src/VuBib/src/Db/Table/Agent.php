@@ -276,6 +276,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
 
         // Like last name search
         $likeLastName = function ($select) use ($partLast) {
+            $select->order(['lname ASC', 'fname ASC']);
             $select->where->like(
                 new Expression('LOWER(lname)'),
                 '%' . mb_strtolower($partLast) . '%'
@@ -283,11 +284,12 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         };
 
         $ret = $this->select($likeLastName)->toArray();
-
         if (!empty($partFilter)) {
             $filteredRet = [];
+            $unfilteredRet = [];
             foreach ($ret as $agent) {
                 $fname = mb_strtolower(
+                    $agent['lname'] . ' ' .
                     $agent['fname'] . ' ' .
                     $agent['alternate_name'] . ' ' .
                     $agent['organization_name']
@@ -296,9 +298,11 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
                     $filteredRet[] = $agent;
                 } elseif (strpos($fname, $partFilter) !== false) {
                     array_unshift($filteredRet, $agent);
+                } else {
+                    $unfilteredRet[] = $agent;
                 }
             }
-            return $filteredRet;
+            return array_merge($filteredRet, $unfilteredRet);
         }
 
         return $ret;
