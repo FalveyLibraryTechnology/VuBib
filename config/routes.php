@@ -34,5 +34,4 @@ use Zend\Expressive\MiddlewareFactory;
  */
 return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
     /* autoload/routes.global.php */
-    $app->get('/zend', App\Handler\HomePageHandler::class, 'reference');
 };
