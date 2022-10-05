@@ -42,7 +42,7 @@
         "forum": "https://discourse.zendframework.com/c/questions/expressive"
     },
     "require": {
-        "php": "^7.1",
+        "php": "^7.1 || ^8.0",
         "guidofaecke/blast-base-url": "^2.0",
         "sandrokeil/interop-config": "^2.1",
         "shrikeh/teapot": "^2.3",
