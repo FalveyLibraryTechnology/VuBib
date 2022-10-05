@@ -5,8 +5,6 @@ use Mezzio\Helper;
 return [
     'dependencies' => [
         'factories' => [
-            //new
-            Blast\BaseUrl\BaseUrlMiddleware::class => Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
             VuBib\FormHelpersMiddleware::class => VuBib\FormHelpersMiddlewareFactory::class,
@@ -46,7 +44,6 @@ return [
                 // - pre-conditions
                 // - modifications to outgoing responses
                 Helper\ServerUrlMiddleware::class,
-                //new
                 Blast\BaseUrl\BaseUrlMiddleware::class,
             ],
             'priority' => 10000,

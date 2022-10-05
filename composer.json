@@ -39,7 +39,7 @@
     },
     "require": {
         "php": "^7.1",
-        "mtymek/blast-base-url": "^1.0",
+        "guidofaecke/blast-base-url": "^2.0",
         "sandrokeil/interop-config": "^2.1",
         "shrikeh/teapot": "^2.3",
         "slim/flash": "^0.4.0",

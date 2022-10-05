@@ -13,9 +13,6 @@ return [
         // not require arguments to the constructor. Map a service name to the
         // class name.
         'invokables' => [
-            //new
-            Blast\BaseUrl\BasePathHelper::class => Blast\BaseUrl\BasePathHelper::class,
-
             // Fully\Qualified\InterfaceName::class => Fully\Qualified\ClassName::class,
             Helper\ServerUrlHelper::class => Helper\ServerUrlHelper::class,
         ],
