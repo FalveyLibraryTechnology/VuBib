@@ -16,7 +16,11 @@
         "mezzio"
     ],
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "laminas/laminas-component-installer": true,
+            "laminas/laminas-dependency-plugin": true
+        }
     },
     "extra": {
         "laminas": {
