@@ -70,7 +70,7 @@ if ($id !== null)
             $paginator = $table->displayRanks($id);
             $paginator->setDefaultItemCountPerPage(20);
             $allItems = $paginator->getTotalItemCount();
-            $escaper = new Zend\Escaper\Escaper('utf-8');
+            $escaper = new Laminas\Escaper\Escaper('utf-8');
             //if(count($paginator) >= 1) {
             foreach($paginator as $row) :
                 $output = (array)$row;
@@ -83,7 +83,7 @@ if ($id !== null)
 
             <ul id="sortable2" class="list-group connectedSortable">
             <?php
-            $escaper = new Zend\Escaper\Escaper('utf-8');
+            $escaper = new Laminas\Escaper\Escaper('utf-8');
             //display attributes not attached to a work type
             $table = new \VuBib\Db\Table\WorkAttribute($adapter);
             $rows = $table->displayAttributes1($id);
@@ -105,7 +105,7 @@ if ($id !== null)
             <ul id="sortable2" class="list-group connectedSortable">
                 <?php
                 //display attributes not attached to a work type
-                $escaper = new Zend\Escaper\Escaper('utf-8');
+                $escaper = new Laminas\Escaper\Escaper('utf-8');
                 $table = new \VuBib\Db\Table\WorkAttribute($adapter);
                 $rows = $table->displayAttributes();
                 $rows->setDefaultItemCountPerPage(20);

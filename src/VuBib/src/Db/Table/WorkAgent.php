@@ -30,9 +30,9 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Paginator\Adapter\DbSelect;
+use Laminas\Paginator\Paginator;
 
 /**
  * Table Definition for work_agent.
@@ -44,7 +44,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class WorkAgent extends \Zend\Db\TableGateway\TableGateway
+class WorkAgent extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * WorkAgent constructor.

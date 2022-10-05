@@ -3,7 +3,7 @@
     $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '">Classification</a> &gt; Edit';
     $this->layout()->page = "Classification/Edit";
  ?>
-<?php $escaper = new Zend\Escaper\Escaper('utf-8') ?>
+<?php $escaper = new Laminas\Escaper\Escaper('utf-8') ?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {

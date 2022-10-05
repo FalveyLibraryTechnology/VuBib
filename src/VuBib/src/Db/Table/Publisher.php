@@ -30,10 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Expression;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
+use Laminas\Paginator\Adapter\DbSelect;
+use Laminas\Paginator\Paginator;
 
 /**
  * Table Definition for publisher.
@@ -45,7 +45,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class Publisher extends \Zend\Db\TableGateway\TableGateway
+class Publisher extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * Publisher constructor.
@@ -101,7 +101,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecords($name)
     {
-        //$escaper = new \Zend\Escaper\Escaper('utf-8');
+        //$escaper = new \Laminas\Escaper\Escaper('utf-8');
         $select = $this->sql->select();
         $select->where->like(
             new Expression('LOWER(name)'),
@@ -234,8 +234,8 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
     {
         $callback = function ($select) use ($query) {
             $select->columns([
-                'id' => new \Zend\Db\Sql\Expression('MIN(publisher.id)'),
-                'name' => new \Zend\Db\Sql\Expression('MIN(publisher.name)')
+                'id' => new \Laminas\Db\Sql\Expression('MIN(publisher.id)'),
+                'name' => new \Laminas\Db\Sql\Expression('MIN(publisher.name)')
             ])
                 ->where->like(
                     new Expression('LOWER(name)'),
@@ -245,7 +245,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
             $select->join(
                 'work_publisher',
                 'publisher.id = work_publisher.publisher_id',
-                ['work_count' => new \Zend\Db\Sql\Expression('IFNULL(COUNT(work_id),0)')],
+                ['work_count' => new \Laminas\Db\Sql\Expression('IFNULL(COUNT(work_id),0)')],
                 'left'
             );
             $select->group('publisher.id');

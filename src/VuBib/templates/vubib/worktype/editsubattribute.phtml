@@ -19,7 +19,7 @@ if ($request->getqueryParams('id') !== null) {
     $attribute = $attr_row['field'];
 }
 ?>
-<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+<?php $escaper = new Laminas\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
 <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p>
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_subattributes')?>">

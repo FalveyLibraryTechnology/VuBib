@@ -59,7 +59,7 @@ if ($request->getqueryParams() != null) {
         </tr>
         </thead>
         <tbody>
-        <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+        <?php $escaper = new Laminas\Escaper\Escaper('utf-8'); ?>
         <?php foreach($this->rows as $row) : ?>
         <tr>
         <td class="title">

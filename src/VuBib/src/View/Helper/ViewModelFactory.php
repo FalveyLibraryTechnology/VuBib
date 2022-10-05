@@ -27,7 +27,7 @@
  */
 namespace VuBib\View\Helper;
 
-use Zend\View\Helper\ViewModel;
+use Laminas\View\Helper\ViewModel;
 
 /**
  * Class Definition for View Model Factory.
@@ -44,12 +44,12 @@ class ViewModelFactory
     /**
      * Set Model
      *
-     * @return Zend\View\Model $model
+     * @return Laminas\View\Model $model
      */
     public function __invoke()
     {
         $model = new ViewModel();
-        $model->setRoot(new \Zend\View\Model\ViewModel());
+        $model->setRoot(new \Laminas\View\Model\ViewModel());
 
         return $model;
     }

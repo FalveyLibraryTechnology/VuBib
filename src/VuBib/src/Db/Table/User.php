@@ -42,10 +42,10 @@ use Interop\Container\ContainerInterface;
  *
  * @link https://
  */
-class User extends \Zend\Db\TableGateway\TableGateway
+class User extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
-     * Zend\Session
+     * Laminas\Session
      *
      * @var $session
      */
@@ -60,7 +60,7 @@ class User extends \Zend\Db\TableGateway\TableGateway
      */
     public function __invoke(ContainerInterface $container)
     {
-        $this->session = $container->get(\Zend\Session\Container::class);
+        $this->session = $container->get(\Laminas\Session\Container::class);
     }
 
     /**

@@ -28,8 +28,8 @@
 namespace VuBib\Action;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Mezzio\Router\RouterInterface;
+use Mezzio\Template\TemplateRendererInterface;
 
 /**
  * Class Definition for HomePageFactory.

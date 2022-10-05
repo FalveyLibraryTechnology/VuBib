@@ -37,7 +37,7 @@ namespace VuBib\View\Helper;
  *
  * @link https://
  */
-class SanitizeHtml extends \Zend\View\Helper\AbstractHelper
+class SanitizeHtml extends \Laminas\View\Helper\AbstractHelper
 {
     /**
      * Transforms to be performed in order

@@ -30,12 +30,12 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Expression;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Paginator\Adapter\ArrayAdapter;
+use Laminas\Paginator\Adapter\DbSelect;
+use Laminas\Paginator\Paginator;
 
 /**
  * Table Definition for folder.
@@ -47,7 +47,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class Folder extends \Zend\Db\TableGateway\TableGateway
+class Folder extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * Folder constructor.
@@ -87,7 +87,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             $select->where('parent_id IS NULL');
         };
         $row = $this->select($callback)->toArray();
-        $escaper = new \Zend\Escaper\Escaper('utf-8');
+        $escaper = new \Laminas\Escaper\Escaper('utf-8');
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename=test_export.csv');
         $file = fopen('php://output', 'w') or die('Unable to open file!');
@@ -115,7 +115,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     public function getDepth($id, $file, $content)
     {
         $fl = new self($this->adapter);
-        $escaper = new \Zend\Escaper\Escaper('utf-8');
+        $escaper = new \Laminas\Escaper\Escaper('utf-8');
         $con = $content;
         $current_parent_id = $id;
         $callback = function ($select) use ($current_parent_id) {

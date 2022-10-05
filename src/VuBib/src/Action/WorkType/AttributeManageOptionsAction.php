@@ -34,10 +34,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 use VuBib\Db\Table\Work_WorkAttribute;
 use VuBib\Db\Table\Attribute_Option_SubAttribute;
 use VuBib\Db\Table\WorkAttribute_Option;
-use Zend\Db\Adapter\Adapter;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Mezzio\Router;
+use Mezzio\Template;
 
 /**
  * Class Definition for AttributeManageOptionsAction.
@@ -66,7 +66,7 @@ class AttributeManageOptionsAction implements MiddlewareInterface
     protected $template;
 
     /**
-     * Zend\Db\Adapter\Adapter
+     * Laminas\Db\Adapter\Adapter
      *
      * @var $adapter
      */

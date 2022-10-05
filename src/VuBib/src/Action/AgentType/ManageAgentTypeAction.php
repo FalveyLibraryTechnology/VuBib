@@ -31,11 +31,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
-use Zend\Paginator\Paginator;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Mezzio\Router;
+use Mezzio\Template;
+use Laminas\Paginator\Paginator;
 
 /**
  * Class Definition for ManageAgentTypeAction.
@@ -64,7 +64,7 @@ class ManageAgentTypeAction implements MiddlewareInterface
     protected $template;
 
     /**
-     * Zend\Db\Adapter\Adapter
+     * Laminas\Db\Adapter\Adapter
      *
      * @var $adapter
      */
@@ -152,14 +152,14 @@ class ManageAgentTypeAction implements MiddlewareInterface
                 $table = new \VuBib\Db\Table\AgentType($this->adapter);
 
                 return new Paginator(
-                    new \Zend\Paginator\Adapter\DbTableGateway($table)
+                    new \Laminas\Paginator\Adapter\DbTableGateway($table)
                 );
             }
         }
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\AgentType($this->adapter);
         return new Paginator(
-            new \Zend\Paginator\Adapter\DbTableGateway($table, null, 'type')
+            new \Laminas\Paginator\Adapter\DbTableGateway($table, null, 'type')
         );
     }
 

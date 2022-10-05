@@ -30,10 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Expression;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
+use Laminas\Paginator\Adapter\DbSelect;
+use Laminas\Paginator\Paginator;
 
 /**
  * Table Definition for work_folder.
@@ -45,7 +45,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class Work_Folder extends \Zend\Db\TableGateway\TableGateway
+class Work_Folder extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * Work_Folder constructor.

@@ -31,12 +31,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
-use Zend\Paginator\Paginator;
-use Zend\Session;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Mezzio\Router;
+use Mezzio\Template;
+use Laminas\Paginator\Paginator;
+use Laminas\Session;
 
 /**
  * Class Definition for ManageWorkAction.
@@ -65,14 +65,14 @@ class EditWorkAction implements MiddlewareInterface
     protected $template;
 
     /**
-     * Zend\Db\Adapter\Adapter
+     * Laminas\Db\Adapter\Adapter
      *
      * @var $this->adapter
      */
     protected $adapter;
 
     /**
-     * Zend\Session\Container
+     * Laminas\Session\Container
      *
      * @var $this->session
      */
@@ -125,7 +125,7 @@ class EditWorkAction implements MiddlewareInterface
             $params['adapter'] = $this->adapter;
         }
         // TODO: Remove
-        $params['escaper'] = new \Zend\Escaper\Escaper('utf-8');
+        $params['escaper'] = new \Laminas\Escaper\Escaper('utf-8');
 
         return new HtmlResponse(
             $this->template->render($template, $params)

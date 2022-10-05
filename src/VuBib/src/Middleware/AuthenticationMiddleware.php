@@ -33,10 +33,10 @@ use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Teapot\StatusCode\RFC\RFC7231;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Router;
+use Mezzio\Template;
 
 /**
  * Class Definition for Authentication Middleware.
@@ -72,7 +72,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
     private $_basePath;
 
     /**
-     * Zend\Session\Container
+     * Laminas\Session\Container
      *
      * @var $session
      */
@@ -84,7 +84,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @param Router\RouterInterface             $router   for routes
      * @param Template\TemplateRendererInterface $template for templates
      * @param string                             $basePath base url path
-     * @param Zend\Session\Container             $session  zend session
+     * @param Laminas\Session\Container             $session  zend session
      *
      * @return empty
      */

@@ -28,9 +28,9 @@
 namespace VuBib\Action;
 
 use Interop\Container\ContainerInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Laminas\Db\Adapter\Adapter;
+use Mezzio\Router\RouterInterface;
+use Mezzio\Template\TemplateRendererInterface;
 
 /**
  * Class Definition for DefaultPageFactory.

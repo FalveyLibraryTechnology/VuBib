@@ -21,7 +21,7 @@ if ($request->getqueryParams('action') !== null) {
     if (count($subattr_row) > 0){
         $subattr_Id = $subattr_row['id'];
         $subattr = $subattr_row['subattribute'];
-        $escaper = new Zend\Escaper\Escaper('utf-8');
+        $escaper = new Laminas\Escaper\Escaper('utf-8');
     ?>
         <form action="<?=$this->url('delete_subattribute')?><?='?action=delete'?>" method="post">
             <input type="hidden" name="wkat_id" value="<?=$attr_id?>">

@@ -39,17 +39,17 @@ use Interop\Container\ContainerInterface;
  *
  * @link https://
  */
-class IsUser extends \Zend\View\Helper\AbstractHelper
+class IsUser extends \Laminas\View\Helper\AbstractHelper
 {
     /**
-     * Zend\Session\Container
+     * Laminas\Session\Container
      *
      * @var $session
      */
     private $_session;
 
     /**
-     * Zend\Db\Adapter\Adapter
+     * Laminas\Db\Adapter\Adapter
      *
      * @var $adapter
      */
@@ -58,10 +58,10 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
     /**
      * ManageAgentAction constructor.
      *
-     * @param Zend\Db\Adapter\Adapter $adapter for db connection
-     * @param Zend\Session\Container  $session for zend session
+     * @param Laminas\Db\Adapter\Adapter $adapter for db connection
+     * @param Laminas\Session\Container  $session for zend session
      */
-    public function __construct(\Zend\Db\Adapter\Adapter $adapter, $session)
+    public function __construct(\Laminas\Db\Adapter\Adapter $adapter, $session)
     {
         $this->_adapter = $adapter;
         $this->_session = $session;

@@ -33,12 +33,12 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Teapot\StatusCode\RFC\RFC7231;
 use VuBib\Repository\UserAuthenticationInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
-use Zend\Form\Form;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Router;
+use Mezzio\Template;
+use Laminas\Form\Form;
 
 /**
  * Class Definition for LoginPageAction.
@@ -88,7 +88,7 @@ class LoginPageAction implements MiddlewareInterface
     protected $defaultRedirectUri;
 
     /**
-     * Zend\Session\Container
+     * Laminas\Session\Container
      *
      * @var $session
      */

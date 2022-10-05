@@ -42,10 +42,10 @@ use Interop\Container\ContainerInterface;
  *
  * @link https://
  */
-class Module_Access extends \Zend\Db\TableGateway\TableGateway
+class Module_Access extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
-     * Zend\Session\Container
+     * Laminas\Session\Container
      *
      * @var $session
      */
@@ -53,7 +53,7 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
 
     /*public function _invoke(ContainerInterface $container) {
 
-        $this->session = $container->get(\Zend\Session\Container::class);
+        $this->session = $container->get(\Laminas\Session\Container::class);
     }*/
 
     /**
@@ -66,7 +66,7 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
         parent::__construct('module_access', $adapter);
 
         //ContainerInterface $container;
-        $this->session = new \Zend\Session\Container('Bibliography');
+        $this->session = new \Laminas\Session\Container('Bibliography');
     }
 
     /**

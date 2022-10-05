@@ -1,7 +1,7 @@
 <?php
-use Zend\Expressive\Application;
-use Zend\Expressive\Container\ApplicationFactory;
-use Zend\Expressive\Helper;
+use Mezzio\Application;
+use Mezzio\Container\ApplicationFactory;
+use Mezzio\Helper;
 
 return [
 
@@ -27,8 +27,8 @@ return [
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
 
             //new-adapter
-            Zend\Db\Adapter\Adapter::class => Zend\Db\Adapter\AdapterServiceFactory::class,
-            Zend\Session\Container::class => VuBib\Factory\ZendSessionFactory::class,
+            Laminas\Db\Adapter\Adapter::class => Laminas\Db\Adapter\AdapterServiceFactory::class,
+            Laminas\Session\Container::class => VuBib\Factory\ZendSessionFactory::class,
         ],
     ],
 ];

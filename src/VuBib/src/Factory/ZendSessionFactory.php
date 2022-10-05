@@ -42,13 +42,13 @@ class ZendSessionFactory
     /**
      * Set session
      *
-     * @return Zend\Session $session session
+     * @return Laminas\Session $session session
      */
     public function __invoke()
     {
-        $session = new \Zend\Session\Container('Bibliography');
+        $session = new \Laminas\Session\Container('Bibliography');
         $session->setExpirationSeconds(3600);
-        //return new \Zend\Session\Container('Bibliography');
+        //return new \Laminas\Session\Container('Bibliography');
         return $session;
     }
 }

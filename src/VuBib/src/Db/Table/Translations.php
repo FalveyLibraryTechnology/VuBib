@@ -40,7 +40,7 @@ namespace VuBib\Db\Table;
  *
  * @link https://
  */
-class Translations extends \Zend\Db\TableGateway\TableGateway
+class Translations extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * Page_Instructions constructor.

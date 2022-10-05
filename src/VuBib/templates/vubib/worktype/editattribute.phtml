@@ -5,7 +5,7 @@
 ?>
 <?php
     if ($request->getqueryParams('id') !== null) {
-        $escaper = new Zend\Escaper\Escaper('utf-8');
+        $escaper = new Laminas\Escaper\Escaper('utf-8');
         $params = $request->getqueryParams();
         $action = $params['action'];
         $id = $params['id'];
@@ -22,7 +22,7 @@
         $text_it = trim($escaper->escapeHtml($row['text_it'] ?? ''));
     }
 ?>
-<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+<?php $escaper = new Laminas\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
 <form class="form-horizontal" method="post" action="<?=$this->url('attributes_worktype')?>">
     <input type="hidden" name="action" value="<?=trim($action)?>">

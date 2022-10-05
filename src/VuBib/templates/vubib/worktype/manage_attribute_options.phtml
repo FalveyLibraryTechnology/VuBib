@@ -105,7 +105,7 @@ $(document).ready(function () {
         <tbody>
             <?php if($this->countp > 0) { ?>
             <?php
-            $escaper = new Zend\Escaper\Escaper('utf-8');
+            $escaper = new Laminas\Escaper\Escaper('utf-8');
             foreach($this->rows as $row) :
                 $output = (array)$row;
                 $params = implode(', ', $output);

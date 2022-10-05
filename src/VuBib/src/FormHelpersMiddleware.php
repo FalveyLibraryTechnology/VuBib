@@ -27,8 +27,8 @@
  */
 namespace VuBib;
 
-use Zend\Form\View\HelperConfig as FormHelperConfig;
-use Zend\View\HelperPluginManager;
+use Laminas\Form\View\HelperConfig as FormHelperConfig;
+use Laminas\View\HelperPluginManager;
 
 /**
  * Class Definition for Form Helpers Middleware.
