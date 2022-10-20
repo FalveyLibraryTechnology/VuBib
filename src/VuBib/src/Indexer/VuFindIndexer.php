@@ -33,6 +33,8 @@ use Laminas\Paginator\Adapter\DbTableGateway;
 
 class VuFindIndexer
 {
+    use ConsoleWriterTrait;
+
     protected $work;      // database connection
     protected $folder;
     protected $agent;
@@ -69,11 +71,6 @@ class VuFindIndexer
         $this->work_publisher = new WorkPublisher($adapter);
         $this->work_workattribute = new Work_WorkAttribute($adapter);
         //$this->work->whereAdd('status in (1,0)');
-    }
-
-    protected function writeLine($str)
-    {
-        echo "$str\n";
     }
 
     public function getSuccess()
