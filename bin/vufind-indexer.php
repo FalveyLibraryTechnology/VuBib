@@ -11,15 +11,16 @@ use VuBib\Indexer\SolrWriter;
 require __DIR__ . '/../vendor/autoload.php';
 
 if (!isset($argv[1])) {
-    die("Please provide Solr update URL on command line, e.g. 'http://localhost:8983/solr/biblio/update'");
+    die("Please provide Solr update URL on command line, e.g. 'http://localhost:8983/solr/biblio/update'\n");
 }
 $solrUpdateUrl = $argv[1];
+$type = $argv[2] ?? null;
 
 $container = include __DIR__ . '/../config/container.php';
 
 $adapter = $container->get(Adapter::class);
 $writer = new SolrWriter($solrUpdateUrl);
 $indexer = new VuFindIndexer($writer, $adapter);
-$indexer->indexAll();
+$indexer->indexAll($type);
 
 exit(0);

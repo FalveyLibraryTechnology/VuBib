@@ -12,7 +12,7 @@ use VuBib\Indexer\SolrWriter;
 require __DIR__ . '/../vendor/autoload.php';
 
 if (!isset($argv[1])) {
-    die("Please provide Solr update URL on command line, e.g. 'http://localhost:8983/solr/biblio/update'");
+    die("Please provide Solr update URL on command line, e.g. 'http://localhost:8983/solr/biblio/update'\n");
 }
 $solrUpdateUrl = $argv[1];
 $solrQueryUrl = str_replace('/update', '/select', $solrUpdateUrl);
