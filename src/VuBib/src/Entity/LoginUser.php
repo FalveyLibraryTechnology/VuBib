@@ -27,7 +27,7 @@
  */
 namespace VuBib\Entity;
 
-use Zend\Form\Annotation;
+use Laminas\Form\Annotation;
 
 /**
  * Class Definition for user login.
@@ -44,7 +44,7 @@ class LoginUser implements AuthUserInterface
     /**
      * Username
      *
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Laminas\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Validator({"name":"NotEmpty"})
      * @Annotation\Filter({"name":"StripTags"})
@@ -57,7 +57,7 @@ class LoginUser implements AuthUserInterface
     /**
      * Password
      *
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Laminas\Form\Element\Text")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Validator({"name":"NotEmpty"})
      * @Annotation\Filter({"name":"StripTags"})
@@ -72,7 +72,7 @@ class LoginUser implements AuthUserInterface
     /**
      * Zend form submit
      *
-     * @Annotation\Type("Zend\Form\Element\Submit")
+     * @Annotation\Type("Laminas\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit"})
      *
      * @var string

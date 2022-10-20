@@ -40,7 +40,7 @@ namespace VuBib\Db\Table;
  *
  * @link https://
  */
-class Folder_Merge_History extends \Zend\Db\TableGateway\TableGateway
+class Folder_Merge_History extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * Folder_Merge_History constructor.

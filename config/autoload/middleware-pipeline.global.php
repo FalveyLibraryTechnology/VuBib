@@ -1,12 +1,10 @@
 <?php
-use Zend\Expressive\Container\ApplicationFactory;
-use Zend\Expressive\Helper;
+use Mezzio\Container\ApplicationFactory;
+use Mezzio\Helper;
 
 return [
     'dependencies' => [
         'factories' => [
-            //new
-            Blast\BaseUrl\BaseUrlMiddleware::class => Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
             VuBib\FormHelpersMiddleware::class => VuBib\FormHelpersMiddlewareFactory::class,
@@ -46,7 +44,6 @@ return [
                 // - pre-conditions
                 // - modifications to outgoing responses
                 Helper\ServerUrlMiddleware::class,
-                //new
                 Blast\BaseUrl\BaseUrlMiddleware::class,
             ],
             'priority' => 10000,
@@ -55,13 +52,13 @@ return [
         'routing' => [
             'middleware' => [
                 //new-0n 2/22/2017
-                //Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                //Zend\Expressive\Helper\UrlHelperMiddleware::class,
-                //Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+                //Mezzio\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                //Mezzio\Helper\UrlHelperMiddleware::class,
+                //Mezzio\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
 
-                \Zend\Expressive\Router\Middleware\RouteMiddleware::class,
+                \Mezzio\Router\Middleware\RouteMiddleware::class,
                 Helper\UrlHelperMiddleware::class,
-                \Zend\Expressive\Router\Middleware\DispatchMiddleware::class,
+                \Mezzio\Router\Middleware\DispatchMiddleware::class,
                 // Add more middleware here that needs to introspect the routing
                 // results; this might include:
                 // - route-based authentication

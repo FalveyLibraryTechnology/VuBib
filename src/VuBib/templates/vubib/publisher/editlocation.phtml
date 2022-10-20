@@ -26,7 +26,7 @@ if ($request->getqueryParams('id') !== null) {
     $location = $row['location'];
 }
 ?>
-<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+<?php $escaper = new Laminas\Escaper\Escaper('utf-8'); ?>
 
 <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $pub_id . '&count=1' ?>">
     <input type="hidden" name="action" value="<?php echo $action; ?>">

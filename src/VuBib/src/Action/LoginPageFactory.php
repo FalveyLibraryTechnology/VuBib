@@ -32,9 +32,9 @@ use Interop\Config\ConfigurationTrait;
 use Interop\Config\RequiresConfigId;
 use Psr\Container\ContainerInterface;
 use VuBib\Repository\UserAuthenticationInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Laminas\Db\Adapter\Adapter;
+use Mezzio\Router\RouterInterface;
+use Mezzio\Template\TemplateRendererInterface;
 
 /**
  * Class Definition for LoginPageFactory.
@@ -88,7 +88,7 @@ class LoginPageFactory implements RequiresConfigId
             $userRepository,
             //$userEntity,
             $authenticationOptions['default_redirect_to'], $adapter,
-            $container->get(\Zend\Session\Container::class)
+            $container->get(\Laminas\Session\Container::class)
         );
     }
 }

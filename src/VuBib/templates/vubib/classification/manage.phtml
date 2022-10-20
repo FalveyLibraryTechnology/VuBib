@@ -44,7 +44,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+                <?php $escaper = new Laminas\Escaper\Escaper('utf-8'); ?>
                 <?php foreach ($this->rows as $row) : ?>
                     <tr>
                         <td><input class="delete-check" type="checkbox" name="id[]" value="<?=$row['id'] ?>"/></td>

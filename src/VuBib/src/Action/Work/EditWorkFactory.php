@@ -28,10 +28,10 @@
 namespace VuBib\Action\Work;
 
 use Interop\Container\ContainerInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Session;
+use Laminas\Db\Adapter\Adapter;
+use Mezzio\Router\RouterInterface;
+use Mezzio\Template\TemplateRendererInterface;
+use Laminas\Session;
 
 /**
  * Class Definition for EditWorkFactory.

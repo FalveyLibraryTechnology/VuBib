@@ -40,7 +40,7 @@ namespace VuBib\Db\Row;
  *
  * @link https://
  */
-class TranslateLanguage extends \Zend\Db\RowGateway\RowGateway
+class TranslateLanguage extends \Laminas\Db\RowGateway\RowGateway
 {
     /**
      * TranslateLanguage constructor.

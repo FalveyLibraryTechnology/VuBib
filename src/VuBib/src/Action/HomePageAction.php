@@ -30,10 +30,10 @@ namespace VuBib\Action;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
-use Zend\View\Model\ViewModel;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Mezzio\Router;
+use Mezzio\Template;
+use Laminas\View\Model\ViewModel;
 
 /**
  * Class Definition for HomePageAction.

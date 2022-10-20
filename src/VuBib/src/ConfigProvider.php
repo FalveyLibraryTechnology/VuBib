@@ -35,7 +35,7 @@ use VuBib\Repository\UserAuthenticationFactory;
 use VuBib\Repository\UserAuthenticationInterface;
 use VuBib\Repository\UserTableAuthentication;
 use VuBib\View\Helper;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 /**
  * Class Definition for ConfigProvider.
@@ -138,8 +138,8 @@ class ConfigProvider
     {
         return [
             'delegators' => [
-                \Zend\Expressive\Application::class => [
-                    \Zend\Expressive\Container\ApplicationConfigInjectionDelegator::class,
+                \Mezzio\Application::class => [
+                    \Mezzio\Container\ApplicationConfigInjectionDelegator::class,
                 ],
             ],
             'factories' => [

@@ -31,10 +31,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Diactoros\Response\JsonResponse;
+use Mezzio\Router;
+use Mezzio\Template;
 
 /**
  * Class Definition for GetWorkDetailsAction.
@@ -63,7 +63,7 @@ class GetWorkDetailsAction implements MiddlewareInterface
     protected $template;
 
     /**
-     * Zend\Db\Adapter\Adapter
+     * Laminas\Db\Adapter\Adapter
      *
      * @var $adapter
      */

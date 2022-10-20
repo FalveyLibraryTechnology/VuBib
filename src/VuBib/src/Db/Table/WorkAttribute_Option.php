@@ -30,10 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Expression;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
+use Laminas\Paginator\Adapter\DbSelect;
+use Laminas\Paginator\Paginator;
 
 /**
  * Table Definition for workattribute_option.
@@ -45,7 +45,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
+class WorkAttribute_Option extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * WorkAttribute_Option constructor.

@@ -28,8 +28,8 @@
 namespace VuBib\Middleware;
 
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Mezzio\Router\RouterInterface;
+use Mezzio\Template\TemplateRendererInterface;
 
 /**
  * Class Definition for Authentication Middleware Factory.
@@ -60,7 +60,7 @@ class AuthenticationMiddlewareFactory
 
         $basePath = $container->get(\Blast\BaseUrl\BasePathHelper::class)
             ->__invoke();
-        $session = $container->get(\Zend\Session\Container::class);
+        $session = $container->get(\Laminas\Session\Container::class);
 
         return new AuthenticationMiddleware($router, $template, $basePath, $session);
     }

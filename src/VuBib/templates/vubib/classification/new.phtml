@@ -15,7 +15,7 @@ if ($request->getqueryParams('action') !== null) {
         $parent_name = $fl_row['text_fr'];
     }
 }
-$escaper = new Zend\Escaper\Escaper('utf-8');
+$escaper = new Laminas\Escaper\Escaper('utf-8');
 ?>
 <h2>Add a Branch</h2>
 <div class="row">

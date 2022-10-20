@@ -30,10 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Expression;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
+use Laminas\Paginator\Adapter\DbSelect;
+use Laminas\Paginator\Paginator;
 
 /**
  * Table Definition for publisher_location.
@@ -45,7 +45,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
+class PublisherLocation extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * PublisherLocation constructor.
@@ -66,7 +66,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecords($location)
     {
-        $escaper = new \Zend\Escaper\Escaper('utf-8');
+        $escaper = new \Laminas\Escaper\Escaper('utf-8');
         $select = $this->sql->select();
         // $select->columns(array('location'));
         $select->join(

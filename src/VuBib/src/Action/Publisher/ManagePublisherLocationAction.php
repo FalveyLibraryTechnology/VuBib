@@ -33,11 +33,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Teapot\StatusCode\RFC\RFC7231;
-use Zend\Db\Adapter\Adapter;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Router;
+use Mezzio\Template;
 
 /**
  * Class Definition for ManagePublisherLocationAction.
@@ -66,7 +66,7 @@ class ManagePublisherLocationAction implements MiddlewareInterface
     protected $template;
 
     /**
-     * Zend\Db\Adapter\Adapter
+     * Laminas\Db\Adapter\Adapter
      *
      * @var $adapter
      */

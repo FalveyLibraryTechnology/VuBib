@@ -30,8 +30,8 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Paginator\Paginator;
 
 /**
  * Table Definition for workattribute.
@@ -43,7 +43,7 @@ use Zend\Paginator\Paginator;
  *
  * @link https://
  */
-class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
+class WorkAttribute_SubAttribute extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * WorkAttribute constructor.

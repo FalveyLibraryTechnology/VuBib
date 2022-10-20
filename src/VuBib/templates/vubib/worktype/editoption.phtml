@@ -41,7 +41,7 @@ $(document).ready(function(){
         });
 });
 </script>
-<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
+<?php $escaper = new Laminas\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
     <form class="form-horizontal" id="subattrForm" method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
         <input type="hidden" name="action" value="<?=$action?>">

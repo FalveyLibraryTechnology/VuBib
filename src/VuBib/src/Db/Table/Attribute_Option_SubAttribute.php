@@ -30,7 +30,7 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Adapter;
 
 /**
  * Table Definition for attribute_option_subattribute.
@@ -42,7 +42,7 @@ use Zend\Db\Adapter\Adapter;
  *
  * @link https://
  */
-class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
+class Attribute_Option_SubAttribute extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * WorkAttribute constructor.

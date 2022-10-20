@@ -30,7 +30,7 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Expression;
+use Laminas\Db\Sql\Expression;
 
 /**
  * Table Definition for work_publisher.
@@ -42,7 +42,7 @@ use Zend\Db\Sql\Expression;
  *
  * @link https://
  */
-class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
+class WorkPublisher extends \Laminas\Db\TableGateway\TableGateway
 {
     /**
      * WorkPublisher constructor.

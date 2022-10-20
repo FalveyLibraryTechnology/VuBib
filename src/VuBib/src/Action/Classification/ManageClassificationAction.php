@@ -32,14 +32,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Teapot\StatusCode\RFC\RFC7231;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
-use Zend\Paginator\Paginator;
-use Zend\Session;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Router;
+use Mezzio\Template;
+use Laminas\Paginator\Paginator;
+use Laminas\Session;
 
 /**
  * Class Definition for ManageClassificationAction.
@@ -68,7 +68,7 @@ class ManageClassificationAction implements MiddlewareInterface
     protected $template;
 
     /**
-     * Zend\Db\Adapter\Adapter
+     * Laminas\Db\Adapter\Adapter
      *
      * @var $adapter
      */
@@ -264,7 +264,7 @@ class ManageClassificationAction implements MiddlewareInterface
                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                 $rows = $table->getChild($query['id']);
                 $paginator = new Paginator(
-                    new \Zend\Paginator\Adapter\ArrayAdapter($rows)
+                    new \Laminas\Paginator\Adapter\ArrayAdapter($rows)
                 );
 
                 return $paginator;
