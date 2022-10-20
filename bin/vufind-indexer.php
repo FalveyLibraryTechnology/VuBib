@@ -15,12 +15,14 @@ if (!isset($argv[1])) {
 }
 $solrUpdateUrl = $argv[1];
 $type = $argv[2] ?? null;
+$offset = $argv[3] ?? null;
+$limit = $argv[4] ?? null;
 
 $container = include __DIR__ . '/../config/container.php';
 
 $adapter = $container->get(Adapter::class);
 $writer = new SolrWriter($solrUpdateUrl);
 $indexer = new VuFindIndexer($writer, $adapter);
-$indexer->indexAll($type);
+$indexer->indexAll($type, $offset, $limit);
 
 exit(0);

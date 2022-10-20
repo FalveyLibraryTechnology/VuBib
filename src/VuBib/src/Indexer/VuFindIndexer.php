@@ -88,7 +88,7 @@ class VuFindIndexer
         return $this->total;
     }
 
-    public function indexAll($type = null, $offset = null, $limit = null, $commit = true)
+    public function indexAll($type = null, $offset = null, $limit = null)
     {
         $changesIndexed = false;
 
