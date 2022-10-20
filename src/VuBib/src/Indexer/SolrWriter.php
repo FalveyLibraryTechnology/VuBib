@@ -10,6 +10,12 @@ class SolrWriter
         $this->solrUrl = $solrUrl;
     }
 
+    public function deleteRecords(array $ids)
+    {
+        // TODO
+        //var_dump($ids);
+    }
+
     public function save($xml)
     {
         // use key 'http' even if you send the request to https://...
