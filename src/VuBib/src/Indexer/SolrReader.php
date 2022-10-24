@@ -12,7 +12,12 @@ class SolrReader
 
     public function hasRecord($id)
     {
-        // TODO
-        return true;
+        $params = [
+            'q' => 'id:"' . addcslashes($id, '"') . '"',
+            'wt' => 'json',
+        ];
+        $url = $this->solrUrl . '?' . http_build_query($params);
+        $result = json_decode(file_get_contents($url));
+        return ($result->response->numFound ?? 0) === 1;
     }
 }
