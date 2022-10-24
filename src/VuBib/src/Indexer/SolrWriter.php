@@ -12,8 +12,12 @@ class SolrWriter
 
     public function deleteRecords(array $ids)
     {
-        // TODO
-        //var_dump($ids);
+        $formatId = function ($id) {
+            return '<id>' . htmlspecialchars($id) . '</id>';
+        };
+        $deleteDoc = '<delete>'
+            . implode('', array_map($formatId, $ids)) . '</delete>';
+        $this->save($deleteDoc);
     }
 
     public function save($xml)
