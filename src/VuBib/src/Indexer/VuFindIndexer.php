@@ -550,7 +550,7 @@ class VuFindIndexer
         //index work status
         if (null === $this->wk->status) {
             $this->addFieldToRecord('status_str', 'Inactive');
-        } elseif ($this->wk->status === 0 || $this->wk->status === 2) {
+        } elseif (in_array(intval($this->wk->status), [0, 2])) {
             $this->addFieldToRecord('status_str', 'Needs Review');
         } else {
             $this->addFieldToRecord('status_str', 'Active');
