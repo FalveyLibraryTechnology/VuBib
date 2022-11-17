@@ -188,7 +188,7 @@ trait TranslationTrait
     {
         $rowset->buffer();
         $ret = $rowset->current();
-        $rows = $rowset->toArray();
+        $rows = !empty($ret) ? $rowset->toArray() : [];
         foreach ($rows as $row) {
             $ret['text_' . $row['t__lang']] = $row['t__text'];
         }

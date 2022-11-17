@@ -10,7 +10,7 @@ return [
         ],
     ],
     'db' => [
-        'driver'    => 'mysqli',
+        'driver'    => 'pdo_mysql',
         //'database' => 'pr_test',
         //'database'       => 'panta_rhei',
         'database' => 'vubib_1',

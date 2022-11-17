@@ -252,6 +252,9 @@ class Work_WorkAttribute extends \Laminas\Db\TableGateway\TableGateway
         $wa = new WorkAttribute($this->adapter);
         $wa_row = $wa->getAttributeRecord($attribute);
 
+        if (empty($wa_row)) {
+            return $detailed ? ['type' => null, 'raw' => null, 'sub_attribs' => [], 'display' => null] : null;
+        }
         $attr_id = $wa_row['id'];
         $wk_wkat = $this->select(
             ['work_id' => $wk_id,
@@ -260,22 +263,22 @@ class Work_WorkAttribute extends \Laminas\Db\TableGateway\TableGateway
         $wk_wkat_row = $wk_wkat->current();
 
         if ($wa_row['type'] == 'Select') {
-            if (isset($wk_wkat_row['value']) && $wk_wkat_row['value'] != '') {
+            if (($wk_wkat_row['value'] ?? '') != '') {
                 $wa_opt = new WorkAttribute_Option($this->adapter);
-                $wa_opt_row = $wa_opt->findRecordById($wk_wkat_row['value']);
+                $wa_opt_row = $wa_opt->findRecordById(intval($wk_wkat_row['value']));
                 if ($detailed) {
                     $subTable = new Attribute_Option_SubAttribute($this->adapter);
                     $sub = $subTable->findRecordByOption($wa_opt_row['id'], null, true);
                     return ['type' => 'Select', 'raw' => $wa_opt_row, 'sub_attribs' => $sub, 'display' => $wa_opt_row['title']];
                 } else {
-                    return  $wa_opt_row['title'];
+                    return $wa_opt_row['title'];
                 }
             }
-        } else {
-            return $detailed
-                ? ['type' => $wa_row['type'], 'raw' => $wk_wkat_row, 'sub_attribs' => [], 'display' => $wk_wkat_row['value']]
-                : $wk_wkat_row['value'];
         }
+        // Fallback: make sure we return something even if $wk_wkat_row is unset.
+        return $detailed
+            ? ['type' => $wa_row['type'], 'raw' => $wk_wkat_row, 'sub_attribs' => [], 'display' => $wk_wkat_row['value'] ?? null]
+            : $wk_wkat_row['value'] ?? null;
     }
 
     /**
