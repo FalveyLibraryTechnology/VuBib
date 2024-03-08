@@ -101,8 +101,10 @@ class ManageUserAction implements MiddlewareInterface
             //echo "<pre>";print_r($post);echo"</pre>";
             $table = new \VuBib\Db\Table\User($this->adapter);
             $table->insertRecords(
-                $post['newuser_name'], $post['new_username'],
-                md5($post['new_user_pwd']), $post['access_level']
+                $post['newuser_name'],
+                $post['new_username'],
+                md5($post['new_user_pwd']),
+                $post['access_level'] === 'NULL' ? null : $post['access_level']
             );
         }
     }
