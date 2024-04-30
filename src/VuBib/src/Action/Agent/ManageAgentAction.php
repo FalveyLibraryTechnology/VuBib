@@ -33,6 +33,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 use Mezzio\Router;
 use Mezzio\Template;
 use Laminas\Paginator\Paginator;
@@ -148,7 +149,7 @@ class ManageAgentAction implements MiddlewareInterface
      *
      * @param Array $post contains posted elements of form
      *
-     * @return empty
+     * @return ?object
      */
     protected function doAction($post)
     {
@@ -156,11 +157,13 @@ class ManageAgentAction implements MiddlewareInterface
         if ($post['action'] == 'new') {
             if ($post['submitt'] == 'Save') {
                 $table = new \VuBib\Db\Table\Agent($this->adapter);
-                $table->insertRecords(
+                $newAgentId = $table->insertRecords(
                     $post['new_agentfirstname'], $post['new_agentlastname'],
                     $post['new_agentaltname'], $post['new_agentorgname'],
                     $post['new_agentemail']
                 );
+                $newAgent = $table->select(['id' => $newAgentId])->current();
+                return $newAgent;
             }
         }
         //edit an agent
@@ -187,6 +190,7 @@ class ManageAgentAction implements MiddlewareInterface
         if ($post['action'] == 'merge') {
             $this->doMerge($post);
         }
+        return null;
     }
 
     /**
@@ -235,9 +239,6 @@ class ManageAgentAction implements MiddlewareInterface
 
         //edit, delete actions on agent
         if (!empty($post['action'])) {
-            //add edit delete merge agent
-            $this->doAction($post);
-
             //Cancel edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\Agent($this->adapter);
@@ -314,6 +315,14 @@ class ManageAgentAction implements MiddlewareInterface
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
+
+        if (!empty($post['action'])) {
+            //add edit delete merge agent
+            $json = $this->doAction($post);
+            if ($post['ajax'] ?? false) {
+                return new JsonResponse($json);
+            }
+        }
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(15);
