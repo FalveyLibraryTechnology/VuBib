@@ -155,7 +155,13 @@ function showNewAgentModal(e) {
     if (!modalEl) {
         return false;
     }
+    $('#newagentfirstname').val('');
+    $('#newagentlastname').val('');
+    $('#newagentaltname').val('');
+    $('#newagentorgname').val('');
+    $('#newagentemail').val('');
     $(modalEl).modal("show");
+    $(modalEl).find("input[name='ajax']").val("1");
     var acs = $(lastInput).parent(".agent-acs");
     $(acs).find(".acs-clear").click();
     $(acs).find(".acs-input").val("");
@@ -172,9 +178,12 @@ $(document).ready(function bindAgentModalForm() {
             Object.fromEntries(formData.entries())
         );
         $.post(form.getAttribute("action"), postData)
-            .done(function(e) {
+            .done(function(data) {
                 $("#agent-modal__error").addClass("hidden");
                 $("#agent-modal__success").removeClass("hidden");
+                var detail = Object.assign(data, {value: data.lname});
+                var event = new CustomEvent('ac-select', {detail: detail});
+                lastInput.dispatchEvent(event);
                 setTimeout(function() {
                     $("#add-new-agent").modal("hide");
                 }, 3000);

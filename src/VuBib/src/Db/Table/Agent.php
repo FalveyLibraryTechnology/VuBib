@@ -69,7 +69,7 @@ class Agent extends \Laminas\Db\TableGateway\TableGateway
      * @param String $orgname organization name of agent
      * @param String $mail    email of agent
      *
-     * @return empty
+     * @return int ID of last inserted row
      */
     public function insertRecords($fname, $lname, $altname, $orgname, $mail)
     {
@@ -82,6 +82,7 @@ class Agent extends \Laminas\Db\TableGateway\TableGateway
             // 'email' => $mail,
             ]
         );
+        return $this->getLastInsertValue();
     }
 
     /**
