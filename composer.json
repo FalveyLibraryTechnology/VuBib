@@ -17,12 +17,12 @@
     ],
     "config": {
         "platform": {
-            "php": "8.1"
+            "php": "8.2"
         },
         "sort-packages": true,
         "allow-plugins": {
             "laminas/laminas-component-installer": true,
-            "laminas/laminas-dependency-plugin": true
+            "laminas/laminas-dependency-plugin": false
         }
     },
     "extra": {
@@ -57,8 +57,7 @@
         "laminas/laminas-paginator": "^2.8",
         "laminas/laminas-servicemanager": "^3.3",
         "laminas/laminas-session": "^2.8",
-        "laminas/laminas-stdlib": "^3.1",
-        "laminas/laminas-dependency-plugin": "^2.1"
+        "laminas/laminas-stdlib": "^3.1"
     },
     "require-dev": {
         "behat/mink": "^1.7",
