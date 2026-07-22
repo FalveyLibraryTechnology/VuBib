@@ -37,13 +37,6 @@
             ]
         }
     },
-    "support": {
-        "issues": "https://github.com/mezzio/mezzio-skeleton/issues",
-        "source": "https://github.com/mezzio/mezzio-skeleton",
-        "rss": "https://github.com/mezzio/mezzio-skeleton/releases.atom",
-        "slack": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/expressive"
-    },
     "require": {
         "php": "^8.1",
         "guidofaecke/blast-base-url": "^2.0",
