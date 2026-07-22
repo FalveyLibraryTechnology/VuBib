@@ -1,6 +1,6 @@
 <?php
 /**
- * Zend Session Factory
+ * Laminas Session Factory
  *
  * PHP version 5
  *
@@ -28,7 +28,7 @@
 namespace VuBib\Factory;
 
 /**
- * Class Definition for zend session factory.
+ * Class Definition for Laminas session factory.
  *
  * @category VuBib
  * @package  Code
@@ -37,7 +37,7 @@ namespace VuBib\Factory;
  *
  * @link https://
  */
-class ZendSessionFactory
+class LaminasSessionFactory
 {
     /**
      * Set session

@@ -25,7 +25,7 @@ return [
 
             //new-adapter
             Laminas\Db\Adapter\Adapter::class => Laminas\Db\Adapter\AdapterServiceFactory::class,
-            Laminas\Session\Container::class => VuBib\Factory\ZendSessionFactory::class,
+            Laminas\Session\Container::class => VuBib\Factory\LaminasSessionFactory::class,
         ],
     ],
 ];
