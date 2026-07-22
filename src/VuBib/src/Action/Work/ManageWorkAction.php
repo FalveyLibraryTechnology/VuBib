@@ -183,12 +183,13 @@ class ManageWorkAction implements MiddlewareInterface
                 }
                 //insert General(work)
                 $table = new \VuBib\Db\Table\Work($this->adapter);
+                $filteredYears = array_filter($post['pub_yrFrom']);
                 $wk_id = $table->insertRecords(
                     $pr_workid, $post['work_type'], $post['work_title'],
                     $post['work_subtitle'], $post['work_paralleltitle'],
                     $post['description'], date('Y-m-d H:i:s'),
                     $post['user'], $post['work_status'],
-                    min(array_filter($post['pub_yrFrom'])) ?? null
+                    empty($filteredYears) ? null : (min($filteredYears) ?? null)
                 );
 
                 //extract classification rows
