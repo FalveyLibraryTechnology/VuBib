@@ -35,8 +35,6 @@ $aggregator = new ConfigAggregator([
     class_exists(\Mezzio\Swoole\ConfigProvider::class)
         ? \Mezzio\Swoole\ConfigProvider::class
         : function(){ return[]; },
-    // Default App module config
-    App\ConfigProvider::class,
     // VuBib module config
     VuBib\ConfigProvider::class,
     // Load application config in a pre-defined order in such a way that local settings
