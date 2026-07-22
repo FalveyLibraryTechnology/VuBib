@@ -70,7 +70,7 @@ class LoginUser implements AuthUserInterface
     private $_password;
 
     /**
-     * Zend form submit
+     * Laminas form submit
      *
      * @Annotation\Type("Laminas\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit"})

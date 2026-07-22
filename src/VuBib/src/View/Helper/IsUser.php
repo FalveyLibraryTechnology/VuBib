@@ -58,8 +58,8 @@ class IsUser extends \Laminas\View\Helper\AbstractHelper
     /**
      * ManageAgentAction constructor.
      *
-     * @param Laminas\Db\Adapter\Adapter $adapter for db connection
-     * @param Laminas\Session\Container  $session for zend session
+     * @param Laminas\Db\Adapter\Adapter $adapter Database connection
+     * @param Laminas\Session\Container  $session Laminas session
      */
     public function __construct(\Laminas\Db\Adapter\Adapter $adapter, $session)
     {

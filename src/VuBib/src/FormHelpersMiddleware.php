@@ -43,7 +43,7 @@ use Laminas\View\HelperPluginManager;
 class FormHelpersMiddleware
 {
     /**
-     * Zend view Helpers
+     * Laminas view Helpers
      *
      * @var HelperPluginManager
      */
@@ -52,7 +52,7 @@ class FormHelpersMiddleware
     /**
      * Form Helpers Middleware constructor
      *
-     * @param HelperPluginManager $helpers zend view helper
+     * @param HelperPluginManager $helpers Laminas view helpers
      *
      * @return empty
      */

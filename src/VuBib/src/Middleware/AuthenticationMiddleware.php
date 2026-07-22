@@ -84,7 +84,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @param Router\RouterInterface             $router   for routes
      * @param Template\TemplateRendererInterface $template for templates
      * @param string                             $basePath base url path
-     * @param Laminas\Session\Container             $session  zend session
+     * @param Laminas\Session\Container          $session  Laminas session
      *
      * @return empty
      */
