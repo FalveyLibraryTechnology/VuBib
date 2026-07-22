@@ -1,19 +1,11 @@
 {
     "name": "vubib/vubib",
-    "description": "VuBib is a bibliography management software, developed with Zend Expressive frameworks as a base.",
+    "description": "VuBib is a bibliography management software, developed with Mezzio.",
     "type": "project",
     "homepage": "https://github.com/FalveyLibraryTechnology/VuBib",
     "license": "GPL 2.0",
     "keywords": [
-        "skeleton",
-        "middleware",
-        "psr",
-        "psr-7",
-        "psr-11",
-        "psr-15",
-        "zf",
-        "zendframework",
-        "mezzio"
+        "bibliography"
     ],
     "config": {
         "platform": {
